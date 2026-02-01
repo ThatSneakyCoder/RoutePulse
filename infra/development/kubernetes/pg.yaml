@@ -1,0 +1,85 @@
+# Deployment Config
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:14-alpine
+        env:
+        - name: POSTGRES_USER
+          value: myuser
+        - name: POSTGRES_PASSWORD
+          value: mypassword
+        - name: POSTGRES_DB
+          value: mydb
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+          - name: pg-vol
+            mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "128Mi"
+            cpu: "125m"
+      volumes:
+        - name: pg-vol
+          persistentVolumeClaim:
+            claimName: pg-pvc
+---
+# Service Config
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+# Persistent Volume Config
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: pg-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/
+    type: DirectoryOrCreate
+---
+# Persistent Volume Claim Config
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pg-pvc
+spec:
+  volumeName: pg-pv
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi # we are claiming 1Gi from pv
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

@@ -1,0 +1,18 @@
+# Go build artifacts
+build/
+bin/
+dist/
+
+# Go cache
+*.exe
+*.test
+*.out
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Env files
+.env
+.env.*
