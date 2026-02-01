@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ThatSneakyCoder/RoutePulse-Fleet-Telematics-Platform/shared/env"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 	"go.uber.org/zap"
 )
 

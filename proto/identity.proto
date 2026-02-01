@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+// Package identity provides the primitives for user account management
+// and authentication via JSON Web Tokens (JWT).
+package identity;
+
+// The path where the generated Go files will reside.
+option go_package = "shared/proto/identity;identity";
+
+// IdentityService defines the operations for managing user lifecycles,
+// including registration, authentication, and token verification.
+service IdentityService {
+  // RegisterUser creates a new user account with the provided credentials.
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
+
+  // Login authenticates a user and returns a set of tokens for session management.
+  rpc Login (LoginRequest) returns (LoginResponse);
+
+  // GetUser retrieves the public profile and status of a specific user by ID.
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+
+  // ValidateToken checks the integrity and expiration of a JWT.
+  rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
+
+  // DeactivateUser marks a user account as inactive, preventing further logins.
+  rpc DeactivateUser (DeactivateUserRequest) returns (DeactivateUserResponse);
+}
+
+// Request parameters for creating a new user.
+message RegisterUserRequest {
+  // First name of the user
+  string firstname = 1;
+  // Last name of the user
+  string lastname = 2;
+  // The user's primary email address (must be unique).
+  string email = 3;
+  // The plain-text password (should be hashed before storage).
+  string password = 4;
+}
+
+// User object
+message User {
+  string user_id = 1;
+  string firstname = 2;
+  string lastname = 3;
+  string email = 4;
+  int64 created_at = 5;
+}
+
+// The profile data of the newly created user.
+message RegisterUserResponse {
+  User user = 1;
+}
+
+// Credentials for user authentication.
+message LoginRequest {
+  // The email address of the account.
+  string email = 1;
+  // The password associated with the account.
+  string password = 2;
+}
+
+// Token data returned upon successful authentication.
+message LoginResponse {
+  // The JWT used for authenticating subsequent requests.
+  string access_token = 1;
+  // An optional token used to refresh the access_token.
+  string refresh_token = 2; 
+  // Expiration timestamp of the access_token (Unix seconds).
+  int64 expires_at = 3;
+}
+
+// Request to retrieve user data.
+message GetUserRequest {
+  // The unique identifier of the user to fetch.
+  string user_id = 1;
+}
+
+// Detailed information about a user.
+message GetUserResponse {
+  // Unique identifier for the user.
+  string user_id = 1;
+  // The user's email address.
+  string email = 2;
+  // Indicates if the account is currently active.
+  bool active = 3;
+  // Timestamp of when the account was created (Unix seconds).
+  int64 created_at = 4;
+}
+
+// Request to verify a JWT.
+message ValidateTokenRequest {
+  // The access token string to be validated.
+  string access_token = 1;
+}
+
+// Results of the token validation.
+message ValidateTokenResponse {
+  // True if the token is valid and not expired.
+  bool valid = 1;
+  // The user ID encoded within the token.
+  string user_id = 2;
+  // Timestamp when the token expires (Unix seconds).
+  int64 expires_at = 3;
+}
+
+// Request to deactivate a specific user account.
+message DeactivateUserRequest {
+  // The unique identifier of the user to deactivate.
+  string user_id = 1;
+}
+
+// Response indicating the outcome of the deactivation.
+message DeactivateUserResponse {
+  // True if the deactivation was successful.
+  bool success = 1;
+}
