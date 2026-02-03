@@ -16,3 +16,5 @@ dist/
 # Env files
 .env
 .env.*
+
+./infra/development/kubernetes/secrets.yaml
