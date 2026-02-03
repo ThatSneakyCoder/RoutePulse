@@ -4,6 +4,8 @@ syntax = "proto3";
 // and authentication via JSON Web Tokens (JWT).
 package identity;
 
+import "google/protobuf/timestamp.proto";
+
 // The path where the generated Go files will reside.
 option go_package = "shared/proto/identity;identity";
 
@@ -44,7 +46,7 @@ message User {
   string firstname = 2;
   string lastname = 3;
   string email = 4;
-  int64 created_at = 5;
+  google.protobuf.Timestamp created_at = 5;
 }
 
 // The profile data of the newly created user.
@@ -64,10 +66,8 @@ message LoginRequest {
 message LoginResponse {
   // The JWT used for authenticating subsequent requests.
   string access_token = 1;
-  // An optional token used to refresh the access_token.
-  string refresh_token = 2; 
   // Expiration timestamp of the access_token (Unix seconds).
-  int64 expires_at = 3;
+  int64 expires_at = 2;
 }
 
 // Request to retrieve user data.

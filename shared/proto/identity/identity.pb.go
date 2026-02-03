@@ -12,6 +12,7 @@ package identity
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -104,7 +105,7 @@ type User struct {
 	Firstname     string                 `protobuf:"bytes,2,opt,name=firstname,proto3" json:"firstname,omitempty"`
 	Lastname      string                 `protobuf:"bytes,3,opt,name=lastname,proto3" json:"lastname,omitempty"`
 	Email         string                 `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
-	CreatedAt     int64                  `protobuf:"varint,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -167,11 +168,11 @@ func (x *User) GetEmail() string {
 	return ""
 }
 
-func (x *User) GetCreatedAt() int64 {
+func (x *User) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
-	return 0
+	return nil
 }
 
 // The profile data of the newly created user.
@@ -279,10 +280,8 @@ type LoginResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The JWT used for authenticating subsequent requests.
 	AccessToken string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	// An optional token used to refresh the access_token.
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
 	// Expiration timestamp of the access_token (Unix seconds).
-	ExpiresAt     int64 `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	ExpiresAt     int64 `protobuf:"varint,2,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -320,13 +319,6 @@ func (*LoginResponse) Descriptor() ([]byte, []int) {
 func (x *LoginResponse) GetAccessToken() string {
 	if x != nil {
 		return x.AccessToken
-	}
-	return ""
-}
-
-func (x *LoginResponse) GetRefreshToken() string {
-	if x != nil {
-		return x.RefreshToken
 	}
 	return ""
 }
@@ -663,29 +655,28 @@ var File_identity_proto protoreflect.FileDescriptor
 
 const file_identity_proto_rawDesc = "" +
 	"\n" +
-	"\x0eidentity.proto\x12\bidentity\"\x81\x01\n" +
+	"\x0eidentity.proto\x12\bidentity\x1a\x1fgoogle/protobuf/timestamp.proto\"\x81\x01\n" +
 	"\x13RegisterUserRequest\x12\x1c\n" +
 	"\tfirstname\x18\x01 \x01(\tR\tfirstname\x12\x1a\n" +
 	"\blastname\x18\x02 \x01(\tR\blastname\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x04 \x01(\tR\bpassword\"\x8e\x01\n" +
+	"\bpassword\x18\x04 \x01(\tR\bpassword\"\xaa\x01\n" +
 	"\x04User\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1c\n" +
 	"\tfirstname\x18\x02 \x01(\tR\tfirstname\x12\x1a\n" +
 	"\blastname\x18\x03 \x01(\tR\blastname\x12\x14\n" +
-	"\x05email\x18\x04 \x01(\tR\x05email\x12\x1d\n" +
+	"\x05email\x18\x04 \x01(\tR\x05email\x129\n" +
 	"\n" +
-	"created_at\x18\x05 \x01(\x03R\tcreatedAt\":\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\":\n" +
 	"\x14RegisterUserResponse\x12\"\n" +
 	"\x04user\x18\x01 \x01(\v2\x0e.identity.UserR\x04user\"@\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"v\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"Q\n" +
 	"\rLoginResponse\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12\x1d\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12\x1d\n" +
 	"\n" +
-	"expires_at\x18\x03 \x01(\x03R\texpiresAt\")\n" +
+	"expires_at\x18\x02 \x01(\x03R\texpiresAt\")\n" +
 	"\x0eGetUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"w\n" +
 	"\x0fGetUserResponse\x12\x17\n" +
@@ -737,24 +728,26 @@ var file_identity_proto_goTypes = []any{
 	(*ValidateTokenResponse)(nil),  // 8: identity.ValidateTokenResponse
 	(*DeactivateUserRequest)(nil),  // 9: identity.DeactivateUserRequest
 	(*DeactivateUserResponse)(nil), // 10: identity.DeactivateUserResponse
+	(*timestamppb.Timestamp)(nil),  // 11: google.protobuf.Timestamp
 }
 var file_identity_proto_depIdxs = []int32{
-	1,  // 0: identity.RegisterUserResponse.user:type_name -> identity.User
-	0,  // 1: identity.IdentityService.RegisterUser:input_type -> identity.RegisterUserRequest
-	3,  // 2: identity.IdentityService.Login:input_type -> identity.LoginRequest
-	5,  // 3: identity.IdentityService.GetUser:input_type -> identity.GetUserRequest
-	7,  // 4: identity.IdentityService.ValidateToken:input_type -> identity.ValidateTokenRequest
-	9,  // 5: identity.IdentityService.DeactivateUser:input_type -> identity.DeactivateUserRequest
-	2,  // 6: identity.IdentityService.RegisterUser:output_type -> identity.RegisterUserResponse
-	4,  // 7: identity.IdentityService.Login:output_type -> identity.LoginResponse
-	6,  // 8: identity.IdentityService.GetUser:output_type -> identity.GetUserResponse
-	8,  // 9: identity.IdentityService.ValidateToken:output_type -> identity.ValidateTokenResponse
-	10, // 10: identity.IdentityService.DeactivateUser:output_type -> identity.DeactivateUserResponse
-	6,  // [6:11] is the sub-list for method output_type
-	1,  // [1:6] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	11, // 0: identity.User.created_at:type_name -> google.protobuf.Timestamp
+	1,  // 1: identity.RegisterUserResponse.user:type_name -> identity.User
+	0,  // 2: identity.IdentityService.RegisterUser:input_type -> identity.RegisterUserRequest
+	3,  // 3: identity.IdentityService.Login:input_type -> identity.LoginRequest
+	5,  // 4: identity.IdentityService.GetUser:input_type -> identity.GetUserRequest
+	7,  // 5: identity.IdentityService.ValidateToken:input_type -> identity.ValidateTokenRequest
+	9,  // 6: identity.IdentityService.DeactivateUser:input_type -> identity.DeactivateUserRequest
+	2,  // 7: identity.IdentityService.RegisterUser:output_type -> identity.RegisterUserResponse
+	4,  // 8: identity.IdentityService.Login:output_type -> identity.LoginResponse
+	6,  // 9: identity.IdentityService.GetUser:output_type -> identity.GetUserResponse
+	8,  // 10: identity.IdentityService.ValidateToken:output_type -> identity.ValidateTokenResponse
+	10, // 11: identity.IdentityService.DeactivateUser:output_type -> identity.DeactivateUserResponse
+	7,  // [7:12] is the sub-list for method output_type
+	2,  // [2:7] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_identity_proto_init() }

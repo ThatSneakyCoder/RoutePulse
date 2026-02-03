@@ -16,12 +16,15 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
+
+	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
 )
 
 type application struct {
-	config  config
-	logger  *zap.SugaredLogger
-	metrics metrics
+	config         config
+	log            *zap.SugaredLogger
+	metrics        metrics
+	identityClient *grpc.IdentityServiceClient
 }
 
 type metrics struct {
@@ -57,20 +60,27 @@ func (app *application) mount() http.Handler {
 		}
 		r.Get("/health", app.healthCheckHandler)
 
+		r.Route("/authentication", func(r chi.Router) {
+			r.Post("/registerUser", app.createUserHandler)
+			// r.Post("/verifyUserOtp", app.verifyUserOtpHandler)
+			// r.Post("/login", app.createJwtTokenHandler)
+			// r.Post("/forgot-password", app.forgotPasswordHandler)
+			// r.Put("/reset-password", app.resetPasswordHandler)
+		})
+
 	})
 
 	return r
 }
 
 func (app *application) run(mux http.Handler) error {
-	// Docs
 	docs.SwaggerInfo.Version = "0.0.1"
 
 	srv := &http.Server{
 		Addr:         app.config.addr,
 		Handler:      mux,
-		WriteTimeout: time.Second * 30,
-		ReadTimeout:  time.Second * 10, // for read it should be less than the write
+		WriteTimeout: 30 * time.Second,
+		ReadTimeout:  10 * time.Second,
 		IdleTimeout:  time.Minute,
 	}
 
@@ -79,26 +89,27 @@ func (app *application) run(mux http.Handler) error {
 	go func() {
 		quit := make(chan os.Signal, 1)
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-		s := <-quit
+		sig := <-quit
+
+		app.log.Infow("shutdown signal received", "signal", sig.String())
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		app.logger.Infow("signal caught", "signal", s.String())
 		shutdown <- srv.Shutdown(ctx)
 	}()
 
-	app.logger.Infow("server has started", "addr", app.config.addr)
+	app.log.Infow("http server started", "addr", app.config.addr)
 
 	err := srv.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 
-	err = <-shutdown
-	if err != nil {
+	if err := <-shutdown; err != nil {
 		return err
 	}
 
+	app.log.Info("http server shut down gracefully")
 	return nil
 }

@@ -1,47 +1,77 @@
 package main
 
 import (
+	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
-	"go.uber.org/zap"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
 )
 
-// @title           Fleet Management System API
-// @version         1.0
-// @description     REST API documentation for Fleet Management System
-// @termsOfService  http://swagger.io/terms/
+//	@title			Fleet Management System API
+//	@version		1.0
+//	@description	REST API documentation for Fleet Management System
+//	@termsOfService	http://swagger.io/terms/
 
-// @contact.name    API Support
-// @contact.url     http://www.swagger.io/support
-// @contact.email   support@swagger.io
+//	@contact.name	API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
 
-// @license.name    Apache 2.0
-// @license.url     http://www.apache.org/licenses/LICENSE-2.0.html
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @BasePath        /v1
-// @schemes         http https
+//	@BasePath	/v1
+//	@schemes	http https
 
-// @securityDefinitions.apiKey ApiKeyAuth
-// @in                          header
-// @name                        Authorization
+// @securityDefinitions.apiKey	ApiKeyAuth
+// @in							header
+// @name						Authorization
 func main() {
 	cfg := config{
 		addr: env.GetString("ADDR", ":8080"),
 		env:  env.GetString("ENV", "development"),
 	}
 
-	logger := zap.Must(zap.NewProduction()).Sugar()
-	defer logger.Sync()
+	// Logger
+	log := logger.Init(logger.Config{
+		ServiceName: "api-gateway",
+		Env:         cfg.env,
+	})
+	defer log.Sync()
 
-	logger.Info("Zap logger setup successfully")
+	log.Infow("starting api gateway",
+		"addr", cfg.addr,
+		"env", cfg.env,
+	)
 
+	identityClient, err := grpc.NewIdentityServiceClient()
+	if err != nil {
+		log.Fatalw(
+			"failed to connect to identity service",
+			"service", "identity-service",
+			"err", err,
+		)
+	}
+	defer identityClient.Close()
+
+	log.Infow(
+		"connected to downstream service",
+		"service", "identity-service",
+	)
+
+	// Metrics
 	metrics := newMetrics()
 
 	app := &application{
-		config:  cfg,
-		logger:  logger,
-		metrics: metrics,
+		config:         cfg,
+		log:            log,
+		metrics:        metrics,
+		identityClient: identityClient,
 	}
 
 	mux := app.mount()
-	logger.Info(app.run(mux))
+
+	if err := app.run(mux); err != nil {
+		log.Fatalw("api gateway stopped with error", "err", err)
+	}
+
+	log.Info("api gateway stopped gracefully")
 }

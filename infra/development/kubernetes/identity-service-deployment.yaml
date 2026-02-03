@@ -30,6 +30,26 @@ spec:
               configMapKeyRef:
                 name: identity-config
                 key: IDENTITY_SERVICE_ADDR
+          - name: IDENTITY_SERVICE_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: identity-config
+                key: IDENTITY_SERVICE_PORT
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials
+                key: password
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: pg-credentials
+                key: db
 ---
 apiVersion: v1
 kind: Service
