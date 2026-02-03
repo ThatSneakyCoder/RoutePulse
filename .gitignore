@@ -17,4 +17,4 @@ dist/
 .env
 .env.*
 
-./infra/development/kubernetes/secrets.yaml
+infra/development/kubernetes/secrets.yaml

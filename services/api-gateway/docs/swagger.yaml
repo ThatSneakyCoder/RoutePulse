@@ -1,10 +1,53 @@
 basePath: /v1
 definitions:
+  main.CreateUserRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      firstname:
+        maxLength: 255
+        type: string
+      lastname:
+        maxLength: 255
+        type: string
+      password:
+        maxLength: 72
+        minLength: 3
+        type: string
+    required:
+    - firstname
+    - lastname
+    - password
+    type: object
+  main.CreateUserResponse:
+    properties:
+      user:
+        $ref: '#/definitions/main.UserResponse'
+    type: object
   main.HealthCheckResponse:
     properties:
       status:
         type: string
       version:
+        type: string
+    type: object
+  main.UserResponse:
+    properties:
+      created_at:
+        example: 1706950000
+        type: integer
+      email:
+        example: john.doe@example.com
+        type: string
+      firstname:
+        example: John
+        type: string
+      lastname:
+        example: Doe
+        type: string
+      user_id:
+        example: 550e8400-e29b-41d4-a716-446655440000
         type: string
     type: object
 info:
@@ -20,6 +63,40 @@ info:
   title: Fleet Management System API
   version: "1.0"
 paths:
+  /authentication/registerUser:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user by delegating to the identity service
+      parameters:
+      - description: Create user payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.CreateUserResponse'
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create user
+      tags:
+      - Users
   /health:
     get:
       description: Checks API health and connectivity with identity service
