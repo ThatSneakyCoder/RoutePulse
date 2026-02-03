@@ -24,6 +24,12 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "125m"
+          env:
+          - name: IDENTITY_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: identity-config
+                key: IDENTITY_SERVICE_ADDR
 ---
 apiVersion: v1
 kind: Service

@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/service"
 	pb "github.com/ThatSneakyCoder/RoutePulse/shared/proto/identity"
@@ -36,5 +37,8 @@ func (h *gRPCHandler) RegisterUser(
 	// 	// UserId: created.ID.String(),
 	// 	// Email:  created.Email,
 	// }, nil
+
+	fmt.Println("HIT detected in identity microservice")
+
 	return nil, nil
 }

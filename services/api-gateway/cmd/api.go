@@ -9,10 +9,12 @@ import (
 	"syscall"
 	"time"
 
+	docs "github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/docs"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 )
 
@@ -28,6 +30,7 @@ type metrics struct {
 
 type config struct {
 	addr string
+	env  string
 }
 
 func (app *application) mount() http.Handler {
@@ -41,13 +44,28 @@ func (app *application) mount() http.Handler {
 	r.Handle("/metrics", promhttp.Handler())
 
 	r.Route("/v1", func(r chi.Router) {
+		if app.config.env == "development" {
+			r.Get("/swagger/*", func(w http.ResponseWriter, r *http.Request) {
+				docs.SwaggerInfo.Host = r.Host
+				docs.SwaggerInfo.Schemes = []string{"http"}
+				docs.SwaggerInfo.BasePath = "/v1"
+
+				httpSwagger.Handler(
+					httpSwagger.URL("/v1/swagger/doc.json"),
+				)(w, r)
+			})
+		}
 		r.Get("/health", app.healthCheckHandler)
+
 	})
 
 	return r
 }
 
 func (app *application) run(mux http.Handler) error {
+	// Docs
+	docs.SwaggerInfo.Version = "0.0.1"
+
 	srv := &http.Server{
 		Addr:         app.config.addr,
 		Handler:      mux,

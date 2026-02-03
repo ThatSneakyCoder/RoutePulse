@@ -5,7 +5,7 @@ load('ext://restart_process', 'docker_build_with_restart')
 
 # Uncomment to use secrets
 k8s_yaml('./infra/development/kubernetes/secrets.yaml')
-# k8s_yaml('./infra/development/k8s/app-config.yaml')
+k8s_yaml('./infra/development/kubernetes/app-config.yaml')
 
 ### End of K8s Config ###
 
@@ -19,18 +19,50 @@ k8s_yaml('./infra/development/kubernetes/secrets.yaml')
 ### Postgresql start ###
 
 k8s_yaml('./infra/development/kubernetes/pg.yaml')
-k8s_resource('postgres', port_forwards=['5432'], labels='tooling')
+k8s_resource('postgres', port_forwards=['15432:5432'], labels='tooling')
 
 ### Postgresql end ###
 
+# ### Migration Job Start ###
+
+k8s_yaml('./infra/development/kubernetes/identity-migrate-job.yaml')
+
+k8s_resource(
+  'identity-db-migrate',
+  resource_deps=['postgres', 'identity-service-compile'],
+  labels='migrations'
+)
+
+docker_build(
+  'routepulse/identity-migrate',
+  '.',
+  dockerfile='./infra/development/docker/identity-migrate.Dockerfile',
+  only=[
+    './services/identity-service/internal/migrate/migrations',
+    # './tools/migrate',
+  ],
+)
+
+
+# ### Migration Job End ###
+
 ### API Gateway ###
 
-gateway_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/api-gateway ./services/api-gateway/cmd'
+gateway_compile_cmd = '''
+cd services/api-gateway && \
+swag init \
+  -g main.go \
+  -d cmd \
+  -o docs && \
+cd ../.. && \
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+  go build -o build/api-gateway ./services/api-gateway/cmd
+'''
 
 local_resource(
   'api-gateway-compile',
   gateway_compile_cmd,
-  deps=['./services/api-gateway', './shared'], labels="compiles")
+  deps=['./services/api-gateway', './shared'], ignore=['./services/api-gateway/docs'], labels="compiles")
 
 
 docker_build_with_restart(
