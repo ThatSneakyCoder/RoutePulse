@@ -13,6 +13,9 @@ func (p *CreateUserRequest) toProto() *pb.RegisterUserRequest {
 	}
 }
 
-// func (p *LoginUserRequest) toProto() *pb.LoginRequest {
-// 	return &pb.
-// }
+func (p *LoginUserRequest) toProto() *pb.LoginRequest {
+	return &pb.LoginRequest{
+		Email:    p.Email,
+		Password: p.Password,
+	}
+}

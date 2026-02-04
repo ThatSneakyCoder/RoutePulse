@@ -8,9 +8,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/domain"
+	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/auth"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/db"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/grpc"
-	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/repository"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/service"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
 	grpcserver "google.golang.org/grpc"
@@ -72,9 +73,16 @@ func main() {
 
 	log.Info("database connection established")
 
+	JWTAuthenticator := auth.NewJWTAuthenticator(
+		cfg.jwtAuthConfig.tokenConfig.secret,
+		cfg.jwtAuthConfig.tokenConfig.aud,
+		cfg.jwtAuthConfig.tokenConfig.iss,
+		cfg.jwtAuthConfig.tokenConfig.exp,
+	)
+
 	// Wiring
-	userRepo := repository.NewUserStore(dbConn, log)
-	identitySvc := service.NewIdentityService(userRepo, log)
+	userRepo := domain.NewUserStore(dbConn, log)
+	identitySvc := service.NewIdentityService(userRepo, log, JWTAuthenticator)
 
 	grpcServer := grpcserver.NewServer()
 	grpc.NewGRPCHandler(grpcServer, identitySvc, log)
