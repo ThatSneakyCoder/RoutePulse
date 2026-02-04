@@ -1,4 +1,4 @@
-package repository
+package domain
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/domain"
 	"github.com/lib/pq"
 	"go.uber.org/zap"
 )
@@ -30,25 +29,25 @@ func NewUserStore(db *sql.DB, log *zap.SugaredLogger) *UserStore {
 	}
 }
 
-func (s *UserStore) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
+func (s *UserStore) Create(ctx context.Context, user *User) (*User, error) {
 	const query = `
-		INSERT INTO users (
-			id,
-			email,
-			password_hash,
-			first_name,
-			last_name,
-			created_at,
-			updated_at
-		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
-		RETURNING
-			id,
-			email,
-			first_name,
-			last_name,
-			created_at,
-			updated_at
+	INSERT INTO users (
+		id,
+		email,
+		first_name,
+		last_name,
+		password_hash,
+		created_at,
+		updated_at
+	)
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	RETURNING
+		id,
+		email,
+		first_name,
+		last_name,
+		created_at,
+		updated_at
 	`
 
 	s.log.Debugw("creating user in database",
@@ -62,13 +61,13 @@ func (s *UserStore) Create(ctx context.Context, user *domain.User) (*domain.User
 	err := s.db.QueryRowContext(
 		ctx,
 		query,
-		user.ID,
-		user.Email,
-		user.Password,
-		user.FirstName,
-		user.LastName,
-		user.CreatedAt,
-		user.UpdatedAt,
+		user.ID,            
+		user.Email,         
+		user.FirstName,     
+		user.LastName,      
+		user.Password.hash, 
+		user.CreatedAt,     
+		user.UpdatedAt,     
 	).Scan(
 		&user.ID,
 		&user.Email,
@@ -104,6 +103,64 @@ func (s *UserStore) Create(ctx context.Context, user *domain.User) (*domain.User
 	)
 
 	return user, nil
+}
+
+func (s *UserStore) GetByEmail(
+	ctx context.Context,
+	email string,
+) (*User, error) {
+
+	s.log.Debugw("fetching user by email", "email", email)
+
+	const query = `
+		SELECT
+			id,
+			email,
+			password_hash,
+			first_name,
+			last_name,
+			created_at,
+			updated_at
+		FROM users
+		WHERE email = $1
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	var user User
+	var hash []byte
+
+	err := s.db.QueryRowContext(ctx, query, email).Scan(
+		&user.ID,
+		&user.Email,
+		&hash,
+		&user.FirstName,
+		&user.LastName,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+
+	user.Password.SetHash(hash)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			s.log.Debugw("user not found", "email", email)
+			return nil, ErrNotFound
+		}
+
+		s.log.Errorw("failed to fetch user by email",
+			"email", email,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	s.log.Debugw("user fetched successfully",
+		"user_id", user.ID,
+	)
+
+	return &user, nil
 }
 
 func translatePostgresError(err error) error {

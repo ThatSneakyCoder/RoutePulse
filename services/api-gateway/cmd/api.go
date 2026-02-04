@@ -63,7 +63,7 @@ func (app *application) mount() http.Handler {
 		r.Route("/authentication", func(r chi.Router) {
 			r.Post("/registerUser", app.createUserHandler)
 			// r.Post("/verifyUserOtp", app.verifyUserOtpHandler)
-			// r.Post("/login", app.createJwtTokenHandler)
+			r.Post("/login", app.loginUserHandler)
 			// r.Post("/forgot-password", app.forgotPasswordHandler)
 			// r.Put("/reset-password", app.resetPasswordHandler)
 		})

@@ -32,6 +32,26 @@ definitions:
       version:
         type: string
     type: object
+  main.LoginUserRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      password:
+        maxLength: 72
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  main.LoginUserResponse:
+    properties:
+      access_token:
+        type: string
+      expires_at:
+        type: integer
+    type: object
   main.UserResponse:
     properties:
       created_at:
@@ -63,6 +83,46 @@ info:
   title: Fleet Management System API
   version: "1.0"
 paths:
+  /authentication/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a JWT access token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.LoginUserResponse'
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - Authentication
   /authentication/registerUser:
     post:
       consumes:

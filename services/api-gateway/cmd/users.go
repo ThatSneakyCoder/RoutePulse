@@ -42,48 +42,61 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 	writeJSON(w, http.StatusCreated, resp)
 }
 
-// func (app *application) createJwtTokenHandler(w http.ResponseWriter, r *http.Request) {
-// 	var payload CreateUserTokenPayload
-// 	if err := readJSON(w, r, &payload); err != nil {
-// 		app.log.Errorw("failed to read login JSON", "error", err)
-// 		app.badRequestResponse(w, r, err)
-// 		return
-// 	}
+// loginUserHandler godoc
+//
+//	@Summary		Login user
+//	@Description	Authenticates a user and returns a JWT access token
+//	@Tags			Authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		LoginUserRequest	true	"Login credentials"
+//	@Success		201		{object}	LoginUserResponse
+//	@Failure		400		{object}	map[string]string	"Validation error"
+//	@Failure		401		{object}	map[string]string	"Invalid credentials"
+//	@Failure		500		{object}	map[string]string	"Internal server error"
+//	@Router			/authentication/login [post]
+func (app *application) loginUserHandler(w http.ResponseWriter, r *http.Request) {
+	var payload LoginUserRequest
+	if err := readJSON(w, r, &payload); err != nil {
+		app.log.Errorw("failed to read login JSON", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
 
-// 	if err := Validate.Struct(payload); err != nil {
-// 		app.log.Errorw("login payload validation failed", "error", err)
-// 		app.badRequestResponse(w, r, err)
-// 		return
-// 	}
+	if err := Validate.Struct(payload); err != nil {
+		app.log.Errorw("login payload validation failed", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
 
-// 	app.log.Infow("login request received", "email", payload.Email)
+	app.log.Infow("login request received", "email", payload.Email)
 
-// 	resp, err := app.identityClient.Client.Login(
-// 		r.Context(),
-// 		payload.toProto(),
-// 	)
-// 	if err != nil {
-// 		app.log.Errorw("identity service login failed",
-// 			"email", payload.Email,
-// 			"err", err,
-// 		)
+	resp, err := app.identityClient.Client.Login(
+		r.Context(),
+		payload.toProto(),
+	)
+	if err != nil {
+		app.log.Errorw("identity service login failed",
+			"email", payload.Email,
+			"err", err,
+		)
 
-// 		// Map identity-service errors → HTTP errors
-// 		switch {
-// 		case isUnauthorized(err):
-// 			app.unauthorizedErrorResponse(w, r, err)
-// 		default:
-// 			app.internalServerError(w, r, err)
-// 		}
-// 		return
-// 	}
+		// Map identity-service errors → HTTP errors
+		switch {
+		case isUnauthorized(err):
+			app.unauthorizedErrorResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
 
-// 	app.log.Infow("jwt issued successfully",
-// 		"user_email", payload.Email,
-// 	)
+	app.log.Infow("jwt issued successfully",
+		"user_email", payload.Email,
+	)
 
-// 	if err := app.jsonResponse(w, http.StatusCreated, resp); err != nil {
-// 		app.log.Errorw("failed to write login response", "err", err)
-// 		app.internalServerError(w, r, err)
-// 	}
-// }
+	if err := app.jsonResponse(w, http.StatusCreated, resp); err != nil {
+		app.log.Errorw("failed to write login response", "err", err)
+		app.internalServerError(w, r, err)
+	}
+}

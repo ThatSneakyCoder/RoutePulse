@@ -37,10 +37,9 @@ func (h *gRPCHandler) RegisterUser(
 		FirstName: req.Firstname,
 		LastName:  req.Lastname,
 		Email:     req.Email,
-		Password:  req.Password,
 	}
 
-	created, err := h.service.RegisterUser(ctx, user)
+	created, err := h.service.RegisterUser(ctx, user, req.Password)
 	if err != nil {
 		h.log.Errorw("failed to register user", "err", err)
 		return nil, err
@@ -53,27 +52,22 @@ func (h *gRPCHandler) RegisterUser(
 	}, nil
 }
 
-// func (h *gRPCHandler) GetUserByEmail(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-// 	h.log.Infow("GetUserByEmail called",
-// 		"email", req.Email,
-// 	)
+func (h *gRPCHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	h.log.Infow("GetUserByEmail called",
+		"email", req.Email,
+	)
 
-// 	user := &domain.User{
-// 		Email:    req.Email,
-// 		Password: req.Password,
-// 	}
+	user, token, err := h.service.Login(ctx, req.Email, req.Password)
+	if err != nil {
+		h.log.Warnw("login failed",
+			"email", req.Email,
+			"err", err,
+		)
+		return nil, err // already a gRPC status error
+	}
 
-// 	retrievedUser, err := h.service.GetUserByEmail(ctx, user)
-// 	if err != nil {
-// 		h.log.Errorw("failed to get user by email", "err", err)
-// 		return nil, err
-// 	}
-
-// 	h.log.Infow("obatined user successfully", "user_id", retrievedUser.ID)
-
-// 	// return &pb.LoginResponse{
-		
-// 	// }
-
-// 	return nil
-// }
+	h.log.Infow("login successful",
+		"user_id", user.ID,
+	)
+	return LoginResponseToProto(token), nil
+}

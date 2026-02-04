@@ -25,6 +25,7 @@ type LoginUserRequest struct {
 	Password string `json:"password" validate:"required,min=3,max=72"`
 }
 
-type LoginResponse struct {
-	
+type LoginUserResponse struct {
+	AccessToken string `json:"access_token"`
+	ExpiresAt   int64  `json:"expires_at"`
 }
