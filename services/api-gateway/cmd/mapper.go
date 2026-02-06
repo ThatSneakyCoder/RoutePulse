@@ -19,3 +19,16 @@ func (p *LoginUserRequest) toProto() *pb.LoginRequest {
 		Password: p.Password,
 	}
 }
+
+func (p *ValidateTokenRequest) toProto() *pb.ValidateTokenRequest {
+	return &pb.ValidateTokenRequest{
+		AccessToken: p.AccessToken,
+	}
+}
+
+func (p *VerifyUserEmailRequest) toProto() *pb.VerifyUserEmailRequest {
+	return &pb.VerifyUserEmailRequest{
+		Email: p.Email,
+		Token: p.Token,
+	}
+}

@@ -11,7 +11,6 @@ package identity
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,11 +22,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IdentityService_RegisterUser_FullMethodName   = "/identity.IdentityService/RegisterUser"
-	IdentityService_Login_FullMethodName          = "/identity.IdentityService/Login"
-	IdentityService_GetUser_FullMethodName        = "/identity.IdentityService/GetUser"
-	IdentityService_ValidateToken_FullMethodName  = "/identity.IdentityService/ValidateToken"
-	IdentityService_DeactivateUser_FullMethodName = "/identity.IdentityService/DeactivateUser"
+	IdentityService_RegisterUser_FullMethodName    = "/identity.IdentityService/RegisterUser"
+	IdentityService_Login_FullMethodName           = "/identity.IdentityService/Login"
+	IdentityService_GetUser_FullMethodName         = "/identity.IdentityService/GetUser"
+	IdentityService_ValidateToken_FullMethodName   = "/identity.IdentityService/ValidateToken"
+	IdentityService_DeactivateUser_FullMethodName  = "/identity.IdentityService/DeactivateUser"
+	IdentityService_VerifyUserEmail_FullMethodName = "/identity.IdentityService/VerifyUserEmail"
 )
 
 // IdentityServiceClient is the client API for IdentityService service.
@@ -47,6 +47,8 @@ type IdentityServiceClient interface {
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
 	// DeactivateUser marks a user account as inactive, preventing further logins.
 	DeactivateUser(ctx context.Context, in *DeactivateUserRequest, opts ...grpc.CallOption) (*DeactivateUserResponse, error)
+	// Verify user email using 6-digit OTP
+	VerifyUserEmail(ctx context.Context, in *VerifyUserEmailRequest, opts ...grpc.CallOption) (*VerifyUserEmailResponse, error)
 }
 
 type identityServiceClient struct {
@@ -107,6 +109,16 @@ func (c *identityServiceClient) DeactivateUser(ctx context.Context, in *Deactiva
 	return out, nil
 }
 
+func (c *identityServiceClient) VerifyUserEmail(ctx context.Context, in *VerifyUserEmailRequest, opts ...grpc.CallOption) (*VerifyUserEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyUserEmailResponse)
+	err := c.cc.Invoke(ctx, IdentityService_VerifyUserEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IdentityServiceServer is the server API for IdentityService service.
 // All implementations must embed UnimplementedIdentityServiceServer
 // for forward compatibility.
@@ -124,6 +136,8 @@ type IdentityServiceServer interface {
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
 	// DeactivateUser marks a user account as inactive, preventing further logins.
 	DeactivateUser(context.Context, *DeactivateUserRequest) (*DeactivateUserResponse, error)
+	// Verify user email using 6-digit OTP
+	VerifyUserEmail(context.Context, *VerifyUserEmailRequest) (*VerifyUserEmailResponse, error)
 	mustEmbedUnimplementedIdentityServiceServer()
 }
 
@@ -148,6 +162,9 @@ func (UnimplementedIdentityServiceServer) ValidateToken(context.Context, *Valida
 }
 func (UnimplementedIdentityServiceServer) DeactivateUser(context.Context, *DeactivateUserRequest) (*DeactivateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeactivateUser not implemented")
+}
+func (UnimplementedIdentityServiceServer) VerifyUserEmail(context.Context, *VerifyUserEmailRequest) (*VerifyUserEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyUserEmail not implemented")
 }
 func (UnimplementedIdentityServiceServer) mustEmbedUnimplementedIdentityServiceServer() {}
 func (UnimplementedIdentityServiceServer) testEmbeddedByValue()                         {}
@@ -260,6 +277,24 @@ func _IdentityService_DeactivateUser_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IdentityService_VerifyUserEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyUserEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServiceServer).VerifyUserEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityService_VerifyUserEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServiceServer).VerifyUserEmail(ctx, req.(*VerifyUserEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IdentityService_ServiceDesc is the grpc.ServiceDesc for IdentityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -286,6 +321,10 @@ var IdentityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeactivateUser",
 			Handler:    _IdentityService_DeactivateUser_Handler,
+		},
+		{
+			MethodName: "VerifyUserEmail",
+			Handler:    _IdentityService_VerifyUserEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

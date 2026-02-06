@@ -12,6 +12,8 @@ func UserToProto(user *domain.User) *pb.User {
 		UserId:    user.ID.String(),
 		Firstname: user.FirstName,
 		Lastname:  user.LastName,
+		IsActive: user.IsActive,
+		IsVerified: user.IsVerified,
 		Email:     user.Email,
 		CreatedAt: timestamppb.New(user.CreatedAt),
 	}

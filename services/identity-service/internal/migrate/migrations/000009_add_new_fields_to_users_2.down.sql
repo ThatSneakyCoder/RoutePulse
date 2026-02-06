@@ -1,0 +1,4 @@
+ALTER TABLE users
+DROP COLUMN IF EXISTS is_active,
+DROP COLUMN IF EXISTS is_verified,
+DROP COLUMN IF EXISTS deleted_at;

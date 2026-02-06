@@ -52,6 +52,30 @@ func (h *gRPCHandler) RegisterUser(
 	}, nil
 }
 
+func (h *gRPCHandler) VerifyUserEmail(ctx context.Context, req *pb.VerifyUserEmailRequest) (*pb.VerifyUserEmailResponse, error) {
+	h.log.Infow("VerifyUserEmail called",
+		"email", req.Email,
+	)
+
+	userID, verified, err := h.service.VerifyUserEmail(
+		ctx,
+		req.Email,
+		req.Token,
+	)
+	if err != nil {
+		h.log.Warnw("VerifyUserEmail failed",
+			"email", req.Email,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return &pb.VerifyUserEmailResponse{
+		UserId:     userID,
+		IsVerified: verified,
+	}, nil
+}
+
 func (h *gRPCHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	h.log.Infow("GetUserByEmail called",
 		"email", req.Email,
@@ -70,4 +94,29 @@ func (h *gRPCHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 		"user_id", user.ID,
 	)
 	return LoginResponseToProto(token), nil
+}
+
+func (h *gRPCHandler) ValidateToken(
+	ctx context.Context,
+	req *pb.ValidateTokenRequest,
+) (*pb.ValidateTokenResponse, error) {
+
+	h.log.Infow("ValidateTokenAndGetUser called")
+
+	user, err := h.service.ValidateJWTTokenAndGetUser(ctx, req.AccessToken)
+	if err != nil {
+		h.log.Errorw("token validation failed",
+			"err", err,
+		)
+		return nil, err
+	}
+
+	h.log.Infow("token validated successfully",
+		"user_id", user.ID,
+	)
+
+	return &pb.ValidateTokenResponse{
+		Valid: true,
+		User:  UserToProto(user),
+	}, nil
 }

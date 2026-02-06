@@ -21,17 +21,17 @@ spec:
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
-                name: pg-credentials
+                name: routepulse-credentials
                 key: user
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: pg-credentials
+                name: routepulse-credentials
                 key: password
           - name: POSTGRES_DB
             valueFrom:
               secretKeyRef:
-                name: pg-credentials
+                name: routepulse-credentials
                 key: db
         ports:
         - containerPort: 5432

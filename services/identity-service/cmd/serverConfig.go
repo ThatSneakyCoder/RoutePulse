@@ -25,6 +25,15 @@ type config struct {
 			aud    string
 		}
 	}
+
+	brevoMailConfig struct {
+		host      string
+		port      int
+		username  string
+		apiKey    string
+		fromEmail string
+		exp       time.Time
+	}
 }
 
 func loadConfig() config {
@@ -50,6 +59,13 @@ func loadConfig() config {
 	cfg.jwtAuthConfig.tokenConfig.exp = time.Hour * 24 * 3
 	cfg.jwtAuthConfig.tokenConfig.iss = env.GetString("AUTH_TOKEN_ISS", "routepulse.identity")
 	cfg.jwtAuthConfig.tokenConfig.aud = env.GetString("AUTH_TOKEN_AUD", "routepulse.api")
+
+	// mail config
+	cfg.brevoMailConfig.host = env.GetString("BREVO_SMTP_HOST", "smtp-relay.brevo.com")
+	cfg.brevoMailConfig.port = env.GetInt("BREVO_SMTP_PORT", 587)
+	cfg.brevoMailConfig.username = env.GetString("BREVO_SMTP_FROM", "")
+	cfg.brevoMailConfig.apiKey = env.GetString("BREVO_SMTP_KEY", "")
+	cfg.brevoMailConfig.fromEmail = env.GetString("", "shubh22.srivastava@gmail.com")
 
 	return cfg
 }

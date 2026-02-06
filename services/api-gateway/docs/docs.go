@@ -85,7 +85,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/authentication/registerUser": {
+        "/authentication/register-user": {
             "post": {
                 "description": "Creates a new user by delegating to the identity service",
                 "consumes": [
@@ -137,6 +137,76 @@ const docTemplate = `{
                 }
             }
         },
+        "/authentication/verify-email": {
+            "post": {
+                "description": "Verifies a user's email address using a 6-digit verification token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify user email",
+                "parameters": [
+                    {
+                        "description": "Email verification payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.VerifyUserEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.VerifyUserEmailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired verification token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Checks API health and connectivity with identity service",
@@ -165,12 +235,56 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns the authenticated user's profile",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.ValidateTokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "main.CreateUserRequest": {
             "type": "object",
             "required": [
+                "email",
                 "firstname",
                 "lastname",
                 "password"
@@ -267,10 +381,49 @@ const docTemplate = `{
                     "example": "550e8400-e29b-41d4-a716-446655440000"
                 }
             }
+        },
+        "main.ValidateTokenResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/main.UserResponse"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "main.VerifyUserEmailRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "verify_token"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "verify_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.VerifyUserEmailResponse": {
+            "type": "object",
+            "properties": {
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {
-        "ApiKeyAuth": {
+        "BearerAuth": {
+            "description": "Enter the token with the ` + "`" + `Bearer ` + "`" + ` prefix, e.g. ` + "`" + `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` + "`" + `",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

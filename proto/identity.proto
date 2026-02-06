@@ -26,6 +26,21 @@ service IdentityService {
 
   // DeactivateUser marks a user account as inactive, preventing further logins.
   rpc DeactivateUser (DeactivateUserRequest) returns (DeactivateUserResponse);
+
+  // Verify user email using 6-digit OTP
+  rpc VerifyUserEmail (VerifyUserEmailRequest) returns (VerifyUserEmailResponse);
+}
+
+// request params to verify email
+message VerifyUserEmailRequest {
+  string email = 1;
+  string token = 2;
+}
+
+// response from server for verify email
+message VerifyUserEmailResponse {
+  string user_id = 1;
+  bool is_verified = 2;
 }
 
 // Request parameters for creating a new user.
@@ -45,8 +60,11 @@ message User {
   string user_id = 1;
   string firstname = 2;
   string lastname = 3;
-  string email = 4;
-  google.protobuf.Timestamp created_at = 5;
+  bool is_verified = 4;
+  bool is_active = 5;
+  string email = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 // The profile data of the newly created user.
@@ -98,10 +116,8 @@ message ValidateTokenRequest {
 message ValidateTokenResponse {
   // True if the token is valid and not expired.
   bool valid = 1;
-  // The user ID encoded within the token.
-  string user_id = 2;
-  // Timestamp when the token expires (Unix seconds).
-  int64 expires_at = 3;
+  // The user taken out from the user_id encoded within the token.
+  User user = 2;
 }
 
 // Request to deactivate a specific user account.

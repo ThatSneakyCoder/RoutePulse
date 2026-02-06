@@ -61,13 +61,20 @@ func (app *application) mount() http.Handler {
 		r.Get("/health", app.healthCheckHandler)
 
 		r.Route("/authentication", func(r chi.Router) {
-			r.Post("/registerUser", app.createUserHandler)
-			// r.Post("/verifyUserOtp", app.verifyUserOtpHandler)
+			r.Post("/register-user", app.createUserHandler)
+			r.Post("/verify-email", app.verifyUserEmailHandler)
 			r.Post("/login", app.loginUserHandler)
 			// r.Post("/forgot-password", app.forgotPasswordHandler)
 			// r.Put("/reset-password", app.resetPasswordHandler)
 		})
 
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthTokenMiddleware)
+
+			r.Route("/user/me", func(r chi.Router) {
+				r.Get("/", app.getUserHandler)
+			})
+		})
 	})
 
 	return r

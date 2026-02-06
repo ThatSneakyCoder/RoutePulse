@@ -25,6 +25,26 @@ spec:
               memory: "128Mi"
               cpu: "125m"
           env:
+          - name: BREVO_SMTP_KEY
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-credentials
+                key: brevo-smtp-key
+          - name: BREVO_SMTP_FROM
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-credentials
+                key: brevo-from
+          - name: BREVO_SMTP_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: identity-config
+                key: BREVO_SMTP_HOST
+          - name: BREVO_SMTP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: identity-config
+                key: BREVO_SMTP_PORT
           - name: IDENTITY_SERVICE_ADDR
             valueFrom:
               configMapKeyRef:
@@ -38,17 +58,17 @@ spec:
           - name: POSTGRES_USER
             valueFrom:
               secretKeyRef:
-                name: pg-credentials
+                name: routepulse-credentials
                 key: user
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: pg-credentials
+                name: routepulse-credentials
                 key: password
           - name: POSTGRES_DB
             valueFrom:
               secretKeyRef:
-                name: pg-credentials
+                name: routepulse-credentials
                 key: db
 ---
 apiVersion: v1
