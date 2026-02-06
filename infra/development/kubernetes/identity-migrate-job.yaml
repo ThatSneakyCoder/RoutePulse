@@ -20,15 +20,15 @@ spec:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: routepulse-credentials
                   key: user
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: routepulse-credentials
                   key: password
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: routepulse-credentials
                   key: db

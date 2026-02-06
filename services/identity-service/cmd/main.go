@@ -12,6 +12,7 @@ import (
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/auth"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/db"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/grpc"
+	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/mailer"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/service"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
 	grpcserver "google.golang.org/grpc"
@@ -80,9 +81,18 @@ func main() {
 		cfg.jwtAuthConfig.tokenConfig.exp,
 	)
 
+	// setup mailing agent
+	brevoMailer := mailer.NewBrevoClient(
+		cfg.brevoMailConfig.host,
+		cfg.brevoMailConfig.port,
+		cfg.brevoMailConfig.username,
+		cfg.brevoMailConfig.apiKey,
+		cfg.brevoMailConfig.fromEmail,
+	)
+
 	// Wiring
 	userRepo := domain.NewUserStore(dbConn, log)
-	identitySvc := service.NewIdentityService(userRepo, log, JWTAuthenticator)
+	identitySvc := service.NewIdentityService(userRepo, log, JWTAuthenticator, brevoMailer)
 
 	grpcServer := grpcserver.NewServer()
 	grpc.NewGRPCHandler(grpcServer, identitySvc, log)

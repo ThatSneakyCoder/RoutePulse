@@ -1,9 +1,23 @@
 package main
 
+import "time"
+
+// this is for auth middleware to store authenticated user only. Not directly related to grpc
+type AuthenticatedUser struct {
+	ID         string    `json:"id"`
+	Email      string    `json:"email"`
+	FirstName  string    `json:"first_name"`
+	LastName   string    `json:"last_name"`
+	IsActive   bool      `json:"is_active"`
+	IsVerified bool      `json:"is_verified"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+}
+
 type CreateUserRequest struct {
 	FirstName string `json:"firstname" validate:"required,max=255"`
 	LastName  string `json:"lastname" validate:"required,max=255"`
-	Email     string `json:"email" validate:"max=255"`
+	Email     string `json:"email" validate:"required,email,max=255"`
 	Password  string `json:"password" validate:"required,min=3,max=72"`
 }
 
@@ -28,4 +42,27 @@ type LoginUserRequest struct {
 type LoginUserResponse struct {
 	AccessToken string `json:"access_token"`
 	ExpiresAt   int64  `json:"expires_at"`
+}
+
+type ValidateTokenRequest struct {
+	AccessToken string `json:"access_token"`
+}
+
+type ValidateTokenResponse struct {
+	Valid bool         `json:"valid"`
+	User  UserResponse `json:"user"`
+}
+
+type VerifyUserEmailRequest struct {
+	Email string `json:"email" validate:"required,email,max=255"`
+	Token string `json:"verify_token" validate:"required,len=6,numeric"`
+}
+
+type VerifyUserEmailResponse struct {
+	UserID     string `json:"user_id"`
+	IsVerified bool   `json:"is_verified"`
+}
+
+type ForgotPasswordPayload struct {
+	Email string `json:"email" validate:"required,email,max=255"`
 }
