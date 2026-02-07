@@ -64,8 +64,8 @@ func (app *application) mount() http.Handler {
 			r.Post("/register-user", app.createUserHandler)
 			r.Post("/verify-email", app.verifyUserEmailHandler)
 			r.Post("/login", app.loginUserHandler)
-			// r.Post("/forgot-password", app.forgotPasswordHandler)
-			// r.Put("/reset-password", app.resetPasswordHandler)
+			r.Post("/forgot-password", app.forgotPasswordHandler)
+			r.Put("/reset-password", app.resetPasswordHandler)
 		})
 
 		r.Group(func(r chi.Router) {

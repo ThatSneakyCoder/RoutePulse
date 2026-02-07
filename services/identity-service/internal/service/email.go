@@ -30,9 +30,9 @@ func validateEmail(email string) error {
 	return nil
 }
 
-// func sendVerifyTokenEmailToUser(email string) error {
-
-// }
+func generatePasswordResetToken() (string, error) {
+	return generateVerifyEmailToken()
+}
 
 func generateVerifyEmailToken() (string, error) {
 	const digits = "0123456789"
@@ -48,6 +48,10 @@ func generateVerifyEmailToken() (string, error) {
 	}
 
 	return string(b), nil
+}
+
+func hashPasswordResetToken(token string) string {
+	return hashVerifyEmailToken(token)
 }
 
 func hashVerifyEmailToken(token string) string {

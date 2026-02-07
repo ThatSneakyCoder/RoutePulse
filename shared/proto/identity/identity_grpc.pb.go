@@ -28,6 +28,8 @@ const (
 	IdentityService_ValidateToken_FullMethodName   = "/identity.IdentityService/ValidateToken"
 	IdentityService_DeactivateUser_FullMethodName  = "/identity.IdentityService/DeactivateUser"
 	IdentityService_VerifyUserEmail_FullMethodName = "/identity.IdentityService/VerifyUserEmail"
+	IdentityService_ForgotPassword_FullMethodName  = "/identity.IdentityService/ForgotPassword"
+	IdentityService_ResetPassword_FullMethodName   = "/identity.IdentityService/ResetPassword"
 )
 
 // IdentityServiceClient is the client API for IdentityService service.
@@ -49,6 +51,10 @@ type IdentityServiceClient interface {
 	DeactivateUser(ctx context.Context, in *DeactivateUserRequest, opts ...grpc.CallOption) (*DeactivateUserResponse, error)
 	// Verify user email using 6-digit OTP
 	VerifyUserEmail(ctx context.Context, in *VerifyUserEmailRequest, opts ...grpc.CallOption) (*VerifyUserEmailResponse, error)
+	// forgot password
+	ForgotPassword(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error)
+	// reset the password
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 }
 
 type identityServiceClient struct {
@@ -119,6 +125,26 @@ func (c *identityServiceClient) VerifyUserEmail(ctx context.Context, in *VerifyU
 	return out, nil
 }
 
+func (c *identityServiceClient) ForgotPassword(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ForgotPasswordResponse)
+	err := c.cc.Invoke(ctx, IdentityService_ForgotPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityServiceClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResetPasswordResponse)
+	err := c.cc.Invoke(ctx, IdentityService_ResetPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IdentityServiceServer is the server API for IdentityService service.
 // All implementations must embed UnimplementedIdentityServiceServer
 // for forward compatibility.
@@ -138,6 +164,10 @@ type IdentityServiceServer interface {
 	DeactivateUser(context.Context, *DeactivateUserRequest) (*DeactivateUserResponse, error)
 	// Verify user email using 6-digit OTP
 	VerifyUserEmail(context.Context, *VerifyUserEmailRequest) (*VerifyUserEmailResponse, error)
+	// forgot password
+	ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordResponse, error)
+	// reset the password
+	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	mustEmbedUnimplementedIdentityServiceServer()
 }
 
@@ -165,6 +195,12 @@ func (UnimplementedIdentityServiceServer) DeactivateUser(context.Context, *Deact
 }
 func (UnimplementedIdentityServiceServer) VerifyUserEmail(context.Context, *VerifyUserEmailRequest) (*VerifyUserEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyUserEmail not implemented")
+}
+func (UnimplementedIdentityServiceServer) ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ForgotPassword not implemented")
+}
+func (UnimplementedIdentityServiceServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }
 func (UnimplementedIdentityServiceServer) mustEmbedUnimplementedIdentityServiceServer() {}
 func (UnimplementedIdentityServiceServer) testEmbeddedByValue()                         {}
@@ -295,6 +331,42 @@ func _IdentityService_VerifyUserEmail_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IdentityService_ForgotPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ForgotPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServiceServer).ForgotPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityService_ForgotPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServiceServer).ForgotPassword(ctx, req.(*ForgotPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityService_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityServiceServer).ResetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityService_ResetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityServiceServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IdentityService_ServiceDesc is the grpc.ServiceDesc for IdentityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -325,6 +397,14 @@ var IdentityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyUserEmail",
 			Handler:    _IdentityService_VerifyUserEmail_Handler,
+		},
+		{
+			MethodName: "ForgotPassword",
+			Handler:    _IdentityService_ForgotPassword_Handler,
+		},
+		{
+			MethodName: "ResetPassword",
+			Handler:    _IdentityService_ResetPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
