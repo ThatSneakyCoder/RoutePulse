@@ -76,7 +76,7 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 //
 //	@Summary		Login user
 //	@Description	Authenticates a user and returns a JWT access token
-//	@Tags			Authentication
+//	@Tags			Users
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		LoginUserRequest	true	"Login credentials"
@@ -158,7 +158,7 @@ func getUserFromCtx(r *http.Request) (*AuthenticatedUser, bool) {
 //
 //	@Summary		Verify user email
 //	@Description	Verifies a user's email address using a 6-digit verification token
-//	@Tags			Authentication
+//	@Tags			Users
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		VerifyUserEmailRequest	true	"Email verification payload"
@@ -182,7 +182,7 @@ func (app *application) verifyUserEmailHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	app.log.Infow("verifyEmailToken request received", "email", payload.Email, "token",payload.Token)
+	app.log.Infow("verifyEmailToken request received", "email", payload.Email, "token", payload.Token)
 
 	resp, err := app.identityClient.Client.VerifyUserEmail(r.Context(), payload.toProto())
 	if err != nil {
@@ -199,6 +199,92 @@ func (app *application) verifyUserEmailHandler(w http.ResponseWriter, r *http.Re
 		"userID", resp.UserId,
 		"isVerified", resp.IsVerified,
 	)
+
+	writeJSON(w, http.StatusOK, resp)
+}
+
+// forgotPasswordHandler godoc
+//
+//	@Summary		Forgot password
+//	@Description	Initiates password reset by sending a reset token to the user's email
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		ForgotPasswordRequest	true	"Forgot password payload"
+//	@Success		200		{object}	map[string]bool	"Password reset email sent"
+//	@Failure		400		{object}	map[string]string	"Validation error"
+//	@Failure		500		{object}	map[string]string	"Internal server error"
+//	@Router			/authentication/forgot-password [post]
+func (app *application) forgotPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	var payload ForgotPasswordRequest
+	if err := readJSON(w, r, &payload); err != nil {
+		app.log.Errorw("failed to read forgotPassword JSON", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	if err := Validate.Struct(payload); err != nil {
+		app.log.Errorw("forgotPassword payload validation failed", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	resp, err := app.identityClient.Client.ForgotPassword(r.Context(), payload.toProto())
+	if err != nil {
+		app.log.Errorw("error in calling identity service forgotpassword handler from api gateway",
+			"email", payload.Email,
+			"err", err,
+		)
+
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	app.log.Infow("forgotPassword request received", "email", payload.Email)
+
+	writeJSON(w, http.StatusOK, resp)
+}
+
+// resetPasswordHandler godoc
+//
+//	@Summary		Reset password
+//	@Description	Resets a user's password using a valid password reset token
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		ResetPasswordRequest	true	"Reset password payload"
+//	@Success		200		{object}	map[string]bool	"Password reset successful"
+//	@Failure		400		{object}	map[string]string	"Validation error"
+//	@Failure		401		{object}	map[string]string	"Invalid or expired reset token"
+//	@Failure		404		{object}	map[string]string	"User not found"
+//	@Failure		500		{object}	map[string]string	"Internal server error"
+//	@Router			/authentication/reset-password [put]
+func (app *application) resetPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	var payload ResetPasswordRequest
+	if err := readJSON(w, r, &payload); err != nil {
+		app.log.Errorw("failed to read resetPassword JSON", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	if err := Validate.Struct(payload); err != nil {
+		app.log.Errorw("resetPassword payload validation failed", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	resp, err := app.identityClient.Client.ResetPassword(r.Context(), payload.toProto())
+	if err != nil {
+		app.log.Errorw("error in calling identity service resetpassword handler from api gateway",
+			"email", payload.Email,
+			"err", err,
+		)
+
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	app.log.Infow("resetPassword request received", "email", payload.Email)
 
 	writeJSON(w, http.StatusOK, resp)
 }

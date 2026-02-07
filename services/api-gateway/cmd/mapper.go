@@ -32,3 +32,17 @@ func (p *VerifyUserEmailRequest) toProto() *pb.VerifyUserEmailRequest {
 		Token: p.Token,
 	}
 }
+
+func (p *ForgotPasswordRequest) toProto() *pb.ForgotPasswordRequest {
+	return &pb.ForgotPasswordRequest{
+		Email: p.Email,
+	}
+}
+
+func (p *ResetPasswordRequest) toProto() *pb.ResetPasswordRequest {
+	return &pb.ResetPasswordRequest{
+		Email: p.Email,
+		Token: p.Token,
+		NewPassword: p.NewPassword,
+	}
+}

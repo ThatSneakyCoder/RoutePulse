@@ -63,6 +63,20 @@ type VerifyUserEmailResponse struct {
 	IsVerified bool   `json:"is_verified"`
 }
 
-type ForgotPasswordPayload struct {
+type ForgotPasswordRequest struct {
 	Email string `json:"email" validate:"required,email,max=255"`
+}
+
+type ForgotPasswordResponse struct {
+	Success bool `json:"success"`
+}
+
+type ResetPasswordRequest struct {
+	Email       string `json:"email" validate:"required,email,max=255"`
+	Token       string `json:"token" validate:"required,len=6,numeric"`
+	NewPassword string `json:"new_password" validate:"required,min=8,max=72"`
+}
+
+type ResetPasswordResponse struct {
+	Success bool `json:"success"`
 }

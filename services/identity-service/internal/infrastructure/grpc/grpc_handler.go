@@ -120,3 +120,60 @@ func (h *gRPCHandler) ValidateToken(
 		User:  UserToProto(user),
 	}, nil
 }
+
+func (h *gRPCHandler) ForgotPassword(
+	ctx context.Context,
+	req *pb.ForgotPasswordRequest,
+) (*pb.ForgotPasswordResponse, error) {
+
+	h.log.Infow("ForgotPassword called",
+		"email", req.Email,
+	)
+
+	if err := h.service.ForgotPassword(ctx, req.Email); err != nil {
+		h.log.Errorw("forgot password failed",
+			"email", req.Email,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	h.log.Infow("forgot password processed successfully",
+		"email", req.Email,
+	)
+
+	return &pb.ForgotPasswordResponse{
+		Success: true,
+	}, nil
+}
+
+func (h *gRPCHandler) ResetPassword(
+	ctx context.Context,
+	req *pb.ResetPasswordRequest,
+) (*pb.ResetPasswordResponse, error) {
+
+	h.log.Infow("ResetPassword called",
+		"email", req.Email,
+	)
+
+	if err := h.service.ResetPassword(
+		ctx,
+		req.Email,
+		req.Token,
+		req.NewPassword,
+	); err != nil {
+		h.log.Warnw("reset password failed",
+			"email", req.Email,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	h.log.Infow("password reset successful",
+		"email", req.Email,
+	)
+
+	return &pb.ResetPasswordResponse{
+		Success: true,
+	}, nil
+}

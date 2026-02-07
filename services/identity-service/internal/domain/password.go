@@ -2,11 +2,21 @@ package domain
 
 import (
 	"errors"
+	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var ErrPasswordTooWeak = errors.New("password does not meet requirements")
+
+type PasswordReset struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	TokenHash string
+	ExpiresAt time.Time
+	CreatedAt time.Time
+}
 
 type password struct {
 	text *string

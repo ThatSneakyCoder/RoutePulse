@@ -26,6 +26,14 @@ definitions:
       user:
         $ref: '#/definitions/main.UserResponse'
     type: object
+  main.ForgotPasswordRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+    required:
+    - email
+    type: object
   main.HealthCheckResponse:
     properties:
       status:
@@ -52,6 +60,22 @@ definitions:
         type: string
       expires_at:
         type: integer
+    type: object
+  main.ResetPasswordRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      new_password:
+        maxLength: 72
+        minLength: 8
+        type: string
+      token:
+        type: string
+    required:
+    - email
+    - new_password
+    - token
     type: object
   main.UserResponse:
     properties:
@@ -109,6 +133,43 @@ info:
   title: Fleet Management System API
   version: "1.0"
 paths:
+  /authentication/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Initiates password reset by sending a reset token to the user's
+        email
+      parameters:
+      - description: Forgot password payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password reset email sent
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Forgot password
+      tags:
+      - Users
   /authentication/login:
     post:
       consumes:
@@ -148,7 +209,7 @@ paths:
             type: object
       summary: Login user
       tags:
-      - Authentication
+      - Users
   /authentication/register-user:
     post:
       consumes:
@@ -181,6 +242,54 @@ paths:
               type: string
             type: object
       summary: Create user
+      tags:
+      - Users
+  /authentication/reset-password:
+    put:
+      consumes:
+      - application/json
+      description: Resets a user's password using a valid password reset token
+      parameters:
+      - description: Reset password payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password reset successful
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid or expired reset token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Reset password
       tags:
       - Users
   /authentication/verify-email:
@@ -228,7 +337,7 @@ paths:
             type: object
       summary: Verify user email
       tags:
-      - Authentication
+      - Users
   /health:
     get:
       description: Checks API health and connectivity with identity service

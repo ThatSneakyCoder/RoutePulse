@@ -29,6 +29,34 @@ service IdentityService {
 
   // Verify user email using 6-digit OTP
   rpc VerifyUserEmail (VerifyUserEmailRequest) returns (VerifyUserEmailResponse);
+
+  // forgot password
+  rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse);
+
+  // reset the password
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+}
+
+// forgot password req
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+// forgot password resp
+message ForgotPasswordResponse {
+  bool success = 1;
+}
+
+// reset password req
+message ResetPasswordRequest {
+  string email = 1;
+  string token = 2;
+  string new_password = 3;
+}
+
+// reset password resp
+message ResetPasswordResponse {
+  bool success = 1;
 }
 
 // request params to verify email

@@ -82,6 +82,9 @@ func (s *IdentityService) RegisterUser(
 		ExpiresAt: &expiresAt,
 	}
 
+	// user is active by default
+	user.IsActive = true
+
 	created, err := s.repo.Create(ctx, user)
 	if err != nil {
 		s.log.Errorw("failed to persist user",
@@ -285,4 +288,107 @@ func (s *IdentityService) ValidateJWTTokenAndGetUser(
 	)
 
 	return user, nil
+}
+
+func (s *IdentityService) ForgotPassword(
+	ctx context.Context,
+	email string,
+) error {
+
+	s.log.Infow("forgot password requested", "email", email)
+
+	user, err := s.repo.GetByEmail(ctx, email)
+	if err != nil {
+		// prevent user enumeration
+		return nil
+	}
+
+	token, err := generatePasswordResetToken()
+	if err != nil {
+		return err
+	}
+
+	hashed := hashPasswordResetToken(token)
+	expiresAt := time.Now().UTC().Add(10 * time.Minute)
+
+	reset := &domain.PasswordReset{
+		ID:        uuid.New(),
+		UserID:    user.ID,
+		TokenHash: hashed,
+		ExpiresAt: expiresAt,
+	}
+
+	if err := s.repo.Upsert(ctx, reset); err != nil {
+		return err
+	}
+
+	data := struct {
+		Email     string
+		Code      string
+		ExpiresIn int
+		Year      int
+	}{
+		Email:     user.Email,
+		Code:      token,
+		ExpiresIn: 10,
+		Year:      time.Now().Year(),
+	}
+
+	if err := s.mailer.Send(
+		"password_reset.tmpl",
+		user.Email,
+		data,
+	); err != nil {
+		s.log.Errorw("failed to send reset password email", "err", err)
+	}
+
+	s.log.Infow("forgot password mail sent successfully", "email", email)
+
+	return nil
+}
+
+func (s *IdentityService) ResetPassword(
+	ctx context.Context,
+	email, token, newPassword string,
+) error {
+	s.log.Infow("reset password requested", "email", email, "token", token)
+
+	user, err := s.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return status.Error(codes.PermissionDenied, "invalid reset request")
+	}
+
+	reset, err := s.repo.GetByUserID(ctx, user.ID)
+	if err != nil {
+		return status.Error(codes.PermissionDenied, "no reset requested")
+	}
+
+	// If reset token has expired 10 minute mark
+	if reset.ExpiresAt.Before(time.Now().UTC()) {
+		_ = s.repo.DeleteByUserID(ctx, user.ID)
+		return status.Error(codes.PermissionDenied, "reset token expired")
+	}
+
+	// verify whether the token user sent in their request is the token that was the same token sent to them
+	hashed := hashPasswordResetToken(token)
+	if reset.TokenHash != hashed {
+		return status.Error(codes.PermissionDenied, "invalid reset token")
+	}
+
+	// set new password
+	if err := user.Password.Set(newPassword); err != nil {
+		return status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := s.repo.UpdatePassword(ctx, user); err != nil {
+		return err
+	}
+
+	_ = s.repo.DeleteByUserID(ctx, user.ID)
+
+	s.log.Infow("password reset was successful",
+		"user", user.Email,
+	)
+
+	return nil
 }

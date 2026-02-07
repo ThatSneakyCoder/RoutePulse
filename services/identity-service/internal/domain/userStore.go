@@ -327,6 +327,99 @@ func (s *UserStore) GetByID(
 	return &user, nil
 }
 
+func (s *UserStore) Upsert(
+	ctx context.Context,
+	reset *PasswordReset,
+) error {
+
+	query := `
+		INSERT INTO password_resets (
+			id, user_id, token_hash, expires_at
+		)
+		VALUES ($1, $2, $3, $4)
+		ON CONFLICT (user_id)
+		DO UPDATE SET
+			token_hash = EXCLUDED.token_hash,
+			expires_at = EXCLUDED.expires_at,
+			created_at = NOW()
+	`
+
+	_, err := s.db.ExecContext(
+		ctx,
+		query,
+		reset.ID,
+		reset.UserID,
+		reset.TokenHash,
+		reset.ExpiresAt,
+	)
+	return err
+}
+
+func (s *UserStore) GetByUserID(
+	ctx context.Context,
+	userID uuid.UUID,
+) (*PasswordReset, error) {
+
+	query := `
+		SELECT id, user_id, token_hash, expires_at, created_at
+		FROM password_resets
+		WHERE user_id = $1
+	`
+
+	var reset PasswordReset
+	err := s.db.QueryRowContext(ctx, query, userID).Scan(
+		&reset.ID,
+		&reset.UserID,
+		&reset.TokenHash,
+		&reset.ExpiresAt,
+		&reset.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &reset, nil
+}
+
+func (s *UserStore) DeleteByUserID(
+	ctx context.Context,
+	userID uuid.UUID,
+) error {
+	query := `
+		DELETE FROM password_resets WHERE user_id = $1
+	`
+
+	_, err := s.db.ExecContext(
+		ctx,
+		query,
+		userID,
+	)
+
+	return err
+}
+
+func (s *UserStore) UpdatePassword(
+	ctx context.Context,
+	user *User,
+) error {
+
+	query := `
+		UPDATE users
+		SET password_hash = $1,
+		    updated_at = NOW()
+		WHERE id = $2
+	`
+
+	_, err := s.db.ExecContext(
+		ctx,
+		query,
+		user.Password.hash,
+		user.ID,
+	)
+	
+	return err
+}
+
 func translatePostgresError(err error) error {
 	if err == nil {
 		return nil
