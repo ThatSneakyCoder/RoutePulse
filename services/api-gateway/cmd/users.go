@@ -206,7 +206,7 @@ func (app *application) verifyUserEmailHandler(w http.ResponseWriter, r *http.Re
 // forgotPasswordHandler godoc
 //
 //	@Summary		Forgot password
-//	@Description	Initiates password reset by sending a reset token to the user's email
+//	@Description	Initiates password reset by sending a reset token to the user email
 //	@Tags			Users
 //	@Accept			json
 //	@Produce		json
@@ -248,7 +248,7 @@ func (app *application) forgotPasswordHandler(w http.ResponseWriter, r *http.Req
 // resetPasswordHandler godoc
 //
 //	@Summary		Reset password
-//	@Description	Resets a user's password using a valid password reset token
+//	@Description	Resets a user password using a valid password reset token
 //	@Tags			Users
 //	@Accept			json
 //	@Produce		json

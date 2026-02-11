@@ -3,27 +3,65 @@ load('ext://restart_process', 'docker_build_with_restart')
 
 ### K8s Config ###
 
-# Uncomment to use secrets
-k8s_yaml('./infra/development/kubernetes/secrets.yaml')
-k8s_yaml('./infra/development/kubernetes/app-config.yaml')
+# SECRETS and CONFIGMAP
+k8s_yaml('./infra/development/kubernetes/secrets/secrets-identity.yaml')
+k8s_yaml('./infra/development/kubernetes/secrets/secrets-organization.yaml')
+k8s_yaml('./infra/development/kubernetes/secrets/secrets-rabbitmq.yaml')
+k8s_yaml('./infra/development/kubernetes/configmaps/configmap.yaml')
+k8s_yaml('./infra/development/kubernetes/configmaps/configmap-org.yaml')
 
 ### End of K8s Config ###
 
 ### RabbitMQ ###
 
-# k8s_yaml('./infra/development/k8s/rabbitmq-deployment.yaml')
-# k8s_resource('rabbitmq', port_forwards=['5672', '15672'], labels='tooling')
+k8s_yaml('./infra/development/kubernetes/rabbitmq/rabbitmq.yaml')
+k8s_resource('rabbitmq', port_forwards=['5672', '15672'], labels='tooling')
 
 ### rmq end ###
 
-### Postgresql start ###
+### Identity Postgresql start ###
 
 k8s_yaml('./infra/development/kubernetes/pg.yaml')
 k8s_resource('postgres', port_forwards=['15432:5432'], labels='tooling')
 
-### Postgresql end ###
+### Identity Postgresql end ###
 
-# ### Migration Job Start ###
+### Organization Postgresql start ###
+
+k8s_yaml('./infra/development/kubernetes/organization/postgres-organization.yaml')
+k8s_resource('postgres-org', port_forwards=['15433:5432'], labels='tooling')
+
+### Organization Postgresql end ###
+
+### clickhouse start ###
+
+k8s_yaml('./infra/development/kubernetes/clickhouse.yaml')
+k8s_resource('clickhouse', port_forwards=['18123:8123'], labels='tooling')
+
+### clickhouse end ###
+
+### organization service postgres Migration Job Start ###
+
+k8s_yaml('./infra/development/kubernetes/organization/organization-migrate-job.yaml')
+
+k8s_resource(
+  'organization-db-migrate',
+  resource_deps=['postgres-org', 'organization-service-compile'],
+  labels='migrations'
+)
+
+docker_build(
+  'routepulse/organization-migrate',
+  '.',
+  dockerfile='./infra/development/docker/organization-migrate.Dockerfile',
+  only=[
+    './services/organization-service/internal/migrate/migrations',
+  ],
+)
+
+### organization service postgres Migration Job End ###
+
+### identity service postgres Migration Job Start ###
 
 k8s_yaml('./infra/development/kubernetes/identity-migrate-job.yaml')
 
@@ -43,8 +81,28 @@ docker_build(
   ],
 )
 
+### identity service postgres Migration Job End ###
 
-# ### Migration Job End ###
+### clickhouse Migration Job Start ###
+
+k8s_yaml('./infra/development/kubernetes/analytics-migrate-job.yaml')
+
+k8s_resource(
+  'analytics-db-migrate',
+  resource_deps=['clickhouse', 'analytics-service-compile'],
+  labels='migrations'
+)
+
+docker_build(
+  'routepulse/analytics-migrate',
+  '.',
+  dockerfile='./infra/development/docker/analytics-migrate.Dockerfile',
+  only=[
+    './services/analytics-service/internal/migrate/migrations',
+  ],
+)
+
+### clickhouse Migration Job End ###
 
 ### API Gateway ###
 
@@ -124,82 +182,83 @@ k8s_resource(
 
 ### Identity Service end ###
 
+### Organization Service start ###
 
-### Trip Service ###
+identity_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/organization-service ./services/organization-service/cmd'
 
-# Uncomment once we have a trip service
+local_resource(
+  'organization-service-compile',
+  identity_compile_cmd,
+  deps=['./services/organization-service', './shared'], labels="compiles")
 
-# trip_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/trip-service ./services/trip-service/cmd/main.go'
-# if os.name == 'nt':
-#  trip_compile_cmd = './infra/development/docker/trip-build.bat'
 
-# local_resource(
-#   'trip-service-compile',
-#   trip_compile_cmd,
-#   deps=['./services/trip-service', './shared'], labels="compiles")
+docker_build_with_restart(
+  'routepulse/organization-service',
+  '.',
+  entrypoint=['/app/build/organization-service'],
+  dockerfile='./infra/development/docker/organization-service.Dockerfile',
+  only=[
+    './build/organization-service',
+    './shared',
+  ],
+  live_update=[
+    sync('./build', '/app/build'),
+    sync('./shared', '/app/shared'),
+  ],
+)
 
-# docker_build_with_restart(
-#   'ride-sharing/trip-service',
-#   '.',
-#   entrypoint=['/app/build/trip-service'],
-#   dockerfile='./infra/development/docker/trip-service.Dockerfile',
-#   only=[
-#     './build/trip-service',
-#     './shared',
-#   ],
-#   live_update=[
-#     sync('./build', '/app/build'),
-#     sync('./shared', '/app/shared'),
-#   ],
-# )
+k8s_yaml('./infra/development/kubernetes/organization/organization-service-deployment.yaml')
+k8s_resource(
+  'organization-service', 
+  port_forwards=9091,
+  resource_deps=['postgres-org', 'organization-service-compile'], labels="services"
+)
 
-# k8s_yaml('./infra/development/k8s/trip-service-deployment.yaml')
-# k8s_resource('trip-service', resource_deps=['trip-service-compile', 'rabbitmq'], labels="services")
+### Organization Service end ###
 
-# ### End of Trip Service ###
+### Analytics Service start ###
 
-# ### Driver Service ###
+identity_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/analytics-service ./services/analytics-service/cmd'
 
-# # Uncomment once we have a Driver service
+local_resource(
+  'analytics-service-compile',
+  identity_compile_cmd,
+  deps=['./services/analytics-service', './shared'], labels="compiles")
 
-# driver_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/driver-service ./services/driver-service'
-# if os.name == 'nt':
-#  driver_compile_cmd = './infra/development/docker/driver-build.bat'
 
-# local_resource(
-#   'driver-service-compile',
-#   driver_compile_cmd,
-#   deps=['./services/driver-service', './shared'], labels="compiles")
+docker_build_with_restart(
+  'routepulse/analytics-service',
+  '.',
+  entrypoint=['/app/build/analytics-service'],
+  dockerfile='./infra/development/docker/analytics-service.Dockerfile',
+  only=[
+    './build/analytics-service',
+    './shared',
+  ],
+  live_update=[
+    sync('./build', '/app/build'),
+    sync('./shared', '/app/shared'),
+  ],
+)
 
-# docker_build_with_restart(
-#   'ride-sharing/driver-service',
-#   '.',
-#   entrypoint=['/app/build/driver-service'],
-#   dockerfile='./infra/development/docker/driver-service.Dockerfile',
-#   only=[
-#     './build/driver-service',
-#     './shared',
-#   ],
-#   live_update=[
-#     sync('./build', '/app/build'),
-#     sync('./shared', '/app/shared'),
-#   ],
-# )
+k8s_yaml('./infra/development/kubernetes/analytics-service-deployment.yaml')
+k8s_resource(
+  'analytics-service', 
+  port_forwards=9096,
+  resource_deps=['clickhouse', 'analytics-service-compile'], labels="services"
+)
 
-# k8s_yaml('./infra/development/k8s/driver-service-deployment.yaml')
-# k8s_resource('driver-service', resource_deps=['driver-service-compile', 'rabbitmq'], labels="services")
+### Analytics Service end ###
 
-# ### End of driver Service ###
+### Web Frontend ###
 
-# ### Web Frontend ###
+docker_build(
+  'routepulse/web',
+  '.',
+  dockerfile='./infra/development/docker/web.Dockerfile',
+)
 
-# docker_build(
-#   'ride-sharing/web',
-#   '.',
-#   dockerfile='./infra/development/docker/web.Dockerfile',
-# )
+k8s_yaml('./infra/development/kubernetes/web-deployment.yaml')
+k8s_resource('web', port_forwards=5173, labels="frontend")
 
-# k8s_yaml('./infra/development/k8s/web-deployment.yaml')
-# k8s_resource('web', port_forwards=3000, labels="frontend")
-
-# ### End of Web Frontend ###
+### End of Web Frontend ###

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-service
+  template:
+    metadata:
+      labels:
+        app: analytics-service
+    spec:
+      containers:
+        - name: analytics-service
+          image: routepulse/analytics-service
+          ports:
+            - containerPort: 9096
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "125m"
+            limits:
+              memory: "128Mi"
+              cpu: "125m"
+          env:
+          - name: ANALYTICS_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: identity-config
+                key: ANALYTICS_SERVICE_ADDR
+          - name: ANALYTICS_SERVICE_PORT
+            valueFrom:
+              configMapKeyRef:  
+                name: identity-config
+                key: ANALYTICS_SERVICE_PORT
+          - name: CLICKHOUSE_HOST
+            valueFrom:
+              configMapKeyRef:  
+                name: identity-config
+                key: CLICKHOUSE_HOST
+          - name: CLICKHOUSE_PORT
+            valueFrom:
+              configMapKeyRef:  
+                name: identity-config
+                key: CLICKHOUSE_PORT
+          - name: CLICKHOUSE_DB
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-credentials
+                key: db-ch
+          - name: CLICKHOUSE_USER
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-credentials
+                key: user
+          - name: CLICKHOUSE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-credentials
+                key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analytics-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9096
+      targetPort: 9096
+  selector:
+    app: analytics-service

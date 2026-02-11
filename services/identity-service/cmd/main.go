@@ -11,10 +11,12 @@ import (
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/domain"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/auth"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/db"
+	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/mailer"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/service"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/rabbitmq"
 	grpcserver "google.golang.org/grpc"
 )
 
@@ -90,9 +92,19 @@ func main() {
 		cfg.brevoMailConfig.fromEmail,
 	)
 
+	// RabbitMQ connection
+	rabbitmq, err := rabbitmq.NewRabbitMQ("amqp://guest:guest@rabbitmq:5672/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rabbitmq.Close()
+
+	// Setup RabbitMQ publisher
+	publisher := events.NewIdentityEventPublisher(rabbitmq)
+
 	// Wiring
 	userRepo := domain.NewUserStore(dbConn, log)
-	identitySvc := service.NewIdentityService(userRepo, log, JWTAuthenticator, brevoMailer)
+	identitySvc := service.NewIdentityService(userRepo, log, JWTAuthenticator, brevoMailer, publisher)
 
 	grpcServer := grpcserver.NewServer()
 	grpc.NewGRPCHandler(grpcServer, identitySvc, log)
@@ -110,6 +122,6 @@ func main() {
 
 	<-ctx.Done()
 
-	log.Info("gracefully shutting down gRPC server")
+	log.Info("gracefully shutting down identity gRPC server")
 	grpcServer.GracefulStop()
 }

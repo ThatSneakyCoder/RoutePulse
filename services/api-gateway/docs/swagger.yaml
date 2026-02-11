@@ -1,5 +1,13 @@
 basePath: /v1
 definitions:
+  main.CreateOrganizationRequest:
+    properties:
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
+    type: object
   main.CreateUserRequest:
     properties:
       email:
@@ -41,6 +49,13 @@ definitions:
       version:
         type: string
     type: object
+  main.ListUserOrganizationsResponse:
+    properties:
+      organizations:
+        items:
+          $ref: '#/definitions/main.OrganizationResponse'
+        type: array
+    type: object
   main.LoginUserRequest:
     properties:
       email:
@@ -61,6 +76,21 @@ definitions:
       expires_at:
         type: integer
     type: object
+  main.OrganizationResponse:
+    properties:
+      created_at:
+        type: integer
+      is_active:
+        type: boolean
+      name:
+        type: string
+      organization_id:
+        type: string
+      owner_user_id:
+        type: string
+      updated_at:
+        type: integer
+    type: object
   main.ResetPasswordRequest:
     properties:
       email:
@@ -76,6 +106,11 @@ definitions:
     - email
     - new_password
     - token
+    type: object
+  main.TripsTodayResponse:
+    properties:
+      count:
+        type: integer
     type: object
   main.UserResponse:
     properties:
@@ -101,6 +136,11 @@ definitions:
         $ref: '#/definitions/main.UserResponse'
       valid:
         type: boolean
+    type: object
+  main.VehiclesInTransitResponse:
+    properties:
+      count:
+        type: integer
     type: object
   main.VerifyUserEmailRequest:
     properties:
@@ -133,12 +173,49 @@ info:
   title: Fleet Management System API
   version: "1.0"
 paths:
+  /analytics/trips-today:
+    get:
+      description: Returns the total number of trips completed today
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.TripsTodayResponse'
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get trips today
+      tags:
+      - Analytics
+  /analytics/vehicles-in-transit:
+    get:
+      description: Returns the number of vehicles currently in transit
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.VehiclesInTransitResponse'
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get vehicles in transit
+      tags:
+      - Analytics
   /authentication/forgot-password:
     post:
       consumes:
       - application/json
-      description: Initiates password reset by sending a reset token to the user's
-        email
+      description: Initiates password reset by sending a reset token to the user email
       parameters:
       - description: Forgot password payload
         in: body
@@ -248,7 +325,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Resets a user's password using a valid password reset token
+      description: Resets a user password using a valid password reset token
       parameters:
       - description: Reset password payload
         in: body
@@ -357,6 +434,74 @@ paths:
       summary: Health check
       tags:
       - Health
+  /organizations:
+    get:
+      description: Returns organizations the authenticated user belongs to
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListUserOrganizationsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List user organizations
+      tags:
+      - Organizations
+    post:
+      consumes:
+      - application/json
+      description: Creates a new organization owned by the authenticated user
+      parameters:
+      - description: Create organization payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateOrganizationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.OrganizationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create organization
+      tags:
+      - Organizations
   /user/me:
     get:
       description: Returns the authenticated user's profile
