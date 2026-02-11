@@ -21,10 +21,10 @@ import (
 //	@BasePath		/v1
 //	@schemes		http https
 
-//	@securityDefinitions.apikey	BearerAuth
-//	@in							header
-//	@name						Authorization
-//	@description				Enter the token with the `Bearer ` prefix, e.g. `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+// @securityDefinitions.apikey	BearerAuth
+// @in							header
+// @name						Authorization
+// @description				Enter the token with the `Bearer ` prefix, e.g. `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
 func main() {
 	cfg := config{
 		addr: env.GetString("ADDR", ":8080"),
@@ -43,6 +43,8 @@ func main() {
 		"env", cfg.env,
 	)
 
+	// Initalize grpc client
+	// identity service
 	identityClient, err := grpc.NewIdentityServiceClient()
 	if err != nil {
 		log.Fatalw(
@@ -58,14 +60,32 @@ func main() {
 		"service", "identity-service",
 	)
 
+	// identity service
+	analyticsClient, err := grpc.NewAnalyticsServiceClient()
+	log.Infow(
+		"connected to downstream service",
+		"service", "analytics-service",
+	)
+	defer analyticsClient.Close()
+
+	// organization service
+	organizationClient, err := grpc.NewOrganizationServiceClient()
+	log.Infow(
+		"connected to downstream service",
+		"service", "organization-service",
+	)
+	defer organizationClient.Close()
+
 	// Metrics
 	metrics := newMetrics()
 
 	app := &application{
-		config:         cfg,
-		log:            log,
-		metrics:        metrics,
-		identityClient: identityClient,
+		config:             cfg,
+		log:                log,
+		metrics:            metrics,
+		identityClient:     identityClient,
+		analyticsClient:    analyticsClient,
+		organizationClient: organizationClient,
 	}
 
 	mux := app.mount()

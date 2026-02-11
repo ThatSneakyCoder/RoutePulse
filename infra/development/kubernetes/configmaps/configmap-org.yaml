@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: org-config
+data:
+  ORGANIZATION_SERVICE_ADDR: organzation-service:9091
+  ORGANIZATION_SERVICE_PORT: "9091"

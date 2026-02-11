@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: organization-db-migrate
+  annotations:
+    tilt.dev/restartOnChange: "true"
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: routepulse/organization-migrate
+          args:
+            - "-dir=/migrations"
+            - "postgres"
+            - "postgres://$(DB_USER):$(DB_PASSWORD)@postgres-org:5432/$(DB_NAME)?sslmode=disable"
+            - "up"
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: routepulse-org-credentials
+                  key: user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: routepulse-org-credentials
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: routepulse-org-credentials
+                  key: db

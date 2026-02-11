@@ -17,4 +17,6 @@ dist/
 .env
 .env.*
 
-infra/development/kubernetes/secrets.yaml
+infra/development/kubernetes/secrets/secrets-identity.yaml
+infra/development/kubernetes/secrets/secrets-organization.yaml
+infra/development/kubernetes/secrets/secrets-rabbitmq.yaml

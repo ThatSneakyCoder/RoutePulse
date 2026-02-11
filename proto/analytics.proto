@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package analytics;
+
+option go_package = "shared/proto/analytics;analytics";
+
+import "google/protobuf/empty.proto";
+
+service AnalyticsService {
+    // get vehicles in transit
+    rpc GetVehiclesInTransit(google.protobuf.Empty)
+      returns (VehiclesInTransitResponse);
+
+    // get total trips today
+    rpc GetTripsToday(google.protobuf.Empty)
+      returns (TripsTodayResponse);
+}
+
+message VehiclesInTransitResponse {
+  uint64 count = 1;
+}
+
+message TripsTodayResponse {
+  uint64 count = 1;
+}

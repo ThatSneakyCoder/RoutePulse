@@ -80,3 +80,36 @@ type ResetPasswordRequest struct {
 type ResetPasswordResponse struct {
 	Success bool `json:"success"`
 }
+
+// Analytics models
+
+type VehiclesInTransitResponse struct {
+	Count int64 `json:"count"`
+}
+
+type TripsTodayResponse struct {
+	Count int64 `json:"count"`
+}
+
+// org_models.go
+
+type CreateOrganizationRequest struct {
+	Name string `json:"name" validate:"required,max=255"`
+}
+
+type OrganizationResponse struct {
+	OrganizationID string `json:"organization_id"`
+	Name           string `json:"name"`
+	OwnerUserID    string `json:"owner_user_id"`
+	IsActive       bool   `json:"is_active"`
+	CreatedAt      int64  `json:"created_at"`
+	UpdatedAt      int64  `json:"updated_at"`
+}
+
+type ListUserOrganizationsRequest struct {
+	OwnerUserID string `json:"owner_user_id"`
+}
+
+type ListUserOrganizationsResponse struct {
+	Organizations []OrganizationResponse `json:"organizations"`
+}

@@ -21,10 +21,12 @@ import (
 )
 
 type application struct {
-	config         config
-	log            *zap.SugaredLogger
-	metrics        metrics
-	identityClient *grpc.IdentityServiceClient
+	config             config
+	log                *zap.SugaredLogger
+	metrics            metrics
+	identityClient     *grpc.IdentityServiceClient
+	analyticsClient    *grpc.AnalyticsServiceClient
+	organizationClient *grpc.OrganizationServiceClient
 }
 
 type metrics struct {
@@ -60,12 +62,23 @@ func (app *application) mount() http.Handler {
 		}
 		r.Get("/health", app.healthCheckHandler)
 
+		// identity service routers
 		r.Route("/authentication", func(r chi.Router) {
 			r.Post("/register-user", app.createUserHandler)
 			r.Post("/verify-email", app.verifyUserEmailHandler)
+			// implement resend-email-verification
 			r.Post("/login", app.loginUserHandler)
 			r.Post("/forgot-password", app.forgotPasswordHandler)
 			r.Put("/reset-password", app.resetPasswordHandler)
+			// implement logout
+			// implement de-activate account
+			// implement change password
+			// implement login attempt tracking
+			// implement MFA (TOPT)
+			// implement update profile
+			// implement change email endpoint
+			// implement way to add avatar
+			// implement openfga and fine grained access
 		})
 
 		r.Group(func(r chi.Router) {
@@ -75,6 +88,22 @@ func (app *application) mount() http.Handler {
 				r.Get("/", app.getUserHandler)
 			})
 		})
+
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthTokenMiddleware)
+
+			r.Route("/organizations", func(r chi.Router) {
+				r.Post("/", app.createOrganizationHandler)
+				r.Get("/", app.listUserOrganizationsHandler)
+			})
+		})
+
+		// Analytics Service routers
+		r.Route("/analytics", func(r chi.Router) {
+			r.Get("/vehicles-in-transit", app.getVehiclesInTransit)
+			r.Get("/trips-today", app.getTripsToday)
+		})
+
 	})
 
 	return r

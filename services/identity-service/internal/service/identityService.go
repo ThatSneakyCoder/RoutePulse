@@ -7,6 +7,7 @@ import (
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/domain"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/auth"
+	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/identity-service/internal/infrastructure/mailer"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -16,18 +17,20 @@ import (
 )
 
 type IdentityService struct {
-	repo   domain.UserRepository
-	log    *zap.SugaredLogger
-	jwt    *auth.JWTAuthenticator
-	mailer mailer.Client
+	repo         domain.UserRepository
+	log          *zap.SugaredLogger
+	jwt          *auth.JWTAuthenticator
+	mailer       mailer.Client
+	rmqPublisher *events.IdentityEventPublisher
 }
 
-func NewIdentityService(repo domain.UserRepository, log *zap.SugaredLogger, jwt *auth.JWTAuthenticator, mailer mailer.Client) *IdentityService {
+func NewIdentityService(repo domain.UserRepository, log *zap.SugaredLogger, jwt *auth.JWTAuthenticator, mailer mailer.Client, rmqPublisher *events.IdentityEventPublisher) *IdentityService {
 	return &IdentityService{
 		repo:   repo,
 		log:    log,
 		jwt:    jwt,
 		mailer: mailer,
+		rmqPublisher: rmqPublisher,
 	}
 }
 
@@ -123,6 +126,11 @@ func (s *IdentityService) RegisterUser(
 	s.log.Infow("status code mail sent to user successfully",
 		"data.Email", data.Email,
 	)
+
+	// Emit rabbitmq event here
+	if err := s.rmqPublisher.PublishUserRegistered(ctx, created.ID.String(), created.Email); err != nil {
+		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
+	}
 
 	return created, nil
 }
