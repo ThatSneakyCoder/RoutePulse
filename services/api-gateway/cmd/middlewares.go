@@ -30,6 +30,30 @@ func (m *metrics) prometheusMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func (app *application) rateLimitMiddleware(entry limiterEntry) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			if !entry.config.Enabled {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			// RealIP middleware already runs before this
+			ip := r.RemoteAddr
+
+			allowed, retryAfter := entry.limiter.Allow(ip)
+			if !allowed {
+				w.Header().Set("Retry-After", strconv.Itoa(int(retryAfter.Seconds())))
+				http.Error(w, "rate limit exceeded", http.StatusTooManyRequests)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 

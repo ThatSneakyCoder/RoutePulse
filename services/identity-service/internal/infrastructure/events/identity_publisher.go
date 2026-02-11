@@ -23,11 +23,55 @@ func (p *IdentityEventPublisher) PublishUserRegistered(
 	userID string,
 	email string,
 ) error {
+	return p.publish(
+		ctx,
+		rabbitmq.IdentityUserRegisteredEvent,
+		userID,
+		rabbitmq.IdentityUserRegisteredEventPayload{
+			UserID: userID,
+			Email:  email,
+		},
+	)
+}
 
-	payload := map[string]any{
-		"user_id": userID,
-		"email":   email,
-	}
+func (p *IdentityEventPublisher) PublishEmailVerified(
+	ctx context.Context,
+	userID string,
+	email string,
+) error {
+	return p.publish(
+		ctx,
+		rabbitmq.IdentityUserEmailVerifiedEvent,
+		userID,
+		rabbitmq.IdentityUserEmailVerifiedEventPayload{
+			UserID: userID,
+			Email:  email,
+		},
+	)
+}
+
+func (p *IdentityEventPublisher) PublishLogin(
+	ctx context.Context,
+	userID string,
+	email string,
+) error {
+	return p.publish(
+		ctx,
+		rabbitmq.IdentityUserLoggedInEvent,
+		userID,
+		rabbitmq.IdentityUserLoggedInEventPayload{
+			UserID: userID,
+			Email:  email,
+		},
+	)
+}
+
+func (p *IdentityEventPublisher) publish(
+	ctx context.Context,
+	routingKey string,
+	ownerID string,
+	payload any,
+) error {
 
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -36,10 +80,11 @@ func (p *IdentityEventPublisher) PublishUserRegistered(
 
 	return p.rabbitmq.PublishMessage(
 		ctx,
-		rabbitmq.IdentityUserRegisteredEvent,
+		routingKey,
 		rabbitmq.AmqpMessage{
-			OwnerID: userID,
+			OwnerID: ownerID,
 			Data:    data,
 		},
 	)
 }
+

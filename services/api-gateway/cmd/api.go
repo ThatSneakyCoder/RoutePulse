@@ -18,6 +18,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
+	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/ratelimiter"
 )
 
 type application struct {
@@ -27,6 +28,7 @@ type application struct {
 	identityClient     *grpc.IdentityServiceClient
 	analyticsClient    *grpc.AnalyticsServiceClient
 	organizationClient *grpc.OrganizationServiceClient
+	limiters           rateLimiters
 }
 
 type metrics struct {
@@ -38,12 +40,37 @@ type config struct {
 	env  string
 }
 
+type rateLimiters struct {
+	global   limiterEntry
+	register limiterEntry
+	login    limiterEntry
+}
+
+type limiterEntry struct {
+	limiter ratelimiter.Limiter
+	config  rateLimiterConfig
+}
+
+type rateLimiterConfig struct {
+	RequestsPerTimeFrame int
+	TimeFrame            time.Duration
+	Enabled              bool
+}
+
+func newLimiterEntry(cfg rateLimiterConfig) limiterEntry {
+	return limiterEntry{
+		config:  cfg,
+		limiter: ratelimiter.NewFixedWindowLimiter(cfg.RequestsPerTimeFrame, cfg.TimeFrame),
+	}
+}
+
 func (app *application) mount() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(app.rateLimitMiddleware(app.limiters.global))
 	r.Use(app.metrics.prometheusMiddleware)
 
 	r.Handle("/metrics", promhttp.Handler())
@@ -64,10 +91,10 @@ func (app *application) mount() http.Handler {
 
 		// identity service routers
 		r.Route("/authentication", func(r chi.Router) {
-			r.Post("/register-user", app.createUserHandler)
+			r.With(app.rateLimitMiddleware(app.limiters.register)).Post("/register-user", app.createUserHandler)
 			r.Post("/verify-email", app.verifyUserEmailHandler)
 			// implement resend-email-verification
-			r.Post("/login", app.loginUserHandler)
+			r.With(app.rateLimitMiddleware(app.limiters.login)).Post("/login", app.loginUserHandler)
 			r.Post("/forgot-password", app.forgotPasswordHandler)
 			r.Put("/reset-password", app.resetPasswordHandler)
 			// implement logout
@@ -99,9 +126,13 @@ func (app *application) mount() http.Handler {
 		})
 
 		// Analytics Service routers
-		r.Route("/analytics", func(r chi.Router) {
-			r.Get("/vehicles-in-transit", app.getVehiclesInTransit)
-			r.Get("/trips-today", app.getTripsToday)
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthTokenMiddleware)
+
+			r.Route("/analytics", func(r chi.Router) {
+				r.Get("/vehicles-in-transit", app.getVehiclesInTransit)
+				r.Get("/trips-today", app.getTripsToday)
+			})
 		})
 
 	})

@@ -26,10 +26,10 @@ type IdentityService struct {
 
 func NewIdentityService(repo domain.UserRepository, log *zap.SugaredLogger, jwt *auth.JWTAuthenticator, mailer mailer.Client, rmqPublisher *events.IdentityEventPublisher) *IdentityService {
 	return &IdentityService{
-		repo:   repo,
-		log:    log,
-		jwt:    jwt,
-		mailer: mailer,
+		repo:         repo,
+		log:          log,
+		jwt:          jwt,
+		mailer:       mailer,
 		rmqPublisher: rmqPublisher,
 	}
 }
@@ -185,6 +185,15 @@ func (s *IdentityService) VerifyUserEmail(ctx context.Context, email, token stri
 		"email", email,
 	)
 
+	// Emit user email verified event to rabbitmq
+	if err := s.rmqPublisher.PublishEmailVerified(
+		ctx,
+		user.ID.String(),
+		user.Email,
+	); err != nil {
+		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
+	}
+
 	return user.ID.String(), true, nil
 }
 
@@ -237,6 +246,11 @@ func (s *IdentityService) Login(
 		"user_id", user.ID,
 		"expires_at", expiresAt,
 	)
+
+	// emit to rmq
+	if err := s.rmqPublisher.PublishLogin(ctx, user.ID.String(), user.Email); err != nil {
+		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
+	}
 
 	return user, &auth.Token{
 		AccessToken: tokenStr,

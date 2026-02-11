@@ -10,9 +10,11 @@ import (
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/domain"
 	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/infrastructure/db"
+	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/service"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/rabbitmq"
 	grpcserver "google.golang.org/grpc"
 )
 
@@ -73,9 +75,19 @@ func main() {
 		)
 	}
 
+	// RabbitMQ connection
+	rabbitmq, err := rabbitmq.NewRabbitMQ("amqp://guest:guest@rabbitmq:5672/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rabbitmq.Close()
+
+	// Setup RabbitMQ publisher
+	publisher := events.NewOrganizationEventPublisher(rabbitmq)
+
 	// Wiring
 	organizationRepo := domain.NewOrganizationStore(dbConn, log)
-	organizationSvc := service.NewOrganizationService(organizationRepo, log)
+	organizationSvc := service.NewOrganizationService(organizationRepo, log, publisher)
 
 	grpcServer := grpcserver.NewServer()
 	grpc.NewGRPCHandler(grpcServer, organizationSvc, log)

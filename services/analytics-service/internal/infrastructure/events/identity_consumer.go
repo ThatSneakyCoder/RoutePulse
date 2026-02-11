@@ -39,23 +39,92 @@ func (c *identityConsumer) Listen() error {
 				return err
 			}
 
-			if msg.RoutingKey != rabbitmq.IdentityUserRegisteredEvent {
-				c.log.Infow("ignoring unrelated routing key",
+			var err error
+
+			switch msg.RoutingKey {
+
+			case rabbitmq.IdentityUserRegisteredEvent:
+
+				var payload rabbitmq.IdentityUserRegisteredEventPayload
+				if e := json.Unmarshal(envelope.Data, &payload); e != nil {
+					return e
+				}
+
+				err = c.service.InsertDomainEvent(
+					ctx,
+					"identity-service",
+					rabbitmq.IdentityUserRegisteredEvent,
+					payload.UserID,
+					payload.UserID,
+				)
+
+			case rabbitmq.IdentityUserEmailVerifiedEvent:
+
+				var payload rabbitmq.IdentityUserEmailVerifiedEventPayload
+				if e := json.Unmarshal(envelope.Data, &payload); e != nil {
+					return e
+				}
+
+				err = c.service.InsertDomainEvent(
+					ctx,
+					"identity-service",
+					rabbitmq.IdentityUserEmailVerifiedEvent,
+					payload.UserID,
+					payload.UserID,
+				)
+
+			case rabbitmq.IdentityUserLoggedInEvent:
+
+				var payload rabbitmq.IdentityUserLoggedInEventPayload
+				if e := json.Unmarshal(envelope.Data, &payload); e != nil {
+					return e
+				}
+
+				err = c.service.InsertDomainEvent(
+					ctx,
+					"identity-service",
+					rabbitmq.IdentityUserLoggedInEvent,
+					payload.UserID,
+					payload.UserID,
+				)
+
+			case rabbitmq.OrganizationCreatedEvent:
+
+				var payload rabbitmq.OrganizationCreatedEventPayload
+				if e := json.Unmarshal(envelope.Data, &payload); e != nil {
+					return e
+				}
+
+				err = c.service.InsertDomainEvent(
+					ctx,
+					"organization-service",
+					rabbitmq.OrganizationCreatedEvent,
+					payload.OwnerUserID,
+					payload.OrganizationID,
+				)
+
+			case rabbitmq.OrganizationMemberAddedEvent:
+
+				var payload rabbitmq.OrganizationMemberAddedEventPayload
+				if e := json.Unmarshal(envelope.Data, &payload); e != nil {
+					return e
+				}
+
+				err = c.service.InsertDomainEvent(
+					ctx,
+					"organization-service",
+					rabbitmq.OrganizationMemberAddedEvent,
+					payload.UserID,
+					payload.OrganizationID,
+				)
+
+			default:
+				c.log.Infow("unknown routing key received",
 					"routing_key", msg.RoutingKey,
 				)
-				return nil
 			}
 
-			var payload rabbitmq.IdentityUserRegisteredEventPayload
-			if err := json.Unmarshal(envelope.Data, &payload); err != nil {
-				c.log.Errorw("failed to unmarshal payload", "err", err)
-				return err
-			}
-
-			return c.service.InsertIdentityUserRegistered(ctx, rabbitmq.IdentityUserRegisteredEventPayload{
-				UserID: payload.UserID,
-				Email:  payload.Email,
-			})
+			return err
 		},
 	)
 }

@@ -2,5 +2,5 @@ package rabbitmq
 
 // Analytics events
 const (
-	AnalyticsIdentityQueue = "analytics.identity"
+	AnalyticsIdentityQueue = "analytics.ingest"
 )
