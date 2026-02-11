@@ -4,37 +4,42 @@ import (
 	"context"
 	"time"
 
-	"github.com/ThatSneakyCoder/RoutePulse/shared/rabbitmq"
+	"github.com/ThatSneakyCoder/RoutePulse/services/analytics-service/internal/domain"
 )
 
-func (s *AnalyticsService) InsertIdentityUserRegistered(
+func (s *AnalyticsService) InsertDomainEvent(
 	ctx context.Context,
-	event rabbitmq.IdentityUserRegisteredEventPayload,
+	serviceName string,
+	eventType string,
+	userID string,
+	requestID string,
 ) error {
 
-	s.log.Infow("handling identity.user.registered event",
-		"user_id", event.UserID,
-		"email", event.Email,
+	s.log.Infow("handling domain analytics event",
+		"service", serviceName,
+		"event_type", eventType,
+		"user_id", userID,
 	)
 
-	err := s.repo.InsertIdentityUserRegistered(
-		ctx,
-		time.Now(),
-		event.UserID,
-		event.Email,
-	)
+	analyticsEvent := &domain.AnalyticsEvent{
+		EventTime:  time.Now(),
+		Service:    serviceName,
+		EventType:  eventType,
+		UserID:     userID,
+		RequestID:  requestID,
+		Route:      "",
+		StatusCode: 0,
+		LatencyMs:  0,
+	}
 
-	if err != nil {
-		s.log.Errorw("failed to insert identity registration event",
-			"user_id", event.UserID,
+	if err := s.repo.InsertEvent(ctx, analyticsEvent); err != nil {
+		s.log.Errorw("failed to insert analytics event",
+			"event_type", eventType,
+			"user_id", userID,
 			"err", err,
 		)
 		return err
 	}
-
-	s.log.Infow("identity registration event inserted successfully",
-		"user_id", event.UserID,
-	)
 
 	return nil
 }

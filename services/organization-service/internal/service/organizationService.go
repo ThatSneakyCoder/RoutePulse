@@ -6,19 +6,22 @@ import (
 	"time"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/domain"
+	"github.com/ThatSneakyCoder/RoutePulse/services/organization-service/internal/infrastructure/events"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
 type OrganizationService struct {
-	log  *zap.SugaredLogger
-	repo domain.OrganizationRepository
+	log          *zap.SugaredLogger
+	repo         domain.OrganizationRepository
+	rmqPublisher *events.OrganizationEventPublisher
 }
 
-func NewOrganizationService(repo domain.OrganizationRepository, log *zap.SugaredLogger) *OrganizationService {
+func NewOrganizationService(repo domain.OrganizationRepository, log *zap.SugaredLogger, rmq *events.OrganizationEventPublisher) *OrganizationService {
 	return &OrganizationService{
-		repo: repo,
-		log:  log,
+		repo:         repo,
+		log:          log,
+		rmqPublisher: rmq,
 	}
 }
 
@@ -72,6 +75,11 @@ func (s *OrganizationService) CreateOrganization(
 		"organization_id", created.ID,
 		"owner_user_id", ownerUserID,
 	)
+
+	// Emitting to rmq
+	if err := s.rmqPublisher.PublishOrganizationCreated(ctx, created.Name, created.ID.String(), created.OwnerUserID.String()); err != nil {
+		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
+	}
 
 	return created, nil
 }

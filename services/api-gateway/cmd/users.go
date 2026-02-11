@@ -60,7 +60,7 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 			"email", reqBody.Email,
 			"err", err,
 		)
-		app.internalServerError(w, r, err)
+		app.handleGRPCError(w, r, err)
 		return
 	}
 

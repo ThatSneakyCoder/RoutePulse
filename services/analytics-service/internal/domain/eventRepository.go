@@ -2,7 +2,6 @@ package domain
 
 import (
 	"context"
-	"time"
 )
 
 type EventRepository interface {
@@ -11,5 +10,5 @@ type EventRepository interface {
 	CountTripsToday(ctx context.Context) (uint64, error)
 
 	// Write side (event ingestion)
-	InsertIdentityUserRegistered(ctx context.Context, eventTime time.Time, userID string, email string) error
+	InsertEvent(ctx context.Context, event *AnalyticsEvent) error
 }

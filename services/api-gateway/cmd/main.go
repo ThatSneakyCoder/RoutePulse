@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
@@ -86,6 +88,24 @@ func main() {
 		identityClient:     identityClient,
 		analyticsClient:    analyticsClient,
 		organizationClient: organizationClient,
+	}
+
+	app.limiters = rateLimiters{
+		global: newLimiterEntry(rateLimiterConfig{
+			RequestsPerTimeFrame: 300,
+			TimeFrame:            time.Minute,
+			Enabled:              true,
+		}),
+		register: newLimiterEntry(rateLimiterConfig{
+			RequestsPerTimeFrame: 5,
+			TimeFrame:            time.Minute,
+			Enabled:              true,
+		}),
+		login: newLimiterEntry(rateLimiterConfig{
+			RequestsPerTimeFrame: 10,
+			TimeFrame:            time.Minute,
+			Enabled:              true,
+		}),
 	}
 
 	mux := app.mount()

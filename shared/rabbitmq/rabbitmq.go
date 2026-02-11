@@ -71,6 +71,10 @@ func (r *RabbitMQ) setupExchangesAndQueues() error {
 		AnalyticsIdentityQueue,
 		[]string{
 			IdentityUserRegisteredEvent,
+			IdentityUserEmailVerifiedEvent,
+			OrganizationCreatedEvent,
+			OrganizationMemberAddedEvent,
+			IdentityUserLoggedInEvent,
 		},
 		AnalyticsExchange,
 	); err != nil {

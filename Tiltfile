@@ -17,7 +17,7 @@ k8s_yaml('./infra/development/kubernetes/configmaps/configmap-org.yaml')
 k8s_yaml('./infra/development/kubernetes/rabbitmq/rabbitmq.yaml')
 k8s_resource('rabbitmq', port_forwards=['5672', '15672'], labels='tooling')
 
-### rmq end ###
+### RabbitMQ end ###
 
 ### Identity Postgresql start ###
 
