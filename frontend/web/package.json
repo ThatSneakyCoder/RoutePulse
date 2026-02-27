@@ -11,11 +11,17 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.0",
+    "cmdk": "^1.1.1",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.575.0",
     "motion": "^12.34.3",
     "react": "^19.2.0",
+    "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
+    "react-router": "^7.13.1",
     "react-router-dom": "^7.13.1",
+    "swiper": "^12.1.2",
     "tailwindcss": "^4.2.0"
   },
   "devDependencies": {
