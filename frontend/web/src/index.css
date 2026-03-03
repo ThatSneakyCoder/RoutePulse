@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @layer utilities {
   .animate-in {
@@ -69,5 +70,15 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.leaflet-tooltip.fleet-label {
+  background: white;
+  color: black;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 

@@ -1,3 +1,4 @@
+import { Grid } from "./Grid";
 import { TopBar } from "./TopBar";
 
 export const Dashboard = () => {
@@ -6,7 +7,7 @@ export const Dashboard = () => {
       <TopBar />
 
       <div className="mt-6 bg-slate-900 rounded-xl border border-slate-800 p-6 min-h-screen">
-        {/* Grid */}
+        <Grid />
       </div>
     </section>
   );

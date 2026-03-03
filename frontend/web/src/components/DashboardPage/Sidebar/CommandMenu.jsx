@@ -28,13 +28,13 @@ export const CommandMenu = ({ open, setOpen }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-slate-800 rounded-lg shadow-xl border-slate-500 border overflow-hidden w-full max-w-lg mx-auto mt-12"
+        className="bg-slate-800 rounded-lg shadow-xl border-slate-500 border overflow-hidden w-full max-w-lg mx-auto mt-12 text-white"
       >
         <Command.Input
           value={value}
           onValueChange={setValue}
           placeholder="What do you need?"
-          className="relative border-b border-gray-500 p-3 text-lg w-full placeholder:text-stone-400 focus:outline-none"
+          className="relative border-b border-gray-500 p-3 text-lg w-full placeholder:text-slate-400 focus:outline-none"
         />
         <Command.List className="p-3">
           <Command.Empty>
