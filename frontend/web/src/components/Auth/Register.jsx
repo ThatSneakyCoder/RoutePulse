@@ -3,6 +3,9 @@ import Googledotcom from "../../assets/swiper-logos/Googledotcom.png";
 import Amazondotcom from "../../assets/swiper-logos/Amazondotcom.png";
 import Netflixdotcom from "../../assets/swiper-logos/Netflixdotcom.png";
 
+import { useState } from "react";
+import instance from "../../axios.js";
+
 import { ArrowBigLeft, Key, Lock, LogIn, Mail } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaMeta } from "react-icons/fa6";
@@ -17,6 +20,41 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 export const Register = () => {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const response = await instance.post("/v1/authentication/register-user", {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setSuccess("Account created successfully");
+    } catch (err) {
+      setError("Signup failed. Please try again.");
+    }
+  };
+
   return (
     <div className="pt-16 sm:pt-18 px-4 sm:px-6 lg:px-8 h-full overflow-hidden flex items-center justify-center">
       {/* divs for decoration */}
@@ -47,20 +85,42 @@ export const Register = () => {
         </div>
 
         {/* right side form */}
-        <div className="relative z-10 w-full max-w-md rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/10 p-8 shadow-2xl flex flex-col items-center justify-center gap-2">
+        <form
+          onSubmit={handleSubmit}
+          className="relative z-10 w-full max-w-md rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/10 p-8 shadow-2xl flex flex-col items-center justify-center gap-2"
+        >
           <div className="p-2 bg-gray-600 rounded-xl">
             <LogIn size={36} />
           </div>
           <div className="flex flex-col items-center justify-center text-center">
-            <span className="text-2xl text-gray-300">
-              Register with email
-            </span>
+            <span className="text-2xl text-gray-300">Register with email</span>
             <span className="text-md text-gray-600 leading-relaxed">
               Make a new account to start tracking your delivery system
               efficiently
             </span>
           </div>
+
           <div className="max-w-md w-full space-y-4">
+            <div className="relative flex items-center justify-center gap-4">
+              <input
+                type="text"
+                placeholder="First Name"
+                className="w-full flex-1 px-4 py-3 rounded-lg bg-slate-800 border border-white/10 hover:border-blue-500/40 
+      focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                onChange={(e) =>
+                  setFormData({ ...formData, firstname: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                className="w-full flex-1 px-4 py-3 rounded-lg bg-slate-800 border border-white/10 hover:border-blue-500/40 
+      focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                onChange={(e) =>
+                  setFormData({ ...formData, lastname: e.target.value })
+                }
+              />
+            </div>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -68,6 +128,9 @@ export const Register = () => {
                 placeholder="Email"
                 className="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-800 border border-white/10 hover:border-blue-500/40 
       focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
             </div>
             <div className="relative">
@@ -76,6 +139,9 @@ export const Register = () => {
                 type="password"
                 placeholder="Password"
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800 border border-white/10 hover:border-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
               />
             </div>
             <div>
@@ -89,6 +155,9 @@ export const Register = () => {
                 type="password"
                 placeholder="password"
                 className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-white/10 rounded-xl hover:border-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                onChange={(e) =>
+                  setFormData({ ...formData, confirmPassword: e.target.value })
+                }
               />
             </div>
             <Link
@@ -97,13 +166,21 @@ export const Register = () => {
             >
               <span className="text-sm text-gray-400">Forgot Password?</span>
             </Link>
-            {/* TODO: make a backend call */}
-            <Link
-              to=""
+            {error && (
+              <div className="text-red-400 text-sm text-center">{error}</div>
+            )}
+
+            {success && (
+              <div className="text-green-400 text-sm text-center">
+                {success}
+              </div>
+            )}
+            <button
+              type="submit"
               className="w-full py-3 flex items-center justify-center bg-gray-700/80 rounded-xl text-gray-300/80 hover:scale-102 duration-300"
             >
               <span>Register</span>
-            </Link>
+            </button>
             {/* Oauth buttons */}
             <div className="flex items-center gap-4 w-full">
               <div className="flex-1 h-px bg-gray-600" />
@@ -124,9 +201,14 @@ export const Register = () => {
             </div>
           </div>
           <div>
-            <span className="text-gray-400">Already have an account?{" "}<Link to="/auth/login" className="text-blue-400 hover:underline">Sign In</Link></span>
+            <span className="text-gray-400">
+              Already have an account?{" "}
+              <Link to="/auth/login" className="text-blue-400 hover:underline">
+                Sign In
+              </Link>
+            </span>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

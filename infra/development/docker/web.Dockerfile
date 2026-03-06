@@ -3,11 +3,11 @@ FROM node:20-alpine
 WORKDIR /app
 
 # install deps
-COPY frontend/web/package*.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm ci
 
 # copy source
-COPY frontend/web ./
+COPY . .
 
 EXPOSE 5173
 

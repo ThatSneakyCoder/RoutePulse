@@ -1,3 +1,3 @@
 alter table users
-add column first_name text not null,
-add column last_name text not null;
+ADD COLUMN first_name TEXT NOT NULL DEFAULT '',
+ADD COLUMN last_name  TEXT NOT NULL DEFAULT '';
