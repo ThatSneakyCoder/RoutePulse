@@ -63,7 +63,7 @@ func loadConfig() config {
 	// mail config
 	cfg.brevoMailConfig.host = env.GetString("BREVO_SMTP_HOST", "smtp-relay.brevo.com")
 	cfg.brevoMailConfig.port = env.GetInt("BREVO_SMTP_PORT", 587)
-	cfg.brevoMailConfig.username = env.GetString("BREVO_SMTP_FROM", "")
+	cfg.brevoMailConfig.username = env.GetString("BREVO_SMTP_USERNAME", "")
 	cfg.brevoMailConfig.apiKey = env.GetString("BREVO_SMTP_KEY", "")
 	cfg.brevoMailConfig.fromEmail = env.GetString("", "shubh22.srivastava@gmail.com")
 

@@ -22,17 +22,15 @@ spec:
           readinessProbe:
             exec:
               command: ["rabbitmq-diagnostics", "check_running"]
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 10
-            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
           livenessProbe:
             exec:
               command: ["rabbitmq-diagnostics", "check_running"]
-            initialDelaySeconds: 120
-            periodSeconds: 30
-            timeoutSeconds: 20
-            failureThreshold: 5
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 3
           resources:
             requests:
               memory: "1Gi"

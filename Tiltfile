@@ -253,12 +253,12 @@ k8s_resource(
 ### Web Frontend ###
 
 docker_build(
-  'routepulse/web',
-  '.',
+  'routepulse/frontend/web',
+  './frontend/web',
   dockerfile='./infra/development/docker/web.Dockerfile',
 )
 
 k8s_yaml('./infra/development/kubernetes/web-deployment.yaml')
-k8s_resource('web', port_forwards=5173, labels="frontend")
+k8s_resource('web', port_forwards=['5173:5173'], labels="frontend")
 
 ### End of Web Frontend ###

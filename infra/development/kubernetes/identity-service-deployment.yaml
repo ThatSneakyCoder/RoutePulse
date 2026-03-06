@@ -45,6 +45,11 @@ spec:
               configMapKeyRef:
                 name: identity-config
                 key: BREVO_SMTP_PORT
+          - name: BREVO_SMTP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-credentials
+                key: brevo-username
           - name: IDENTITY_SERVICE_ADDR
             valueFrom:
               configMapKeyRef:
