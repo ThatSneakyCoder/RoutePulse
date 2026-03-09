@@ -49,6 +49,7 @@ func (app *application) createOrganizationHandler(w http.ResponseWriter, r *http
 		r.Context(),
 		payload.toProto(user.ID),
 	)
+
 	if err != nil {
 		app.log.Errorw("failed to create organization",
 			"user_id", user.ID,
@@ -64,7 +65,10 @@ func (app *application) createOrganizationHandler(w http.ResponseWriter, r *http
 		"user_id", user.ID,
 	)
 
-	writeJSON(w, http.StatusCreated, resp)
+	if err := app.jsonResponse(w, http.StatusCreated, resp); err != nil {
+		app.log.Errorw("failed to create organization", "err", err)
+		app.internalServerError(w, r, err)
+	}
 }
 
 // listUserOrganizationsHandler godoc
@@ -110,5 +114,8 @@ func (app *application) listUserOrganizationsHandler(w http.ResponseWriter, r *h
 		"count", len(resp.Organizations),
 	)
 
-	writeJSON(w, http.StatusOK, resp)
+	if err := app.jsonResponse(w, http.StatusOK, resp); err != nil {
+		app.log.Errorw("failed to get organizations", "err", err)
+		app.internalServerError(w, r, err)
+	}
 }

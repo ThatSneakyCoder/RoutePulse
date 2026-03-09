@@ -9,15 +9,14 @@ import {
   FiBox,
   FiMap,
   FiBarChart2,
-  FiTool,
-  FiDroplet,
   FiUserCheck,
+  FiUser,
 } from "react-icons/fi";
 
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 export const RouteSelect = () => {
-  const [selected, setSelected] = useState("Dashboard");
   const [fleetOpen, setFleetOpen] = useState(true);
   const [shipmentOpen, setShipmentOpen] = useState(false);
 
@@ -29,12 +28,9 @@ export const RouteSelect = () => {
           MAIN MENU
         </p>
 
-        <Route
-          Icon={FiHome}
-          title="Dashboard"
-          selected={selected === "Dashboard"}
-          onClick={() => setSelected("Dashboard")}
-        />
+        <Route Icon={FiHome} title="Dashboard" to="/dashboard" end />
+
+        <Route Icon={FiUser} title="My Organization" to="/dashboard/organization" />
 
         {/* Fleet Management */}
         <CollapsibleRoute
@@ -43,32 +39,11 @@ export const RouteSelect = () => {
           open={fleetOpen}
           toggle={() => setFleetOpen(!fleetOpen)}
         >
-          <SubRoute
-            title="All Vehicles"
-            selected={selected === "All Vehicles"}
-            onClick={() => setSelected("All Vehicles")}
-          />
-          <SubRoute
-            title="Active Trucks"
-            selected={selected === "Active Trucks"}
-            onClick={() => setSelected("Active Trucks")}
-          />
-          <SubRoute
-            title="Maintenance & Repairs"
-            badge="2"
-            selected={selected === "Maintenance & Repairs"}
-            onClick={() => setSelected("Maintenance & Repairs")}
-          />
-          <SubRoute
-            title="Fuel & Telematics"
-            selected={selected === "Fuel & Telematics"}
-            onClick={() => setSelected("Fuel & Telematics")}
-          />
-          <SubRoute
-            title="Drivers Directory"
-            selected={selected === "Drivers Directory"}
-            onClick={() => setSelected("Drivers Directory")}
-          />
+          <SubRoute title="All Vehicles" to="/fleet/vehicles" />
+          <SubRoute title="Active Trucks" to="/fleet/active" />
+          <SubRoute title="Maintenance & Repairs" to="/fleet/maintenance" />
+          <SubRoute title="Fuel & Telematics" to="/fleet/telematics" />
+          <SubRoute title="Drivers Directory" to="/fleet/driversDirectory" />
         </CollapsibleRoute>
 
         {/* Shipments */}
@@ -78,39 +53,15 @@ export const RouteSelect = () => {
           open={shipmentOpen}
           toggle={() => setShipmentOpen(!shipmentOpen)}
         >
-          <SubRoute
-            title="Active Shipments"
-            selected={selected === "Active Shipments"}
-            onClick={() => setSelected("Active Shipments")}
-          />
-          <SubRoute
-            title="Completed Shipments"
-            selected={selected === "Completed Shipments"}
-            onClick={() => setSelected("Completed Shipments")}
-          />
+          <SubRoute title="Active Shipments" to="shipments/active" />
+          <SubRoute title="Completed Shipments" to="shipments/complete" />
         </CollapsibleRoute>
 
-        <Route
-          Icon={FiBox}
-          title="Warehouse Operations"
-          selected={selected === "Warehouse Operations"}
-          onClick={() => setSelected("Warehouse Operations")}
-        />
+        <Route Icon={FiBox} title="Warehouse Operations" to="/warehouse" />
 
-        <Route
-          Icon={FiMap}
-          title="Route Planning"
-          badge="3"
-          selected={selected === "Route Planning"}
-          onClick={() => setSelected("Route Planning")}
-        />
+        <Route Icon={FiMap} title="Route Planning" to="/routes" />
 
-        <Route
-          Icon={FiBarChart2}
-          title="Analytics & Reports"
-          selected={selected === "Analytics & Reports"}
-          onClick={() => setSelected("Analytics & Reports")}
-        />
+        <Route Icon={FiBarChart2} title="Analytics & Reports" to="/analytics" />
       </div>
 
       {/* SUPPORT */}
@@ -119,45 +70,32 @@ export const RouteSelect = () => {
           SUPPORT
         </p>
 
-        <Route
-          Icon={FiUsers}
-          title="Customers"
-          selected={selected === "Customers"}
-          onClick={() => setSelected("Customers")}
-        />
+        <Route Icon={FiUsers} title="Customers" to="/customers" />
 
-        <Route
-          Icon={FiUserCheck}
-          title="Team & Roles"
-          selected={selected === "Team & Roles"}
-          onClick={() => setSelected("Team & Roles")}
-        />
+        <Route Icon={FiUserCheck} title="Team & Roles" to="/teams" />
 
-        <Route
-          Icon={FiHelpCircle}
-          title="Help & Support"
-          selected={selected === "Help & Support"}
-          onClick={() => setSelected("Help & Support")}
-        />
+        <Route Icon={FiHelpCircle} title="Help & Support" to="/help" />
       </div>
     </div>
   );
 };
 
-const Route = ({ selected, Icon, title, onClick }) => {
+const Route = ({ Icon, title, to, end }) => {
   return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition
-      ${
-        selected
-          ? "bg-slate-800 text-white font-medium"
-          : "text-slate-400 hover:bg-slate-900 hover:text-white"
-      }`}
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) =>
+        `flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition ${
+          isActive
+            ? "bg-slate-800 text-white font-medium"
+            : "text-slate-400 hover:bg-slate-900 hover:text-white"
+        }`
+      }
     >
       <Icon className="text-base" />
       {title}
-    </button>
+    </NavLink>
   );
 };
 
@@ -185,16 +123,19 @@ const CollapsibleRoute = ({ Icon, title, open, toggle, children }) => {
   );
 };
 
-const SubRoute = ({ selected, title, onClick }) => {
+const SubRoute = ({ title, to }) => {
   return (
-    <button
-      onClick={onClick}
-      className={`block w-full text-left px-2 py-1.5 rounded-md text-sm transition
-      ${
-        selected ? "text-white bg-slate-800" : "text-slate-500 hover:text-white"
-      }`}
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `block w-full text-left px-2 py-1.5 rounded-md text-sm transition ${
+          isActive
+            ? "text-white bg-slate-800"
+            : "text-slate-500 hover:text-white"
+        }`
+      }
     >
       {title}
-    </button>
+    </NavLink>
   );
 };

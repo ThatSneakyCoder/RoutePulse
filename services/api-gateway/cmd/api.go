@@ -19,8 +19,8 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
-	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/ratelimiter"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 )
 
 type application struct {
@@ -134,6 +134,14 @@ func (app *application) mount() http.Handler {
 			r.Route("/organizations", func(r chi.Router) {
 				r.Post("/", app.createOrganizationHandler)
 				r.Get("/", app.listUserOrganizationsHandler)
+
+				// r.Get("/{orgId}", app.getOrganizationHandler)
+
+				// r.Get("/{orgId}/members", app.listOrganizationMembersHandler)
+				// r.Post("/{orgId}/invite", app.inviteUserToOrganizationHandler)
+
+				// r.Delete("/{orgId}/members/{userId}", app.removeMemberHandler)
+				// r.Put("/{orgId}/members/{userId}/role", app.updateMemberRoleHandler)
 			})
 		})
 
