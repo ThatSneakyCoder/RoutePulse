@@ -1,0 +1,185 @@
+syntax = "proto3";
+
+package fleet;
+
+option go_package = "shared/proto/fleet;fleet";
+
+service FleetService {
+
+  // --------------------
+  // Vehicles
+  // --------------------
+
+  rpc CreateVehicle (CreateVehicleRequest)
+    returns (CreateVehicleResponse);
+
+  rpc GetVehicle (GetVehicleRequest)
+    returns (GetVehicleResponse);
+
+  rpc ListVehicles (ListVehiclesRequest)
+    returns (ListVehiclesResponse);
+
+  // --------------------
+  // Drivers
+  // --------------------
+
+  rpc CreateDriver (CreateDriverRequest)
+    returns (CreateDriverResponse);
+
+  rpc ListDrivers (ListDriversRequest)
+    returns (ListDriversResponse);
+
+  // --------------------
+  // Trips
+  // --------------------
+
+  rpc CreateTrip (CreateTripRequest)
+    returns (CreateTripResponse);
+
+  rpc ListTrips (ListTripsRequest)
+    returns (ListTripsResponse);
+
+  rpc StartTrip (StartTripRequest)
+    returns (StartTripResponse);
+
+  rpc CompleteTrip (CompleteTripRequest)
+    returns (CompleteTripResponse);
+}
+
+//
+// Core Entities
+//
+
+message Vehicle {
+  string vehicle_id = 1;
+  string organization_id = 2;
+
+  string plate_number = 3;
+  string vehicle_type = 4;
+  int32 capacity = 5;
+
+  string status = 6;
+
+  int64 created_at = 7;
+}
+
+message Driver {
+  string driver_id = 1;
+  string organization_id = 2;
+
+  string first_name = 3;
+  string last_name = 4;
+
+  string vehicle_id = 5;
+
+  string status = 6;
+
+  int64 created_at = 7;
+}
+
+message Trip {
+  string trip_id = 1;
+  string organization_id = 2;
+
+  string vehicle_id = 3;
+  string driver_id = 4;
+
+  string status = 5;
+
+  int64 start_time = 6;
+  int64 end_time = 7;
+
+  int64 created_at = 8;
+}
+
+//
+// Vehicle Requests / Responses
+//
+
+message CreateVehicleRequest {
+  string organization_id = 1;
+  string plate_number = 2;
+  string vehicle_type = 3;
+  int32 capacity = 4;
+}
+
+message CreateVehicleResponse {
+  Vehicle vehicle = 1;
+}
+
+message GetVehicleRequest {
+  string vehicle_id = 1;
+}
+
+message GetVehicleResponse {
+  Vehicle vehicle = 1;
+}
+
+message ListVehiclesRequest {
+  string organization_id = 1;
+}
+
+message ListVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+}
+
+//
+// Driver Requests / Responses
+//
+
+message CreateDriverRequest {
+  string organization_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string vehicle_id = 4;
+}
+
+message CreateDriverResponse {
+  Driver driver = 1;
+}
+
+message ListDriversRequest {
+  string organization_id = 1;
+}
+
+message ListDriversResponse {
+  repeated Driver drivers = 1;
+}
+
+//
+// Trip Requests / Responses
+//
+
+message CreateTripRequest {
+  string organization_id = 1;
+  string vehicle_id = 2;
+  string driver_id = 3;
+}
+
+message CreateTripResponse {
+  Trip trip = 1;
+}
+
+message ListTripsRequest {
+  string organization_id = 1;
+}
+
+message ListTripsResponse {
+  repeated Trip trips = 1;
+}
+
+message StartTripRequest {
+  string trip_id = 1;
+}
+
+message StartTripResponse {
+  bool success = 1;
+}
+
+message CompleteTripRequest {
+  string trip_id = 1;
+}
+
+message CompleteTripResponse {
+  bool success = 1;
+}

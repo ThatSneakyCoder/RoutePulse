@@ -145,6 +145,33 @@ func (app *application) mount() http.Handler {
 			})
 		})
 
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthTokenMiddleware)
+
+			r.Route("/fleet", func(r chi.Router) {
+
+				r.Route("/vehicles", func(r chi.Router) {
+					r.Post("/", app.createVehicleHandler)
+					r.Get("/", app.listVehiclesHandler)
+					r.Get("/{vehicleId}", app.getVehicleHandler)
+				})
+
+				r.Route("/drivers", func(r chi.Router) {
+					r.Post("/", app.createDriverHandler)
+					r.Get("/", app.listDriversHandler)
+				})
+
+				r.Route("/trips", func(r chi.Router) {
+					r.Post("/", app.createTripHandler)
+					r.Get("/", app.listTripsHandler)
+
+					r.Post("/{tripId}/start", app.startTripHandler)
+					r.Post("/{tripId}/complete", app.completeTripHandler)
+				})
+
+			})
+		})
+
 		// Analytics Service routers
 		r.Group(func(r chi.Router) {
 			r.Use(app.AuthTokenMiddleware)

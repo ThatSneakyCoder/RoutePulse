@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleet-config
+data:
+  FLEET_SERVICE_ADDR: fleet-service:9092
+  FLEET_SERVICE_PORT: "9092"

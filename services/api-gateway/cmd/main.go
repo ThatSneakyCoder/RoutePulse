@@ -78,6 +78,14 @@ func main() {
 	)
 	defer organizationClient.Close()
 
+	// fleet service
+	fleetClient, err := grpc.NewFleetServiceClient()
+	log.Infow(
+		"connected to downstream service",
+		"service", "organization-service",
+	)
+	defer fleetClient.Close()
+
 	// Metrics
 	metrics := newMetrics()
 
