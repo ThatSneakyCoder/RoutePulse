@@ -135,13 +135,13 @@ func (app *application) mount() http.Handler {
 				r.Post("/", app.createOrganizationHandler)
 				r.Get("/", app.listUserOrganizationsHandler)
 
-				// r.Get("/{orgId}", app.getOrganizationHandler)
+				r.Get("/{orgId}", app.getOrganizationHandler)
 
-				// r.Get("/{orgId}/members", app.listOrganizationMembersHandler)
-				// r.Post("/{orgId}/invite", app.inviteUserToOrganizationHandler)
+				r.Get("/{orgId}/members", app.listOrganizationMembersHandler)
+				r.Post("/{orgId}/invite", app.inviteUserToOrganizationHandler)
 
-				// r.Delete("/{orgId}/members/{userId}", app.removeMemberHandler)
-				// r.Put("/{orgId}/members/{userId}/role", app.updateMemberRoleHandler)
+				r.Delete("/{orgId}/members/{userId}", app.removeMemberHandler)
+				r.Put("/{orgId}/members/{userId}/role", app.updateMemberRoleHandler)
 			})
 		})
 

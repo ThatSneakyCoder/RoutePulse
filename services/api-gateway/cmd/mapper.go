@@ -42,15 +42,15 @@ func (p *ForgotPasswordRequest) toProto() *pb.ForgotPasswordRequest {
 
 func (p *ResetPasswordRequest) toProto() *pb.ResetPasswordRequest {
 	return &pb.ResetPasswordRequest{
-		Email: p.Email,
-		Token: p.Token,
+		Email:       p.Email,
+		Token:       p.Token,
 		NewPassword: p.NewPassword,
 	}
 }
 
 func (p *CreateOrganizationRequest) toProto(userID string) *pbOrg.CreateOrganizationRequest {
 	return &pbOrg.CreateOrganizationRequest{
-		Name: p.Name,
+		Name:        p.Name,
 		OwnerUserId: userID,
 	}
 }
@@ -58,5 +58,52 @@ func (p *CreateOrganizationRequest) toProto(userID string) *pbOrg.CreateOrganiza
 func (p *ListUserOrganizationsRequest) toProto(userID string) *pbOrg.ListUserOrganizationsRequest {
 	return &pbOrg.ListUserOrganizationsRequest{
 		UserId: userID,
+	}
+}
+
+func (p *GetOrganizationMembersListRequest) toProto() *pbOrg.ListOrganizationMembersRequest {
+	return &pbOrg.ListOrganizationMembersRequest{
+		OrganizationId: p.OrganizationID,
+	}
+}
+
+func (p *UserIDsRequest) toProto() *pb.GetUsersByIDsRequest {
+	return &pb.GetUsersByIDsRequest{
+		UserIds: p.UserIDs,
+	}
+}
+
+func (p *GetOrganizationRequest) toProto() *pbOrg.GetOrganizationRequest {
+	return &pbOrg.GetOrganizationRequest{
+		OrganizationId: p.OrganizationID,
+	}
+}
+
+func (p *GetUserByEmailRequest) toProto() *pb.GetUserByEmailRequest {
+	return &pb.GetUserByEmailRequest{
+		Email: p.Email,
+	}
+}
+
+func (p *AddOrganizationMemberRequest) toProto() *pbOrg.AddMemberRequest {
+	return &pbOrg.AddMemberRequest{
+		OrganizationId: p.OrganizationID,
+		UserId:         p.UserID,
+		Role:           p.Role,
+	}
+}
+
+func (p *RemoveOrganizationMemberRequest) toProto() *pbOrg.RemoveMemberRequest {
+	return &pbOrg.RemoveMemberRequest{
+		OrganizationId: p.OrganizationID,
+		UserId:         p.UserID,
+	}
+}
+
+func (p *UpdateOrganizationMemberRoleRequest) toProto() *pbOrg.UpdateMemberRoleRequest {
+	return &pbOrg.UpdateMemberRoleRequest{
+		OrganizationId: p.OrganizationID,
+		UserId:         p.UserID,
+		Role:           p.Role,
 	}
 }

@@ -4,36 +4,31 @@ package organization;
 
 option go_package = "shared/proto/organization;organization";
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 service OrganizationService {
 
-  // Create a new organization owned by a user
   rpc CreateOrganization (CreateOrganizationRequest)
     returns (CreateOrganizationResponse);
 
-  // Get organization by ID
   rpc GetOrganization (GetOrganizationRequest)
     returns (GetOrganizationResponse);
 
-  // List organizations a user belongs to
   rpc ListUserOrganizations (ListUserOrganizationsRequest)
     returns (ListUserOrganizationsResponse);
 
-  // Add a user to an organization
+  rpc ListOrganizationMembers (ListOrganizationMembersRequest)
+    returns (ListOrganizationMembersResponse);
+
   rpc AddMember (AddMemberRequest)
     returns (AddMemberResponse);
 
-  // Remove a user from an organization
   rpc RemoveMember (RemoveMemberRequest)
     returns (RemoveMemberResponse);
 
-  // Change member role
   rpc UpdateMemberRole (UpdateMemberRoleRequest)
     returns (UpdateMemberRoleResponse);
 
-  // Deactivate / delete organization
   rpc DeactivateOrganization (DeactivateOrganizationRequest)
     returns (google.protobuf.Empty);
 }
@@ -47,14 +42,22 @@ message Organization {
   string name = 2;
   string owner_user_id = 3;
   bool is_active = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  int64 created_at = 5;
+  int64 updated_at = 6;
 }
 
 message OrganizationMember {
   string user_id = 1;
   string role = 2; // OWNER, ADMIN, MEMBER
-  google.protobuf.Timestamp joined_at = 3;
+  int64 joined_at = 3;
+}
+
+message ListOrganizationMembersRequest {
+  string organization_id = 1;
+}
+
+message ListOrganizationMembersResponse {
+  repeated OrganizationMember members = 1;
 }
 
 // --------------------

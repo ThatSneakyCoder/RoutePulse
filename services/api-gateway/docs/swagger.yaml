@@ -42,12 +42,35 @@ definitions:
     required:
     - email
     type: object
+  main.GetOrganizationMembersListResponse:
+    properties:
+      members:
+        items:
+          $ref: '#/definitions/main.OrganizationMemberResponse'
+        type: array
+    type: object
   main.HealthCheckResponse:
     properties:
       status:
         type: string
       version:
         type: string
+    type: object
+  main.InviteUserRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      role:
+        type: string
+    required:
+    - email
+    - role
+    type: object
+  main.InviteUserResponse:
+    properties:
+      success:
+        type: boolean
     type: object
   main.ListUserOrganizationsResponse:
     properties:
@@ -76,6 +99,21 @@ definitions:
       expires_at:
         type: integer
     type: object
+  main.OrganizationMemberResponse:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      joined_at:
+        type: integer
+      last_name:
+        type: string
+      role:
+        type: string
+      user_id:
+        type: string
+    type: object
   main.OrganizationResponse:
     properties:
       created_at:
@@ -90,6 +128,11 @@ definitions:
         type: string
       updated_at:
         type: integer
+    type: object
+  main.RemoveOrganizationMemberResponse:
+    properties:
+      success:
+        type: boolean
     type: object
   main.ResetPasswordRequest:
     properties:
@@ -111,6 +154,18 @@ definitions:
     properties:
       count:
         type: integer
+    type: object
+  main.UpdateMemberRoleBody:
+    properties:
+      role:
+        type: string
+    required:
+    - role
+    type: object
+  main.UpdateOrganizationMemberRoleResponse:
+    properties:
+      success:
+        type: boolean
     type: object
   main.UserResponse:
     properties:
@@ -500,6 +555,257 @@ paths:
       security:
       - BearerAuth: []
       summary: Create organization
+      tags:
+      - Organizations
+  /organizations/{orgId}:
+    get:
+      description: Get details of a specific organization by ID
+      parameters:
+      - description: Organization ID
+        in: path
+        name: orgId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.OrganizationResponse'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Organization not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get organization
+      tags:
+      - Organizations
+  /organizations/{orgId}/invite:
+    post:
+      consumes:
+      - application/json
+      description: Adds an existing user to an organization with a role
+      parameters:
+      - description: Organization ID
+        in: path
+        name: orgId
+        required: true
+        type: string
+      - description: Invite user payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.InviteUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.InviteUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: User already member
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Invite user to organization
+      tags:
+      - Organizations
+  /organizations/{orgId}/members:
+    get:
+      description: Returns members of an organization enriched with user profile data
+      parameters:
+      - description: Organization ID
+        in: path
+        name: orgId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.GetOrganizationMembersListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get organization members
+      tags:
+      - Organizations
+  /organizations/{orgId}/members/{userId}:
+    delete:
+      description: Removes a user from an organization
+      parameters:
+      - description: Organization ID
+        in: path
+        name: orgId
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.RemoveOrganizationMemberResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Remove organization member
+      tags:
+      - Organizations
+  /organizations/{orgId}/members/{userId}/role:
+    put:
+      consumes:
+      - application/json
+      description: Updates the role of a member within an organization
+      parameters:
+      - description: Organization ID
+        in: path
+        name: orgId
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Role update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateMemberRoleBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.UpdateOrganizationMemberRoleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update organization member role
       tags:
       - Organizations
   /user/me:

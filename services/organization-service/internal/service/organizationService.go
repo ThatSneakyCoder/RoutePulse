@@ -118,3 +118,144 @@ func (s *OrganizationService) ListOrganizationsByUserID(
 
 	return orgs, nil
 }
+
+func (s *OrganizationService) ListOrganizationMembers(
+	ctx context.Context,
+	organizationID string,
+) ([]*domain.OrganizationMember, error) {
+
+	s.log.Infow("service: listing organization members",
+		"organization_id", organizationID,
+	)
+
+	orgID, err := uuid.Parse(organizationID)
+	if err != nil {
+		s.log.Warnw("invalid organization id",
+			"organization_id", organizationID,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	members, err := s.repo.ListMembersByOrganizationID(ctx, orgID)
+	if err != nil {
+		s.log.Errorw("failed to list organization members",
+			"organization_id", organizationID,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	s.log.Infow("organization members fetched",
+		"organization_id", organizationID,
+		"count", len(members),
+	)
+
+	return members, nil
+}
+
+func (s *OrganizationService) GetOrganization(
+	ctx context.Context,
+	organizationID string,
+) (*domain.Organization, error) {
+
+	s.log.Infow("get organization request received",
+		"organization_id", organizationID,
+	)
+
+	orgID, err := uuid.Parse(organizationID)
+	if err != nil {
+		s.log.Warnw("invalid organization id",
+			"organization_id", organizationID,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	org, err := s.repo.GetByID(ctx, orgID)
+	if err != nil {
+		s.log.Errorw("failed to fetch organization",
+			"organization_id", organizationID,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return org, nil
+}
+
+func (s *OrganizationService) AddMember(
+	ctx context.Context,
+	organizationID string,
+	userID string,
+	role string,
+) error {
+
+	s.log.Infow("service: add member",
+		"organization_id", organizationID,
+		"user_id", userID,
+		"role", role,
+	)
+
+	orgID, err := uuid.Parse(organizationID)
+	if err != nil {
+		return err
+	}
+
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		return err
+	}
+
+	return s.repo.AddMember(ctx, orgID, uid, role)
+}
+
+func (s *OrganizationService) RemoveMember(
+	ctx context.Context,
+	organizationID string,
+	userID string,
+) error {
+
+	s.log.Infow("service: remove organization member",
+		"organization_id", organizationID,
+		"user_id", userID,
+	)
+
+	orgID, err := uuid.Parse(organizationID)
+	if err != nil {
+		return err
+	}
+
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		return err
+	}
+
+	return s.repo.RemoveMember(ctx, orgID, uid)
+}
+
+func (s *OrganizationService) UpdateMemberRole(
+	ctx context.Context,
+	organizationID string,
+	userID string,
+	role string,
+) error {
+
+	s.log.Infow("service: update organization member role",
+		"organization_id", organizationID,
+		"user_id", userID,
+		"role", role,
+	)
+
+	orgID, err := uuid.Parse(organizationID)
+	if err != nil {
+		return err
+	}
+
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		return err
+	}
+
+	return s.repo.UpdateMemberRole(ctx, orgID, uid, role)
+}

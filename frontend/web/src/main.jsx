@@ -20,6 +20,8 @@ import { organizationMutationAction } from "./actions/createOrganizationAction.j
 import { OrganizationDetails } from "./components/DashboardPage/Organizations/OrganizationDetails.jsx";
 import { DashboardError } from "./errors/DashboardError";
 import { dashboardLoader } from "./loaders/DashboardLoader.js";
+import { organizationDetailsLoader } from "./loaders/OrganizationDetailsLoader.js";
+import { organizationDetailsAction } from "./actions/organizationDetailsAction";
 
 const router = createBrowserRouter([
   {
@@ -55,7 +57,12 @@ const router = createBrowserRouter([
                 Component: Organization,
                 action: organizationMutationAction,
               },
-              { path: ":orgId", Component: OrganizationDetails },
+              {
+                path: ":orgId",
+                Component: OrganizationDetails,
+                loader: organizationDetailsLoader,
+                action: organizationDetailsAction,
+              },
             ],
           },
 

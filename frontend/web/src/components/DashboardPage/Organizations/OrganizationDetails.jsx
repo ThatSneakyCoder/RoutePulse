@@ -1,60 +1,22 @@
-import { useParams } from "react-router-dom";
+import { useLoaderData, Form } from "react-router-dom";
 import { Users, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
 
 export const OrganizationDetails = () => {
-  const { orgId } = useParams();
-
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [role, setRole] = useState("Dispatcher");
-
-  const [members, setMembers] = useState([
-    {
-      id: 1,
-      first_name: "John",
-      last_name: "Doe",
-      email: "owner@routepulse.com",
-      role: "Owner",
-      joined_at: "2025-01-10",
-    },
-    {
-      id: 2,
-      first_name: "Sarah",
-      last_name: "Lee",
-      email: "ops@routepulse.com",
-      role: "Ops",
-      joined_at: "2025-02-02",
-    },
-  ]);
-
-  const inviteUser = () => {
-    if (!inviteEmail.trim()) return;
-
-    const newMember = {
-      id: Date.now(),
-      first_name: "New",
-      last_name: "User",
-      email: inviteEmail,
-      role,
-      joined_at: new Date().toISOString(),
-    };
-
-    setMembers((prev) => [...prev, newMember]);
-    setInviteEmail("");
-  };
-
-  const removeUser = (id) => {
-    setMembers((prev) => prev.filter((m) => m.id !== id));
-  };
+  const { organization, members } = useLoaderData();
 
   return (
     <section className="p-8 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-xl font-semibold text-white">
-          Organization #{orgId}
+          {organization.name}
         </h1>
-        <p className="text-sm text-slate-400">
+
+        <p className="text-xs text-slate-400">
+          ID: {organization.organization_id}
+        </p>
+
+        <p className="text-sm text-slate-400 mt-1">
           Manage organization members, fleet and permissions
         </p>
       </div>
@@ -77,17 +39,17 @@ export const OrganizationDetails = () => {
           Invite User
         </div>
 
-        <div className="flex gap-3 flex-wrap">
+        <Form method="post" className="flex gap-3 flex-wrap">
           <input
-            value={inviteEmail}
-            onChange={(e) => setInviteEmail(e.target.value)}
+            name="email"
             placeholder="user@email.com"
+            required
             className="bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-white w-64"
           />
 
           <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+            name="role"
+            defaultValue="Dispatcher"
             className="bg-slate-800 border border-slate-700 rounded-md px-2 py-2 text-sm text-white"
           >
             <option>Dispatcher</option>
@@ -95,13 +57,15 @@ export const OrganizationDetails = () => {
             <option>Owner</option>
           </select>
 
+          <input type="hidden" name="intent" value="invite-member" />
+
           <button
-            onClick={inviteUser}
+            type="submit"
             className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-md transition"
           >
             Send Invite
           </button>
-        </div>
+        </Form>
       </div>
 
       {/* Members */}
@@ -128,7 +92,10 @@ export const OrganizationDetails = () => {
                 <span className="text-white font-medium">
                   {m.first_name} {m.last_name}
                 </span>
-                <span className="text-xs text-slate-400">{m.email}</span>
+
+                <span className="text-xs text-slate-400">
+                  {m.email}
+                </span>
               </div>
 
               <RoleBadge role={m.role} />
@@ -137,12 +104,26 @@ export const OrganizationDetails = () => {
                 {new Date(m.joined_at).toLocaleDateString()}
               </div>
 
-              <button
-                onClick={() => removeUser(m.id)}
-                className="text-red-400 hover:text-red-300 transition"
-              >
-                <Trash2 size={16} />
-              </button>
+              <Form method="post">
+                <input
+                  type="hidden"
+                  name="intent"
+                  value="remove-member"
+                />
+
+                <input
+                  type="hidden"
+                  name="userId"
+                  value={m.id}
+                />
+
+                <button
+                  type="submit"
+                  className="text-red-400 hover:text-red-300 transition"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </Form>
             </div>
           ))}
         </div>
@@ -152,6 +133,9 @@ export const OrganizationDetails = () => {
 };
 
 const RoleBadge = ({ role }) => {
+  const normalizedRole =
+    role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+
   const colors = {
     Owner: "bg-purple-500/10 text-purple-300 border-purple-500/20",
     Ops: "bg-blue-500/10 text-blue-300 border-blue-500/20",
@@ -159,8 +143,12 @@ const RoleBadge = ({ role }) => {
   };
 
   return (
-    <span className={`text-xs px-2 py-1 rounded border w-fit ${colors[role]}`}>
-      {role}
+    <span
+      className={`text-xs px-2 py-1 rounded border w-fit ${
+        colors[normalizedRole] || "bg-slate-700 text-slate-300 border-slate-600"
+      }`}
+    >
+      {normalizedRole}
     </span>
   );
 };

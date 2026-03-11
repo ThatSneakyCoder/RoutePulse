@@ -58,6 +58,33 @@ func (h *gRPCHandler) CreateOrganization(
 	}, nil
 }
 
+func (h *gRPCHandler) GetOrganization(
+	ctx context.Context,
+	req *pb.GetOrganizationRequest,
+) (*pb.GetOrganizationResponse, error) {
+
+	h.log.Infow("GetOrganization called",
+		"organization_id", req.OrganizationId,
+	)
+
+	org, err := h.service.GetOrganization(ctx, req.OrganizationId)
+	if err != nil {
+		h.log.Errorw("failed to fetch organization",
+			"organization_id", req.OrganizationId,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	h.log.Infow("organization fetched successfully",
+		"organization_id", org.ID,
+	)
+
+	return &pb.GetOrganizationResponse{
+		Organization: OrganizationToProto(org),
+	}, nil
+}
+
 func (h *gRPCHandler) ListUserOrganizations(
 	ctx context.Context,
 	req *pb.ListUserOrganizationsRequest,
@@ -83,5 +110,126 @@ func (h *gRPCHandler) ListUserOrganizations(
 
 	return &pb.ListUserOrganizationsResponse{
 		Organizations: OrganizationsToProto(orgs),
+	}, nil
+}
+
+func (h *gRPCHandler) ListOrganizationMembers(
+	ctx context.Context,
+	req *pb.ListOrganizationMembersRequest,
+) (*pb.ListOrganizationMembersResponse, error) {
+	h.log.Infow("ListOrganizationMembers called",
+		"organization_id", req.OrganizationId,
+	)
+
+	members, err := h.service.ListOrganizationMembers(ctx, req.OrganizationId)
+	if err != nil {
+		h.log.Errorw("failed to list organization members",
+			"organization_id", req.OrganizationId,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	h.log.Infow("organization members fetched successfully",
+		"organization_id", req.OrganizationId,
+		"count", len(members),
+	)
+
+	return &pb.ListOrganizationMembersResponse{
+		Members: OrganizationMembersToProto(members),
+	}, nil
+}
+
+func (h *gRPCHandler) AddMember(
+	ctx context.Context,
+	req *pb.AddMemberRequest,
+) (*pb.AddMemberResponse, error) {
+
+	h.log.Infow("AddMember called",
+		"organization_id", req.OrganizationId,
+		"user_id", req.UserId,
+		"role", req.Role,
+	)
+
+	err := h.service.AddMember(
+		ctx,
+		req.OrganizationId,
+		req.UserId,
+		req.Role,
+	)
+
+	if err != nil {
+		h.log.Errorw("failed to add member",
+			"organization_id", req.OrganizationId,
+			"user_id", req.UserId,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return &pb.AddMemberResponse{
+		Success: true,
+	}, nil
+}
+
+func (h *gRPCHandler) RemoveMember(
+	ctx context.Context,
+	req *pb.RemoveMemberRequest,
+) (*pb.RemoveMemberResponse, error) {
+
+	h.log.Infow("RemoveMember called",
+		"organization_id", req.OrganizationId,
+		"user_id", req.UserId,
+	)
+
+	err := h.service.RemoveMember(
+		ctx,
+		req.OrganizationId,
+		req.UserId,
+	)
+
+	if err != nil {
+		h.log.Errorw("failed to remove member",
+			"organization_id", req.OrganizationId,
+			"user_id", req.UserId,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return &pb.RemoveMemberResponse{
+		Success: true,
+	}, nil
+}
+
+func (h *gRPCHandler) UpdateMemberRole(
+	ctx context.Context,
+	req *pb.UpdateMemberRoleRequest,
+) (*pb.UpdateMemberRoleResponse, error) {
+
+	h.log.Infow("UpdateMemberRole called",
+		"organization_id", req.OrganizationId,
+		"user_id", req.UserId,
+		"role", req.Role,
+	)
+
+	err := h.service.UpdateMemberRole(
+		ctx,
+		req.OrganizationId,
+		req.UserId,
+		req.Role,
+	)
+
+	if err != nil {
+		h.log.Errorw("failed to update member role",
+			"organization_id", req.OrganizationId,
+			"user_id", req.UserId,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return &pb.UpdateMemberRoleResponse{
+		Success: true,
 	}, nil
 }

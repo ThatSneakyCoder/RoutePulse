@@ -113,3 +113,70 @@ type ListUserOrganizationsRequest struct {
 type ListUserOrganizationsResponse struct {
 	Organizations []OrganizationResponse `json:"organizations"`
 }
+
+type GetOrganizationMembersListRequest struct {
+	OrganizationID string `json:"organization_id"`
+}
+
+type GetOrganizationRequest struct {
+	OrganizationID string `json:"organization_id"`
+}
+
+type OrganizationMemberResponse struct {
+	UserID    string `json:"user_id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Role      string `json:"role"`
+	JoinedAt  int64  `json:"joined_at"`
+}
+
+type GetOrganizationMembersListResponse struct {
+	Members []OrganizationMemberResponse `json:"members"`
+}
+
+type UserIDsRequest struct {
+	UserIDs []string
+}
+
+type GetUserByEmailRequest struct {
+	Email string
+}
+
+type AddOrganizationMemberRequest struct {
+	OrganizationID string
+	UserID         string
+	Role           string
+}
+
+type InviteUserRequest struct {
+	Email string `json:"email" validate:"required,email,max=255"`
+	Role  string `json:"role" validate:"required"`
+}
+
+type InviteUserResponse struct {
+	Success bool `json:"success"`
+}
+
+type RemoveOrganizationMemberRequest struct {
+	OrganizationID string
+	UserID         string
+}
+
+type RemoveOrganizationMemberResponse struct {
+	Success bool `json:"success"`
+}
+
+type UpdateMemberRoleBody struct {
+	Role string `json:"role" validate:"required"`
+}
+
+type UpdateOrganizationMemberRoleRequest struct {
+	OrganizationID string
+	UserID         string
+	Role           string `json:"role" validate:"required"`
+}
+
+type UpdateOrganizationMemberRoleResponse struct {
+	Success bool `json:"success"`
+}
