@@ -26,7 +26,7 @@ func main() {
 
 	// Logger
 	log := logger.Init(logger.Config{
-		ServiceName: "identity-service",
+		ServiceName: "fleet-service",
 		Env:         cfg.env,
 	})
 	defer log.Sync()

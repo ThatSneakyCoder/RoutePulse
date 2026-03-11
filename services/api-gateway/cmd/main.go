@@ -96,6 +96,7 @@ func main() {
 		identityClient:     identityClient,
 		analyticsClient:    analyticsClient,
 		organizationClient: organizationClient,
+		fleetClient:        fleetClient,
 	}
 
 	app.limiters = rateLimiters{

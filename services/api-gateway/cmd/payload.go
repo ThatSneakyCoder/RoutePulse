@@ -180,3 +180,28 @@ type UpdateOrganizationMemberRoleRequest struct {
 type UpdateOrganizationMemberRoleResponse struct {
 	Success bool `json:"success"`
 }
+
+type CreateVehicleRequest struct {
+	OrganizationID string `json:"organization_id" validate:"required,uuid"`
+	PlateNumber    string `json:"plate_number" validate:"required,max=50"`
+	VehicleType    string `json:"vehicle_type" validate:"max=50"`
+	Capacity       int32  `json:"capacity" validate:"gte=0"`
+}
+
+type VehicleResponse struct {
+	VehicleID      string `json:"vehicle_id"`
+	OrganizationID string `json:"organization_id"`
+	PlateNumber    string `json:"plate_number"`
+	VehicleType    string `json:"vehicle_type" validate:"required,oneof=truck van bike car"`
+	Capacity       int32  `json:"capacity"`
+	Status         string `json:"status"`
+	CreatedAt      int64  `json:"created_at"`
+}
+
+type ListVehiclesRequest struct {
+	OrganizationID string `json:"organization_id" validate:"required,uuid"`
+}
+
+type ListVehiclesResponse struct {
+	Vehicles []VehicleResponse `json:"vehicles"`
+}

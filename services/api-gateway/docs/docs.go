@@ -393,6 +393,113 @@ const docTemplate = `{
                 }
             }
         },
+        "/fleet/vehicles": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns vehicles belonging to an organization",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fleet"
+                ],
+                "summary": "List vehicles",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organization ID",
+                        "name": "organization_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.ListVehiclesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a vehicle in the fleet service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fleet"
+                ],
+                "summary": "Create vehicle",
+                "parameters": [
+                    {
+                        "description": "Create vehicle payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CreateVehicleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.VehicleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Checks API health and connectivity with identity service",
@@ -1010,6 +1117,30 @@ const docTemplate = `{
                 }
             }
         },
+        "main.CreateVehicleRequest": {
+            "type": "object",
+            "required": [
+                "organization_id",
+                "plate_number"
+            ],
+            "properties": {
+                "capacity": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "organization_id": {
+                    "type": "string"
+                },
+                "plate_number": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "vehicle_type": {
+                    "type": "string",
+                    "maxLength": 50
+                }
+            }
+        },
         "main.ForgotPasswordRequest": {
             "type": "object",
             "required": [
@@ -1075,6 +1206,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/main.OrganizationResponse"
+                    }
+                }
+            }
+        },
+        "main.ListVehiclesResponse": {
+            "type": "object",
+            "properties": {
+                "vehicles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.VehicleResponse"
                     }
                 }
             }
@@ -1244,6 +1386,41 @@ const docTemplate = `{
                 },
                 "valid": {
                     "type": "boolean"
+                }
+            }
+        },
+        "main.VehicleResponse": {
+            "type": "object",
+            "required": [
+                "vehicle_type"
+            ],
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "integer"
+                },
+                "organization_id": {
+                    "type": "string"
+                },
+                "plate_number": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "vehicle_id": {
+                    "type": "string"
+                },
+                "vehicle_type": {
+                    "type": "string",
+                    "enum": [
+                        "truck",
+                        "van",
+                        "bike",
+                        "car"
+                    ]
                 }
             }
         },

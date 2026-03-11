@@ -3,6 +3,7 @@ package main
 import (
 	pb "github.com/ThatSneakyCoder/RoutePulse/shared/proto/identity"
 	pbOrg "github.com/ThatSneakyCoder/RoutePulse/shared/proto/organization"
+	pbFleet "github.com/ThatSneakyCoder/RoutePulse/shared/proto/fleet"
 )
 
 func (p *CreateUserRequest) toProto() *pb.RegisterUserRequest {
@@ -105,5 +106,20 @@ func (p *UpdateOrganizationMemberRoleRequest) toProto() *pbOrg.UpdateMemberRoleR
 		OrganizationId: p.OrganizationID,
 		UserId:         p.UserID,
 		Role:           p.Role,
+	}
+}
+
+func (p *CreateVehicleRequest) toProto() *pbFleet.CreateVehicleRequest {
+	return &pbFleet.CreateVehicleRequest{
+		OrganizationId: p.OrganizationID,
+		PlateNumber:    p.PlateNumber,
+		VehicleType:    p.VehicleType,
+		Capacity:       p.Capacity,
+	}
+}
+
+func (p *ListVehiclesRequest) toProto() *pbFleet.ListVehiclesRequest {
+	return &pbFleet.ListVehiclesRequest{
+		OrganizationId: p.OrganizationID,
 	}
 }

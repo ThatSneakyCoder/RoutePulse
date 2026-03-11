@@ -34,6 +34,23 @@ definitions:
       user:
         $ref: '#/definitions/main.UserResponse'
     type: object
+  main.CreateVehicleRequest:
+    properties:
+      capacity:
+        minimum: 0
+        type: integer
+      organization_id:
+        type: string
+      plate_number:
+        maxLength: 50
+        type: string
+      vehicle_type:
+        maxLength: 50
+        type: string
+    required:
+    - organization_id
+    - plate_number
+    type: object
   main.ForgotPasswordRequest:
     properties:
       email:
@@ -77,6 +94,13 @@ definitions:
       organizations:
         items:
           $ref: '#/definitions/main.OrganizationResponse'
+        type: array
+    type: object
+  main.ListVehiclesResponse:
+    properties:
+      vehicles:
+        items:
+          $ref: '#/definitions/main.VehicleResponse'
         type: array
     type: object
   main.LoginUserRequest:
@@ -191,6 +215,30 @@ definitions:
         $ref: '#/definitions/main.UserResponse'
       valid:
         type: boolean
+    type: object
+  main.VehicleResponse:
+    properties:
+      capacity:
+        type: integer
+      created_at:
+        type: integer
+      organization_id:
+        type: string
+      plate_number:
+        type: string
+      status:
+        type: string
+      vehicle_id:
+        type: string
+      vehicle_type:
+        enum:
+        - truck
+        - van
+        - bike
+        - car
+        type: string
+    required:
+    - vehicle_type
     type: object
   main.VehiclesInTransitResponse:
     properties:
@@ -470,6 +518,74 @@ paths:
       summary: Verify user email
       tags:
       - Users
+  /fleet/vehicles:
+    get:
+      description: Returns vehicles belonging to an organization
+      parameters:
+      - description: Organization ID
+        in: query
+        name: organization_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListVehiclesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List vehicles
+      tags:
+      - Fleet
+    post:
+      consumes:
+      - application/json
+      description: Creates a vehicle in the fleet service
+      parameters:
+      - description: Create vehicle payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateVehicleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.VehicleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create vehicle
+      tags:
+      - Fleet
   /health:
     get:
       description: Checks API health and connectivity with identity service

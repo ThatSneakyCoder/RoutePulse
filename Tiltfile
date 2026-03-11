@@ -72,22 +72,22 @@ docker_build(
 
 ### fleet service postgres Migration Job Start ###
 
-# k8s_yaml('./infra/development/kubernetes/fleet/fleet-migrate-job.yaml')
+k8s_yaml('./infra/development/kubernetes/fleet/fleet-migrate-job.yaml')
 
-# k8s_resource(
-#   'fleet-db-migrate',
-#   resource_deps=['postgres-fleet', 'fleet-service-compile'],
-#   labels='migrations'
-# )
+k8s_resource(
+  'fleet-db-migrate',
+  resource_deps=['postgres-fleet', 'fleet-service-compile'],
+  labels='migrations'
+)
 
-# docker_build(
-#   'routepulse/fleet-migrate',
-#   '.',
-#   dockerfile='./infra/development/docker/fleet-migrate.Dockerfile',
-#   only=[
-#     './services/fleet-service/internal/migrate/migrations',
-#   ],
-# )
+docker_build(
+  'routepulse/fleet-migrate',
+  '.',
+  dockerfile='./infra/development/docker/fleet-migrate.Dockerfile',
+  only=[
+    './services/fleet-service/internal/migrate/migrations',
+  ],
+)
 
 ### fleet service postgres Migration Job End ###
 

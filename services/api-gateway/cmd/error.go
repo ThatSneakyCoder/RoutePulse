@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 )
+
+var errMissingOrganizationID = errors.New("organization_id is required")
 
 func (app *application) internalServerError(w http.ResponseWriter, r *http.Request, err error) {
 	app.log.Errorw("internal server error",
