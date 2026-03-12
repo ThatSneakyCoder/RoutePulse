@@ -675,7 +675,7 @@ func (app *application) updateDriverStatusHandler(w http.ResponseWriter, r *http
 		return
 	}
 
-		if err := app.jsonResponse(w, http.StatusOK, resp); err != nil {
+	if err := app.jsonResponse(w, http.StatusOK, resp); err != nil {
 
 		app.log.Errorw(
 			"failed to update driver status",
@@ -686,10 +686,101 @@ func (app *application) updateDriverStatusHandler(w http.ResponseWriter, r *http
 	}
 }
 
+// startTripHandler godoc
+//
+//	@Summary		Start trip
+//	@Description	Marks trip as started and sets start_time
+//	@Tags			Fleet
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			request	body	StartTripRequest	true	"Start trip payload"
+//	@Success		200	{object}	map[string]bool
+//	@Failure		400	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/fleet/trips/{tripId}/start [post]
 func (app *application) startTripHandler(w http.ResponseWriter, r *http.Request) {
 
+	var payload StartTripRequest
+
+	if err := readJSON(w, r, &payload); err != nil {
+		app.log.Errorw("failed reading start trip payload", "error", err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	if err := Validate.Struct(payload); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	resp, err := app.fleetClient.Client.StartTrip(
+		r.Context(),
+		payload.toProto(),
+	)
+
+	if err != nil {
+		app.log.Errorw("fleet service StartTrip failed", "error", err)
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	if err := app.jsonResponse(w, http.StatusOK, resp); err != nil {
+
+		app.log.Errorw(
+			"failed to start trip",
+			"error", err,
+		)
+
+		app.internalServerError(w, r, err)
+	}
 }
 
+// completeTripHandler godoc
+//
+//	@Summary		Complete trip
+//	@Description	Marks trip as completed and sets end_time
+//	@Tags			Fleet
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Param			request	body	CompleteTripRequest	true	"Complete trip payload"
+//	@Success		200	{object}	map[string]bool
+//	@Failure		400	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/fleet/trips/{tripId}/complete [post]
 func (app *application) completeTripHandler(w http.ResponseWriter, r *http.Request) {
 
+	var payload CompleteTripRequest
+
+	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	if err := Validate.Struct(payload); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	resp, err := app.fleetClient.Client.CompleteTrip(
+		r.Context(),
+		payload.toProto(),
+	)
+
+	if err != nil {
+		app.log.Errorw("fleet service CompleteTrip failed", "error", err)
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	if err := app.jsonResponse(w, http.StatusOK, resp); err != nil {
+
+		app.log.Errorw(
+			"failed to complete trip",
+			"error", err,
+		)
+
+		app.internalServerError(w, r, err)
+	}
 }

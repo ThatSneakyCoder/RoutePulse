@@ -280,3 +280,11 @@ type ListTripsRequest struct {
 type ListTripsResponse struct {
 	Trips []TripResponse `json:"trips"`
 }
+
+type StartTripRequest struct {
+	TripID string `json:"trip_id" validate:"required,uuid"`
+}
+
+type CompleteTripRequest struct {
+	TripID string `json:"trip_id" validate:"required,uuid"`
+}

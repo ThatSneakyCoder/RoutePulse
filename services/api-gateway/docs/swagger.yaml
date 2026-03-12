@@ -1,5 +1,12 @@
 basePath: /v1
 definitions:
+  main.CompleteTripRequest:
+    properties:
+      trip_id:
+        type: string
+    required:
+    - trip_id
+    type: object
   main.CreateDriverRequest:
     properties:
       first_name:
@@ -234,6 +241,13 @@ definitions:
     - email
     - new_password
     - token
+    type: object
+  main.StartTripRequest:
+    properties:
+      trip_id:
+        type: string
+    required:
+    - trip_id
     type: object
   main.TripResponse:
     properties:
@@ -863,6 +877,82 @@ paths:
       security:
       - BearerAuth: []
       summary: Create trip
+      tags:
+      - Fleet
+  /fleet/trips/{tripId}/complete:
+    post:
+      consumes:
+      - application/json
+      description: Marks trip as completed and sets end_time
+      parameters:
+      - description: Complete trip payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CompleteTripRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Complete trip
+      tags:
+      - Fleet
+  /fleet/trips/{tripId}/start:
+    post:
+      consumes:
+      - application/json
+      description: Marks trip as started and sets start_time
+      parameters:
+      - description: Start trip payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.StartTripRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Start trip
       tags:
       - Fleet
   /fleet/vehicles:

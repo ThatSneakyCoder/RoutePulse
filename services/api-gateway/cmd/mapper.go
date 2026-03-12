@@ -189,3 +189,15 @@ func (p *UpdateDriverStatusRequest) toProto() *pbFleet.UpdateDriverStatusRequest
 		Status:   p.Status,
 	}
 }
+
+func (p *StartTripRequest) toProto() *pbFleet.StartTripRequest {
+	return &pbFleet.StartTripRequest{
+		TripId: p.TripID,
+	}
+}
+
+func (p *CompleteTripRequest) toProto() *pbFleet.CompleteTripRequest {
+	return &pbFleet.CompleteTripRequest{
+		TripId: p.TripID,
+	}
+}

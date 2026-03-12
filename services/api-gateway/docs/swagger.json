@@ -724,6 +724,126 @@
                 }
             }
         },
+        "/fleet/trips/{tripId}/complete": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marks trip as completed and sets end_time",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fleet"
+                ],
+                "summary": "Complete trip",
+                "parameters": [
+                    {
+                        "description": "Complete trip payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CompleteTripRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/fleet/trips/{tripId}/start": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marks trip as started and sets start_time",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fleet"
+                ],
+                "summary": "Start trip",
+                "parameters": [
+                    {
+                        "description": "Start trip payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.StartTripRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/fleet/vehicles": {
             "get": {
                 "security": [
@@ -1570,6 +1690,17 @@
         }
     },
     "definitions": {
+        "main.CompleteTripRequest": {
+            "type": "object",
+            "required": [
+                "trip_id"
+            ],
+            "properties": {
+                "trip_id": {
+                    "type": "string"
+                }
+            }
+        },
         "main.CreateDriverRequest": {
             "type": "object",
             "required": [
@@ -1914,6 +2045,17 @@
                     "minLength": 8
                 },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.StartTripRequest": {
+            "type": "object",
+            "required": [
+                "trip_id"
+            ],
+            "properties": {
+                "trip_id": {
                     "type": "string"
                 }
             }

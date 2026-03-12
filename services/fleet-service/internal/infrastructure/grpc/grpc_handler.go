@@ -495,3 +495,63 @@ func (h *gRPCHandler) UpdateDriverStatus(
 		Success: true,
 	}, nil
 }
+
+func (h *gRPCHandler) StartTrip(
+	ctx context.Context,
+	req *pb.StartTripRequest,
+) (*pb.StartTripResponse, error) {
+
+	h.log.Infow(
+		"grpc start trip request received",
+		"trip_id", req.TripId,
+	)
+
+	err := h.service.StartTrip(ctx, req.TripId)
+	if err != nil {
+
+		h.log.Errorw(
+			"grpc start trip failed",
+			"trip_id", req.TripId,
+			"error", err,
+		)
+
+		return nil, err
+	}
+
+	h.log.Infow(
+		"trip started successfully",
+		"trip_id", req.TripId,
+	)
+
+	return &pb.StartTripResponse{Success: true}, nil
+}
+
+func (h *gRPCHandler) CompleteTrip(
+	ctx context.Context,
+	req *pb.CompleteTripRequest,
+) (*pb.CompleteTripResponse, error) {
+
+	h.log.Infow(
+		"grpc complete trip request received",
+		"trip_id", req.TripId,
+	)
+
+	err := h.service.CompleteTrip(ctx, req.TripId)
+	if err != nil {
+
+		h.log.Errorw(
+			"grpc complete trip failed",
+			"trip_id", req.TripId,
+			"error", err,
+		)
+
+		return nil, err
+	}
+
+	h.log.Infow(
+		"trip completed successfully",
+		"trip_id", req.TripId,
+	)
+
+	return &pb.CompleteTripResponse{Success: true}, nil
+}

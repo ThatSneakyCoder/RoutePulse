@@ -892,3 +892,169 @@ func (s *FleetStore) UpdateDriverStatus(
 
 	return nil
 }
+
+func (s *FleetStore) StartTrip(ctx context.Context, tripID string) error {
+
+	s.log.Infow("starting trip", "trip_id", tripID)
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	query := `
+	UPDATE trips
+	SET
+		status = 'active',
+		start_time = now()
+	WHERE trip_id = $1
+	AND status = 'created'
+	`
+
+	res, err := s.db.ExecContext(ctx, query, tripID)
+	if err != nil {
+
+		s.log.Errorw(
+			"failed to start trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	rows, err := res.RowsAffected()
+	if err == nil && rows == 0 {
+
+		s.log.Warnw(
+			"trip not found or already started",
+			"trip_id", tripID,
+		)
+
+		return ErrNotFound
+	}
+
+	s.log.Infow(
+		"trip started successfully",
+		"trip_id", tripID,
+	)
+
+	return nil
+}
+
+func (s *FleetStore) CompleteTrip(ctx context.Context, tripID string) error {
+
+	s.log.Infow("completing trip", "trip_id", tripID)
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	query := `
+	UPDATE trips
+	SET
+		status = 'completed',
+		end_time = now()
+	WHERE trip_id = $1
+	AND status = 'active'
+	`
+
+	res, err := s.db.ExecContext(ctx, query, tripID)
+	if err != nil {
+
+		s.log.Errorw(
+			"failed to complete trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	rows, err := res.RowsAffected()
+	if err == nil && rows == 0 {
+
+		s.log.Warnw(
+			"trip not found or not active",
+			"trip_id", tripID,
+		)
+
+		return ErrNotFound
+	}
+
+	s.log.Infow(
+		"trip completed successfully",
+		"trip_id", tripID,
+	)
+
+	return nil
+}
+
+func (s *FleetStore) GetTrip(
+	ctx context.Context,
+	tripID string,
+) (*Trip, error) {
+
+	s.log.Infow(
+		"fetching trip",
+		"trip_id", tripID,
+	)
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	query := `
+	SELECT
+		trip_id,
+		organization_id,
+		vehicle_id,
+		driver_id,
+		status,
+		start_time,
+		end_time,
+		created_at
+	FROM trips
+	WHERE trip_id = $1
+	`
+
+	var t Trip
+
+	err := s.db.QueryRowContext(ctx, query, tripID).Scan(
+		&t.ID,
+		&t.OrganizationID,
+		&t.VehicleID,
+		&t.DriverID,
+		&t.Status,
+		&t.StartTime,
+		&t.EndTime,
+		&t.CreatedAt,
+	)
+
+	if err != nil {
+
+		if err == sql.ErrNoRows {
+
+			s.log.Warnw(
+				"trip not found",
+				"trip_id", tripID,
+			)
+
+			return nil, ErrNotFound
+		}
+
+		s.log.Errorw(
+			"failed to fetch trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return nil, err
+	}
+
+	s.log.Infow(
+		"trip fetched successfully",
+		"trip_id", tripID,
+		"vehicle_id", t.VehicleID,
+		"driver_id", t.DriverID,
+		"status", t.Status,
+	)
+
+	return &t, nil
+}

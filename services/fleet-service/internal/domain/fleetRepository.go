@@ -15,8 +15,11 @@ type FleetRepository interface {
 
 	UpdateDriverStatus(ctx context.Context, driverID string, status string) error
 
+	GetTrip(ctx context.Context, tripID string) (*Trip, error)
 	CreateTrip(ctx context.Context, trip *Trip) error
 	ListTrips(ctx context.Context, orgID string) ([]*Trip, error)
+	StartTrip(ctx context.Context, tripID string) error
+	CompleteTrip(ctx context.Context, tripID string) error
 
 	// supporter methods
 	HasActiveTripForVehicle(ctx context.Context, vehicleID string) (bool, error)

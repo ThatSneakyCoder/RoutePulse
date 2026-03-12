@@ -521,6 +521,112 @@ func (s *FleetService) UpdateDriverStatus(
 	return nil
 }
 
+func (s *FleetService) StartTrip(
+	ctx context.Context,
+	tripID string,
+) error {
+
+	s.log.Infow(
+		"service start trip request received",
+		"trip_id", tripID,
+	)
+
+	trip, err := s.repo.GetTrip(ctx, tripID)
+	if err != nil {
+
+		s.log.Errorw(
+			"failed to fetch trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	if err := validateTripCanStart(ctx, s.repo, trip); err != nil {
+
+		s.log.Warnw(
+			"trip start validation failed",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	err = s.repo.StartTrip(ctx, tripID)
+	if err != nil {
+
+		s.log.Errorw(
+			"failed to start trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	s.log.Infow(
+		"trip started successfully",
+		"trip_id", tripID,
+	)
+
+	return nil
+}
+
+func (s *FleetService) CompleteTrip(
+	ctx context.Context,
+	tripID string,
+) error {
+
+	s.log.Infow(
+		"service complete trip request received",
+		"trip_id", tripID,
+	)
+
+	trip, err := s.repo.GetTrip(ctx, tripID)
+	if err != nil {
+
+		s.log.Errorw(
+			"failed to fetch trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	if err := validateTripCanComplete(trip); err != nil {
+
+		s.log.Warnw(
+			"trip completion validation failed",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	err = s.repo.CompleteTrip(ctx, tripID)
+	if err != nil {
+
+		s.log.Errorw(
+			"failed to complete trip",
+			"trip_id", tripID,
+			"error", err,
+		)
+
+		return err
+	}
+
+	s.log.Infow(
+		"trip completed successfully",
+		"trip_id", tripID,
+	)
+
+	return nil
+}
+
 // Supporter methods
 func ensureVehicleAvailable(ctx context.Context, repo domain.FleetRepository, vehicleID string) error {
 
@@ -611,6 +717,66 @@ func validateDriverName(firstName, lastName string) error {
 
 	if firstName == "" && lastName == "" {
 		return errors.New("driver name cannot be empty")
+	}
+
+	return nil
+}
+
+func validateTripCanStart(
+	ctx context.Context,
+	repo domain.FleetRepository,
+	trip *domain.Trip,
+) error {
+
+	if trip.Status != "created" {
+		return errors.New("trip cannot be started from current state")
+	}
+
+	vehicle, err := repo.GetVehicle(ctx, trip.VehicleID)
+	if err != nil {
+		return err
+	}
+
+	if vehicle.Status != "active" {
+		return errors.New("vehicle is not active")
+	}
+
+	driver, err := repo.GetDriver(ctx, trip.DriverID)
+	if err != nil {
+		return err
+	}
+
+	if driver.Status != "active" {
+		return errors.New("driver is not active")
+	}
+
+	activeVehicleTrip, err := repo.HasActiveTripForVehicle(ctx, trip.VehicleID)
+	if err != nil {
+		return err
+	}
+
+	if activeVehicleTrip {
+		return errors.New("vehicle already has an active trip")
+	}
+
+	activeDriverTrip, err := repo.HasActiveTripForDriver(ctx, trip.DriverID)
+	if err != nil {
+		return err
+	}
+
+	if activeDriverTrip {
+		return errors.New("driver already has an active trip")
+	}
+
+	return nil
+}
+
+func validateTripCanComplete(
+	trip *domain.Trip,
+) error {
+
+	if trip.Status != "active" {
+		return errors.New("trip must be active to complete")
 	}
 
 	return nil
