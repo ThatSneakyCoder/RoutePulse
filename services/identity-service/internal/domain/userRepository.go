@@ -16,4 +16,5 @@ type UserRepository interface {
 	Upsert(ctx context.Context, reset *PasswordReset) error
 	GetByUserID(ctx context.Context, userID uuid.UUID) (*PasswordReset, error)
 	DeleteByUserID(ctx context.Context, userID uuid.UUID) error
+	GetUsersByIDs(ctx context.Context, ids []uuid.UUID) ([]*User, error)
 }

@@ -1,4 +1,5 @@
 import { Bell, ChevronDown, MessageCircleMore, Plus, User } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { MyDatePicker } from "./MyDayPicker";
 
@@ -7,13 +8,9 @@ export const TopBar = () => {
 
   return (
     <div className="flex items-center justify-between">
-      
-      <h1 className="text-lg font-semibold text-slate-100">
-        Dashboard
-      </h1>
+      <h1 className="text-lg font-semibold text-slate-100">Dashboard</h1>
 
       <div className="flex items-center gap-3">
-
         {/* Date Picker */}
         <div className="relative">
           <button
@@ -32,9 +29,11 @@ export const TopBar = () => {
           </button>
 
           {isDateBoxOpened && (
-            <div className="absolute right-0 mt-2 
+            <div
+              className="absolute right-0 mt-2 
                             bg-slate-800 border border-slate-700 
-                            rounded-lg p-3 shadow-lg z-50">
+                            rounded-lg p-3 shadow-lg z-50"
+            >
               <MyDatePicker />
             </div>
           )}
@@ -49,22 +48,25 @@ export const TopBar = () => {
           <Bell className="w-4 h-4" />
         </IconButton>
 
-        <IconButton>
-          <User className="w-4 h-4" />
-        </IconButton>
+        <Link to="/dashboard/profile">
+          <IconButton>
+            <User className="w-4 h-4" />
+          </IconButton>
+        </Link>
 
         {/* Divider */}
         <div className="h-6 w-px bg-slate-700" />
 
         {/* Primary Action */}
-        <button className="flex items-center gap-2 px-4 py-2 
+        <button
+          className="flex items-center gap-2 px-4 py-2 
                            bg-blue-600 hover:bg-blue-500 
                            text-white text-sm font-medium 
-                           rounded-lg transition">
+                           rounded-lg transition"
+        >
           <Plus className="w-4 h-4" />
           Quick Shipment
         </button>
-
       </div>
     </div>
   );

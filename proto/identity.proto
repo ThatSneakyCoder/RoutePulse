@@ -35,6 +35,36 @@ service IdentityService {
 
   // reset the password
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+
+  rpc GetUsersByIDs (GetUsersByIDsRequest) returns (GetUsersByIDsResponse);
+
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message GetUserByEmailResponse {
+  string user_id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+}
+
+message GetUsersByIDsRequest {
+  repeated string user_ids = 1;
+}
+
+message UserSummary {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+}
+
+message GetUsersByIDsResponse {
+  repeated UserSummary users = 1;
 }
 
 // forgot password req

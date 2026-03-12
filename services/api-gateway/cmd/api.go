@@ -19,8 +19,8 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
-	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/ratelimiter"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 )
 
 type application struct {
@@ -30,6 +30,7 @@ type application struct {
 	identityClient     *grpc.IdentityServiceClient
 	analyticsClient    *grpc.AnalyticsServiceClient
 	organizationClient *grpc.OrganizationServiceClient
+	fleetClient        *grpc.FleetServiceClient
 	limiters           rateLimiters
 }
 
@@ -134,6 +135,41 @@ func (app *application) mount() http.Handler {
 			r.Route("/organizations", func(r chi.Router) {
 				r.Post("/", app.createOrganizationHandler)
 				r.Get("/", app.listUserOrganizationsHandler)
+
+				r.Get("/{orgId}", app.getOrganizationHandler)
+
+				r.Get("/{orgId}/members", app.listOrganizationMembersHandler)
+				r.Post("/{orgId}/invite", app.inviteUserToOrganizationHandler)
+
+				r.Delete("/{orgId}/members/{userId}", app.removeMemberHandler)
+				r.Put("/{orgId}/members/{userId}/role", app.updateMemberRoleHandler)
+			})
+		})
+
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthTokenMiddleware)
+
+			r.Route("/fleet", func(r chi.Router) {
+
+				r.Route("/vehicles", func(r chi.Router) {
+					r.Post("/", app.createVehicleHandler)
+					r.Get("/", app.listVehiclesHandler)
+					r.Get("/{vehicleId}", app.getVehicleHandler)
+				})
+
+				r.Route("/drivers", func(r chi.Router) {
+					r.Post("/", app.createDriverHandler)
+					r.Get("/", app.listDriversHandler)
+				})
+
+				r.Route("/trips", func(r chi.Router) {
+					r.Post("/", app.createTripHandler)
+					r.Get("/", app.listTripsHandler)
+
+					r.Post("/{tripId}/start", app.startTripHandler)
+					r.Post("/{tripId}/complete", app.completeTripHandler)
+				})
+
 			})
 		})
 

@@ -416,8 +416,82 @@ func (s *UserStore) UpdatePassword(
 		user.Password.hash,
 		user.ID,
 	)
-	
+
 	return err
+}
+
+func (s *UserStore) GetUsersByIDs(
+	ctx context.Context,
+	ids []uuid.UUID,
+) ([]*User, error) {
+
+	s.log.Debugw("fetching users by ids",
+		"count", len(ids),
+	)
+
+	const query = `
+		SELECT
+			id,
+			email,
+			first_name,
+			last_name,
+			is_active,
+			is_verified,
+			created_at,
+			updated_at
+		FROM users
+		WHERE id = ANY($1)
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	rows, err := s.db.QueryContext(ctx, query, pq.Array(ids))
+	if err != nil {
+		s.log.Errorw("failed to query users by ids",
+			"err", err,
+		)
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := []*User{}
+
+	for rows.Next() {
+
+		var u User
+
+		if err := rows.Scan(
+			&u.ID,
+			&u.Email,
+			&u.FirstName,
+			&u.LastName,
+			&u.IsActive,
+			&u.IsVerified,
+			&u.CreatedAt,
+			&u.UpdatedAt,
+		); err != nil {
+			s.log.Errorw("failed to scan user row",
+				"err", err,
+			)
+			return nil, err
+		}
+
+		users = append(users, &u)
+	}
+
+	if err := rows.Err(); err != nil {
+		s.log.Errorw("user rows iteration failed",
+			"err", err,
+		)
+		return nil, err
+	}
+
+	s.log.Debugw("users fetched successfully",
+		"count", len(users),
+	)
+
+	return users, nil
 }
 
 func translatePostgresError(err error) error {

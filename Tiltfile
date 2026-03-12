@@ -6,9 +6,11 @@ load('ext://restart_process', 'docker_build_with_restart')
 # SECRETS and CONFIGMAP
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-identity.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-organization.yaml')
+k8s_yaml('./infra/development/kubernetes/secrets/secrets-fleet.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-rabbitmq.yaml')
 k8s_yaml('./infra/development/kubernetes/configmaps/configmap.yaml')
 k8s_yaml('./infra/development/kubernetes/configmaps/configmap-org.yaml')
+k8s_yaml('./infra/development/kubernetes/configmaps/configmap-fleet.yaml')
 
 ### End of K8s Config ###
 
@@ -32,6 +34,13 @@ k8s_yaml('./infra/development/kubernetes/organization/postgres-organization.yaml
 k8s_resource('postgres-org', port_forwards=['15433:5432'], labels='tooling')
 
 ### Organization Postgresql end ###
+
+### Fleet Postgresql start ###
+
+k8s_yaml('./infra/development/kubernetes/fleet/fleet-pg.yaml')
+k8s_resource('postgres-fleet', port_forwards=['15434:5432'], labels='tooling')
+
+### Fleet Postgresql end ###
 
 ### clickhouse start ###
 
@@ -60,6 +69,27 @@ docker_build(
 )
 
 ### organization service postgres Migration Job End ###
+
+### fleet service postgres Migration Job Start ###
+
+k8s_yaml('./infra/development/kubernetes/fleet/fleet-migrate-job.yaml')
+
+k8s_resource(
+  'fleet-db-migrate',
+  resource_deps=['postgres-fleet', 'fleet-service-compile'],
+  labels='migrations'
+)
+
+docker_build(
+  'routepulse/fleet-migrate',
+  '.',
+  dockerfile='./infra/development/docker/fleet-migrate.Dockerfile',
+  only=[
+    './services/fleet-service/internal/migrate/migrations',
+  ],
+)
+
+### fleet service postgres Migration Job End ###
 
 ### identity service postgres Migration Job Start ###
 
@@ -215,6 +245,40 @@ k8s_resource(
 )
 
 ### Organization Service end ###
+
+### Fleet Service start ###
+
+identity_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/fleet-service ./services/fleet-service/cmd'
+
+local_resource(
+  'fleet-service-compile',
+  identity_compile_cmd,
+  deps=['./services/fleet-service', './shared'], labels="compiles")
+
+
+docker_build_with_restart(
+  'routepulse/fleet-service',
+  '.',
+  entrypoint=['/app/build/fleet-service'],
+  dockerfile='./infra/development/docker/fleet-service.Dockerfile',
+  only=[
+    './build/fleet-service',
+    './shared',
+  ],
+  live_update=[
+    sync('./build', '/app/build'),
+    sync('./shared', '/app/shared'),
+  ],
+)
+
+k8s_yaml('./infra/development/kubernetes/fleet/fleet-service-deployment.yaml')
+k8s_resource(
+  'fleet-service', 
+  port_forwards=9092,
+  resource_deps=['postgres-fleet', 'fleet-service-compile'], labels="services"
+)
+
+### Fleet Service end ###
 
 ### Analytics Service start ###
 

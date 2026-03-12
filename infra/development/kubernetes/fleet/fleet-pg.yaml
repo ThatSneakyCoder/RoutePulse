@@ -1,0 +1,89 @@
+# Deployment Config
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-fleet
+spec:
+  serviceName: postgres-fleet
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-fleet
+  template:
+    metadata:
+      labels:
+        app: postgres-fleet
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:14-alpine
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-fleet-credentials
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-fleet-credentials
+                key: password
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-fleet-credentials
+                key: db
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+          - name: pg-fleet-vol
+            mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "125m"
+          limits:
+            memory: "128Mi"
+            cpu: "125m"
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+  volumeClaimTemplates:
+  - metadata:
+      name: pg-fleet-vol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 1Gi
+---
+# Service Config
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-fleet
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres-fleet
+  ports:
+  - port: 5432
+    targetPort: 5432

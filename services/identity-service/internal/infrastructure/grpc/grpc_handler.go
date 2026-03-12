@@ -177,3 +177,66 @@ func (h *gRPCHandler) ResetPassword(
 		Success: true,
 	}, nil
 }
+
+func (h *gRPCHandler) GetUsersByIDs(
+	ctx context.Context,
+	req *pb.GetUsersByIDsRequest,
+) (*pb.GetUsersByIDsResponse, error) {
+
+	h.log.Infow("GetUsersByIDs called",
+		"user_ids_count", len(req.UserIds),
+	)
+
+	users, err := h.service.GetUsersByIDs(ctx, req.UserIds)
+	if err != nil {
+		h.log.Errorw("failed to fetch users by ids",
+			"err", err,
+		)
+		return nil, err
+	}
+
+	respUsers := make([]*pb.UserSummary, 0, len(users))
+
+	for _, u := range users {
+		respUsers = append(respUsers, &pb.UserSummary{
+			Id:        u.ID.String(),
+			FirstName: u.FirstName,
+			LastName:  u.LastName,
+			Email:     u.Email,
+		})
+	}
+
+	h.log.Infow("users fetched successfully",
+		"count", len(respUsers),
+	)
+
+	return &pb.GetUsersByIDsResponse{
+		Users: respUsers,
+	}, nil
+}
+
+func (h *gRPCHandler) GetUserByEmail(
+	ctx context.Context,
+	req *pb.GetUserByEmailRequest,
+) (*pb.GetUserByEmailResponse, error) {
+
+	h.log.Infow("GetUserByEmail called",
+		"email", req.Email,
+	)
+
+	user, err := h.service.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		h.log.Errorw("failed to fetch user by email",
+			"email", req.Email,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return &pb.GetUserByEmailResponse{
+		UserId:    user.ID.String(),
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+	}, nil
+}

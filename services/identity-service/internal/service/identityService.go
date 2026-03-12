@@ -414,3 +414,64 @@ func (s *IdentityService) ResetPassword(
 
 	return nil
 }
+
+func (s *IdentityService) GetUsersByIDs(
+	ctx context.Context,
+	userIDs []string,
+) ([]*domain.User, error) {
+
+	s.log.Infow("fetching users by ids",
+		"count", len(userIDs),
+	)
+
+	ids := make([]uuid.UUID, 0, len(userIDs))
+
+	for _, id := range userIDs {
+
+		parsed, err := uuid.Parse(id)
+		if err != nil {
+			s.log.Warnw("invalid user id",
+				"user_id", id,
+				"err", err,
+			)
+			return nil, status.Error(codes.InvalidArgument, "invalid user id")
+		}
+
+		ids = append(ids, parsed)
+	}
+
+	users, err := s.repo.GetUsersByIDs(ctx, ids)
+	if err != nil {
+		s.log.Errorw("failed to fetch users",
+			"err", err,
+		)
+		return nil, err
+	}
+
+	s.log.Infow("users fetched successfully",
+		"count", len(users),
+	)
+
+	return users, nil
+}
+
+func (s *IdentityService) GetUserByEmail(
+	ctx context.Context,
+	email string,
+) (*domain.User, error) {
+
+	s.log.Infow("service: get user by email",
+		"email", email,
+	)
+
+	user, err := s.repo.GetByEmail(ctx, email)
+	if err != nil {
+		s.log.Errorw("user lookup failed",
+			"email", email,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	return user, nil
+}

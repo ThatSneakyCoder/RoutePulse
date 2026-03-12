@@ -6,6 +6,11 @@ const instance = axios.create({
   headers: {"Content-Type": "application/json"}
 });
 
+const token = localStorage.getItem("JWT");
+if (token) {
+  instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
 // instance.interceptors.request.use(
 //   (config) => {
 //     const token = localStorage.getItem("token");

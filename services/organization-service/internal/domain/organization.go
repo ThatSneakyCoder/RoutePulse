@@ -14,3 +14,10 @@ type Organization struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+type OrganizationMember struct {
+	OrganizationID uuid.UUID
+	UserID         uuid.UUID
+	Role           string
+	JoinedAt       time.Time
+}
