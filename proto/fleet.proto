@@ -19,6 +19,13 @@ service FleetService {
   rpc ListVehicles (ListVehiclesRequest)
     returns (ListVehiclesResponse);
 
+  rpc UpdateVehicle (UpdateVehicleRequest)
+    returns (UpdateVehicleResponse);
+
+  rpc UpdateVehicleStatus (UpdateVehicleStatusRequest)
+    returns (UpdateVehicleStatusResponse);
+
+
   // --------------------
   // Drivers
   // --------------------
@@ -28,6 +35,13 @@ service FleetService {
 
   rpc ListDrivers (ListDriversRequest)
     returns (ListDriversResponse);
+
+  rpc UpdateDriver (UpdateDriverRequest)
+    returns (UpdateDriverResponse);
+
+  rpc UpdateDriverStatus (UpdateDriverStatusRequest)
+    returns (UpdateDriverStatusResponse);
+
 
   // --------------------
   // Trips
@@ -123,6 +137,26 @@ message ListVehiclesResponse {
   repeated Vehicle vehicles = 1;
 }
 
+message UpdateVehicleRequest {
+  string vehicle_id = 1;
+  string plate_number = 2;
+  string vehicle_type = 3;
+  int32 capacity = 4;
+}
+
+message UpdateVehicleResponse {
+  bool success = 1;
+}
+
+message UpdateVehicleStatusRequest {
+  string vehicle_id = 1;
+  string status = 2; // active / inactive
+}
+
+message UpdateVehicleStatusResponse {
+  bool success = 1;
+}
+
 //
 // Driver Requests / Responses
 //
@@ -144,6 +178,25 @@ message ListDriversRequest {
 
 message ListDriversResponse {
   repeated Driver drivers = 1;
+}
+
+message UpdateDriverRequest {
+  string driver_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+}
+
+message UpdateDriverResponse {
+  bool success = 1;
+}
+
+message UpdateDriverStatusRequest {
+  string driver_id = 1;
+  string status = 2; // active / inactive
+}
+
+message UpdateDriverStatusResponse {
+  bool success = 1;
 }
 
 //

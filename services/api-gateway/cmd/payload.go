@@ -205,3 +205,78 @@ type ListVehiclesRequest struct {
 type ListVehiclesResponse struct {
 	Vehicles []VehicleResponse `json:"vehicles"`
 }
+
+type GetVehicleRequest struct {
+	VehicleID string `json:"vehicle_id" validate:"required,uuid"`
+}
+
+type CreateDriverRequest struct {
+	OrganizationID string `json:"organization_id" validate:"required,uuid"`
+	FirstName      string `json:"first_name" validate:"required,max=255"`
+	LastName       string `json:"last_name" validate:"required,max=255"`
+	VehicleID      string `json:"vehicle_id,omitempty"`
+}
+
+type DriverResponse struct {
+	DriverID       string `json:"driver_id"`
+	OrganizationID string `json:"organization_id"`
+	FirstName      string `json:"first_name"`
+	LastName       string `json:"last_name"`
+	VehicleID      string `json:"vehicle_id"`
+	Status         string `json:"status"`
+	CreatedAt      int64  `json:"created_at"`
+}
+
+type ListDriversRequest struct {
+	OrganizationID string `json:"organization_id" validate:"required,uuid"`
+}
+
+type ListDriversResponse struct {
+	Drivers []DriverResponse `json:"drivers"`
+}
+
+type UpdateVehicleRequest struct {
+	VehicleID   string `json:"vehicle_id" validate:"required,uuid"`
+	PlateNumber string `json:"plate_number" validate:"max=50"`
+	VehicleType string `json:"vehicle_type" validate:"omitempty,oneof=truck van bike car"`
+	Capacity    int32  `json:"capacity" validate:"gte=0"`
+}
+
+type UpdateVehicleStatusRequest struct {
+	VehicleID string `json:"vehicle_id" validate:"required,uuid"`
+	Status    string `json:"status" validate:"required,oneof=active inactive"`
+}
+
+type UpdateDriverStatusRequest struct {
+	DriverID string `json:"driver_id" validate:"required,uuid"`
+	Status   string `json:"status" validate:"required,oneof=active inactive"`
+}
+
+type UpdateDriverRequest struct {
+	DriverID  string `json:"driver_id" validate:"required,uuid"`
+	FirstName string `json:"first_name" validate:"max=255"`
+	LastName  string `json:"last_name" validate:"max=255"`
+}
+
+type CreateTripRequest struct {
+	OrganizationID string `json:"organization_id" validate:"required,uuid"`
+	VehicleID      string `json:"vehicle_id" validate:"required,uuid"`
+	DriverID       string `json:"driver_id" validate:"required,uuid"`
+}
+
+type TripResponse struct {
+	TripID         string `json:"trip_id"`
+	OrganizationID string `json:"organization_id"`
+	VehicleID      string `json:"vehicle_id"`
+	DriverID       string `json:"driver_id"`
+	Status         string `json:"status"`
+	CreatedAt      int64  `json:"created_at"`
+}
+
+type ListTripsRequest struct {
+	OrganizationID string `json:"organization_id" validate:"required,uuid"`
+}
+
+type ListTripsResponse struct {
+	Trips []TripResponse `json:"trips"`
+}
