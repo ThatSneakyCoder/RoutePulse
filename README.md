@@ -17,7 +17,7 @@
 
 ## Problem Statement
 
-Fleet and logistics backends often begin with basic features authentication, organizations, trip tracking but quickly become tightly coupled and difficult to scale or maintain.
+Common small scale business owners and vendors often use over the phone delivery systems to coordinate and, carry out shipments. It's hectic and difficult for these vendors. It's slow and prevents small vendors from being seen by a larger consumer market that they can tap on. RoutePulse solves this by giving these small business owners to reach the world through digitization. This is a completely free of cost software that business owners can run and coordinate their delivery service and transportation with.
 
 **RoutePulse models a production-oriented fleet management backend** with:
 
