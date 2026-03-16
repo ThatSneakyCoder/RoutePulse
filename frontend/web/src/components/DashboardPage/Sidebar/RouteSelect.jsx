@@ -6,8 +6,6 @@ import {
   FiUsers,
   FiHelpCircle,
   FiPackage,
-  FiBox,
-  FiMap,
   FiBarChart2,
   FiUserCheck,
   FiUser,
@@ -39,11 +37,7 @@ export const RouteSelect = () => {
           open={fleetOpen}
           toggle={() => setFleetOpen(!fleetOpen)}
         >
-          <SubRoute title="All Vehicles" to="/fleet/vehicles" />
-          <SubRoute title="Active Trucks" to="/fleet/active" />
-          <SubRoute title="Maintenance & Repairs" to="/fleet/maintenance" />
-          <SubRoute title="Fuel & Telematics" to="/fleet/telematics" />
-          <SubRoute title="Drivers Directory" to="/fleet/driversDirectory" />
+          <SubRoute title="All Vehicles" to="/dashboard/fleet/vehicles/all" />
         </CollapsibleRoute>
 
         {/* Shipments */}
@@ -56,10 +50,6 @@ export const RouteSelect = () => {
           <SubRoute title="Active Shipments" to="shipments/active" />
           <SubRoute title="Completed Shipments" to="shipments/complete" />
         </CollapsibleRoute>
-
-        <Route Icon={FiBox} title="Warehouse Operations" to="/warehouse" />
-
-        <Route Icon={FiMap} title="Route Planning" to="/routes" />
 
         <Route Icon={FiBarChart2} title="Analytics & Reports" to="/analytics" />
       </div>

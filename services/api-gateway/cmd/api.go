@@ -155,6 +155,7 @@ func (app *application) mount() http.Handler {
 
 					r.Post("/", app.createVehicleHandler)
 					r.Get("/", app.listVehiclesHandler)
+					r.Get("/all", app.listAllVehiclesOfUser)
 					r.Get("/{vehicleId}", app.getVehicleHandler)
 
 					r.Put("/{vehicleId}", app.updateVehicleHandler)
@@ -176,6 +177,7 @@ func (app *application) mount() http.Handler {
 
 					r.Post("/", app.createTripHandler)
 					r.Get("/", app.listTripsHandler)
+					r.Get("/all", app.listAllTripsHandler)
 
 					r.Post("/{tripId}/start", app.startTripHandler)
 					r.Post("/{tripId}/complete", app.completeTripHandler)

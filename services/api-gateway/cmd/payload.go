@@ -288,3 +288,15 @@ type StartTripRequest struct {
 type CompleteTripRequest struct {
 	TripID string `json:"trip_id" validate:"required,uuid"`
 }
+
+type ListAllVehiclesRequest struct {
+	UserID string `json:"user_id" validate:"required"`
+}
+
+type ListAllVehiclesResponse struct {
+	Vehicles []VehicleResponse `json:"vehicles"`
+}
+
+type ListAllTripsRequest struct {
+	UserID string `json:"user_id" validate:"required"`
+}

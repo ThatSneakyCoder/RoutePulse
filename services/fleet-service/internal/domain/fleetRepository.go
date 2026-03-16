@@ -20,6 +20,7 @@ type FleetRepository interface {
 	ListTrips(ctx context.Context, orgID string) ([]*Trip, error)
 	StartTrip(ctx context.Context, tripID string) error
 	CompleteTrip(ctx context.Context, tripID string) error
+	
 
 	// supporter methods
 	HasActiveTripForVehicle(ctx context.Context, vehicleID string) (bool, error)

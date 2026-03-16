@@ -143,6 +143,13 @@ definitions:
       success:
         type: boolean
     type: object
+  main.ListAllVehiclesResponse:
+    properties:
+      vehicles:
+        items:
+          $ref: '#/definitions/main.VehicleResponse'
+        type: array
+    type: object
   main.ListDriversResponse:
     properties:
       drivers:
@@ -955,6 +962,27 @@ paths:
       summary: Start trip
       tags:
       - Fleet
+  /fleet/trips/all:
+    get:
+      description: Get trips across all organizations of authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListTripsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all trips for user
+      tags:
+      - Fleet
   /fleet/vehicles:
     get:
       description: Returns vehicles belonging to an organization
@@ -1129,6 +1157,27 @@ paths:
       security:
       - BearerAuth: []
       summary: Update vehicle status
+      tags:
+      - Fleet
+  /fleet/vehicles/allVehicles:
+    get:
+      description: Returns vehicles belonging to all organizations of the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListAllVehiclesResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all vehicles of user
       tags:
       - Fleet
   /health:

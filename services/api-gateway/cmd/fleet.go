@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -783,4 +784,169 @@ func (app *application) completeTripHandler(w http.ResponseWriter, r *http.Reque
 
 		app.internalServerError(w, r, err)
 	}
+}
+
+// listAllVehiclesOfUserHandler godoc
+//
+// @Summary      List all vehicles of user
+// @Description  Returns vehicles belonging to all organizations of the user
+// @Tags         Fleet
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200 {object} ListAllVehiclesResponse
+// @Failure      500 {object} map[string]string
+// @Router       /fleet/vehicles/allVehicles [get]
+func (app *application) listAllVehiclesOfUser(w http.ResponseWriter, r *http.Request) {
+
+	user, ok := getUserFromCtx(r)
+	if !ok {
+		app.badRequestResponse(w, r, fmt.Errorf("user ID not found"))
+		return
+	}
+
+	orgResp, err := app.organizationClient.Client.ListUserOrganizations(
+		r.Context(),
+		(&ListUserOrganizationsRequest{}).toProto(user.ID),
+	)
+	if err != nil {
+		app.log.Errorw(
+			"failed to list organizations for user",
+			"user_id", user.ID,
+			"error", err,
+		)
+
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	result := ListAllVehiclesResponse{
+		Vehicles: []VehicleResponse{},
+	}
+
+	app.log.Infow(
+		"aggregating vehicles across user organizations",
+		"user_id", user.ID,
+		"organization_count", len(orgResp.Organizations),
+	)
+
+	for _, org := range orgResp.Organizations {
+		vehiclesResp, err := app.fleetClient.Client.ListVehicles(
+			r.Context(),
+			(&ListVehiclesRequest{OrganizationID: org.OrganizationId}).toProto(),
+		)
+		if err != nil {
+			app.log.Errorw(
+				"failed to list vehicles for organization",
+				"user_id", user.ID,
+				"organization_id", org.OrganizationId,
+				"error", err,
+			)
+
+			app.handleGRPCError(w, r, err)
+			return
+		}
+
+		for _, v := range vehiclesResp.Vehicles {
+			result.Vehicles = append(result.Vehicles, VehicleResponse{
+				VehicleID:      v.VehicleId,
+				OrganizationID: v.OrganizationId,
+				PlateNumber:    v.PlateNumber,
+				VehicleType:    v.VehicleType,
+				Capacity:       v.Capacity,
+				Status:         v.Status,
+				CreatedAt:      v.CreatedAt,
+			})
+		}
+	}
+
+	app.log.Infow(
+		"vehicles aggregated successfully for user",
+		"user_id", user.ID,
+		"count", len(result.Vehicles),
+	)
+
+	if err := app.jsonResponse(w, http.StatusOK, result); err != nil {
+
+		app.log.Errorw(
+			"failed sending vehicles response",
+			"error", err,
+		)
+
+		app.internalServerError(w, r, err)
+	}
+}
+
+// listAllTripsHandler godoc
+//
+//	@Summary		List all trips for user
+//	@Description	Get trips across all organizations of authenticated user
+//	@Tags			Fleet
+//	@Produce		json
+//	@Security		BearerAuth
+//	@Success		200	{object}	ListTripsResponse
+//	@Failure		500	{object}	map[string]string
+//	@Router			/fleet/trips/all [get]
+func (app *application) listAllTripsHandler(w http.ResponseWriter, r *http.Request) {
+
+	user, ok := getUserFromCtx(r)
+	if !ok {
+		app.badRequestResponse(w, r, fmt.Errorf("user ID not found"))
+		return
+	}
+
+	payload := ListUserOrganizationsRequest{
+		OwnerUserID: user.ID,
+	}
+
+	orgResp, err := app.organizationClient.Client.ListUserOrganizations(
+		r.Context(),
+		payload.toProto(user.ID),
+	)
+
+	if err != nil {
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	var allTrips []TripResponse
+
+	for _, org := range orgResp.Organizations {
+
+		payload := ListTripsRequest{
+			OrganizationID: org.OrganizationId,
+		}
+
+		resp, err := app.fleetClient.Client.ListTrips(
+			r.Context(),
+			payload.toProto(),
+		)
+
+		if err != nil {
+
+			app.log.Errorw(
+				"failed listing trips",
+				"organization_id", org.OrganizationId,
+				"error", err,
+			)
+
+			app.handleGRPCError(w, r, err)
+			return
+		}
+
+		for _, t := range resp.Trips {
+
+			allTrips = append(allTrips, TripResponse{
+				TripID:         t.TripId,
+				OrganizationID: t.OrganizationId,
+				VehicleID:      t.VehicleId,
+				DriverID:       t.DriverId,
+				Status:         t.Status,
+				CreatedAt:      t.CreatedAt,
+			})
+		}
+	}
+
+	app.jsonResponse(w, http.StatusOK, ListTripsResponse{
+		Trips: allTrips,
+	})
 }

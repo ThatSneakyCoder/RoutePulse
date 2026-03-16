@@ -25,7 +25,6 @@ service FleetService {
   rpc UpdateVehicleStatus (UpdateVehicleStatusRequest)
     returns (UpdateVehicleStatusResponse);
 
-
   // --------------------
   // Drivers
   // --------------------
@@ -58,6 +57,7 @@ service FleetService {
 
   rpc CompleteTrip (CompleteTripRequest)
     returns (CompleteTripResponse);
+    
 }
 
 //
