@@ -192,9 +192,12 @@ func (app *application) mount() http.Handler {
 			r.Route("/analytics", func(r chi.Router) {
 				r.Get("/vehicles-in-transit", app.getVehiclesInTransit)
 				r.Get("/trips-today", app.getTripsToday)
+
+				r.Get("/total-members", app.getTotalMembers)
+				r.Get("/active-users-today", app.getActiveUsersToday)
+				r.Get("/recent-activity", app.getRecentActivity)
 			})
 		})
-
 	})
 
 	return r

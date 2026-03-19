@@ -51,7 +51,7 @@ export const RouteSelect = () => {
           <SubRoute title="Completed Shipments" to="shipments/complete" />
         </CollapsibleRoute>
 
-        <Route Icon={FiBarChart2} title="Analytics & Reports" to="/analytics" />
+        <Route Icon={FiBarChart2} title="Analytics & Reports" to="/dashboard/analytics" />
       </div>
 
       {/* SUPPORT */}

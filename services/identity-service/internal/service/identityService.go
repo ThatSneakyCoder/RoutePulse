@@ -128,9 +128,9 @@ func (s *IdentityService) RegisterUser(
 	)
 
 	// Emit rabbitmq event here
-	if err := s.rmqPublisher.PublishUserRegistered(ctx, created.ID.String(), created.Email); err != nil {
-		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
-	}
+	// if err := s.rmqPublisher.PublishUserRegistered(ctx, created.ID.String(), created.Email); err != nil {
+	// 	s.log.Errorw("failed to publish event to rabbitmq", "err", err)
+	// }
 
 	return created, nil
 }
@@ -186,10 +186,10 @@ func (s *IdentityService) VerifyUserEmail(ctx context.Context, email, token stri
 	)
 
 	// Emit user email verified event to rabbitmq
+	// Emit user email verified event to rabbitmq (updated payload)
 	if err := s.rmqPublisher.PublishEmailVerified(
 		ctx,
 		user.ID.String(),
-		user.Email,
 	); err != nil {
 		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
 	}

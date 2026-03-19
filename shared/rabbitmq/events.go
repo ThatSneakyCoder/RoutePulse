@@ -28,17 +28,15 @@ const (
 
 type IdentityUserRegisteredEventPayload struct {
 	UserID string `json:"user_id"`
-	Email  string `json:"email"`
 }
 
 type IdentityUserEmailVerifiedEventPayload struct {
 	UserID string `json:"user_id"`
-	Email  string `json:"email"`
 }
 
 type IdentityUserLoggedInEventPayload struct {
 	UserID string `json:"user_id"`
-	Email  string `json:"email"`
+	OrgID  string `json:"org_id"`
 }
 
 // --------------------
@@ -47,7 +45,6 @@ type IdentityUserLoggedInEventPayload struct {
 
 type OrganizationCreatedEventPayload struct {
 	OrganizationID string `json:"organization_id"`
-	Name           string `json:"name"`
 	OwnerUserID    string `json:"owner_user_id"`
 }
 

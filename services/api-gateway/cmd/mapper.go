@@ -201,3 +201,9 @@ func (p *CompleteTripRequest) toProto() *pbFleet.CompleteTripRequest {
 		TripId: p.TripID,
 	}
 }
+
+func toGetTotalMembersGRPC(req GetTotalMembersRequest) *pbOrg.GetTotalMembersRequest {
+	return &pbOrg.GetTotalMembersRequest{
+		OwnerUserId: req.OwnerUserID,
+	}
+}

@@ -172,6 +172,34 @@ func (h *gRPCHandler) AddMember(
 	}, nil
 }
 
+func (h *gRPCHandler) GetTotalMembers(
+	ctx context.Context,
+	req *pb.GetTotalMembersRequest,
+) (*pb.GetTotalMembersResponse, error) {
+
+	h.log.Infow("GetTotalMembers called",
+		"owner_user_id", req.OwnerUserId,
+	)
+
+	count, err := h.service.GetTotalMembers(ctx, req.OwnerUserId)
+	if err != nil {
+		h.log.Errorw("failed to get total members",
+			"owner_user_id", req.OwnerUserId,
+			"err", err,
+		)
+		return nil, err
+	}
+
+	h.log.Infow("total members fetched successfully",
+		"owner_user_id", req.OwnerUserId,
+		"count", count,
+	)
+
+	return &pb.GetTotalMembersResponse{
+		Count: count,
+	}, nil
+}
+
 func (h *gRPCHandler) RemoveMember(
 	ctx context.Context,
 	req *pb.RemoveMemberRequest,

@@ -14,4 +14,5 @@ type OrganizationRepository interface {
 	AddMember(ctx context.Context, orgID uuid.UUID, userID uuid.UUID, role string) error
 	RemoveMember(ctx context.Context, orgID uuid.UUID, userID uuid.UUID) error
 	UpdateMemberRole(ctx context.Context, organizationID uuid.UUID, userID uuid.UUID, role string) error
+	CountTotalMembersByOwner(ctx context.Context, ownerUserID uuid.UUID) (uint64, error)
 }

@@ -31,6 +31,17 @@ service OrganizationService {
 
   rpc DeactivateOrganization (DeactivateOrganizationRequest)
     returns (google.protobuf.Empty);
+
+  rpc GetTotalMembers (GetTotalMembersRequest)
+  returns (GetTotalMembersResponse);
+}
+
+message GetTotalMembersRequest {
+  string owner_user_id = 1;
+}
+
+message GetTotalMembersResponse {
+  uint64 count = 1;
 }
 
 // --------------------

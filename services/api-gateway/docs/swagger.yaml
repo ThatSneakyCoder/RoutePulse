@@ -1,5 +1,10 @@
 basePath: /v1
 definitions:
+  main.ActiveUsersTodayResponse:
+    properties:
+      count:
+        type: integer
+    type: object
   main.CompleteTripRequest:
     properties:
       trip_id:
@@ -103,6 +108,19 @@ definitions:
       status:
         type: string
       vehicle_id:
+        type: string
+    type: object
+  main.Event:
+    properties:
+      event_time:
+        type: string
+      event_type:
+        type: string
+      org_id:
+        type: string
+      service:
+        type: string
+      user_id:
         type: string
     type: object
   main.ForgotPasswordRequest:
@@ -228,6 +246,13 @@ definitions:
       updated_at:
         type: integer
     type: object
+  main.RecentActivityResponse:
+    properties:
+      events:
+        items:
+          $ref: '#/definitions/main.Event'
+        type: array
+    type: object
   main.RemoveOrganizationMemberResponse:
     properties:
       success:
@@ -255,6 +280,11 @@ definitions:
         type: string
     required:
     - trip_id
+    type: object
+  main.TotalMembersResponse:
+    properties:
+      count:
+        type: integer
     type: object
   main.TripResponse:
     properties:
@@ -432,6 +462,63 @@ info:
   title: Fleet Management System API
   version: "1.0"
 paths:
+  /analytics/active-users-today:
+    get:
+      description: Returns number of active users today
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ActiveUsersTodayResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get active users today
+      tags:
+      - Analytics
+  /analytics/recent-activity:
+    get:
+      description: Returns latest analytics events
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.RecentActivityResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get recent activity
+      tags:
+      - Analytics
+  /analytics/total-members:
+    get:
+      description: Returns total number of members in org
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.TotalMembersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get total members
+      tags:
+      - Analytics
   /analytics/trips-today:
     get:
       description: Returns the total number of trips completed today

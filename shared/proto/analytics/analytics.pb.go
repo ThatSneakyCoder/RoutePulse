@@ -110,6 +110,214 @@ func (x *TripsTodayResponse) GetCount() uint64 {
 	return 0
 }
 
+type TotalMembersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         uint64                 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TotalMembersResponse) Reset() {
+	*x = TotalMembersResponse{}
+	mi := &file_analytics_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TotalMembersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TotalMembersResponse) ProtoMessage() {}
+
+func (x *TotalMembersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_analytics_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TotalMembersResponse.ProtoReflect.Descriptor instead.
+func (*TotalMembersResponse) Descriptor() ([]byte, []int) {
+	return file_analytics_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TotalMembersResponse) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type ActiveUsersTodayResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         uint64                 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActiveUsersTodayResponse) Reset() {
+	*x = ActiveUsersTodayResponse{}
+	mi := &file_analytics_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActiveUsersTodayResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActiveUsersTodayResponse) ProtoMessage() {}
+
+func (x *ActiveUsersTodayResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_analytics_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActiveUsersTodayResponse.ProtoReflect.Descriptor instead.
+func (*ActiveUsersTodayResponse) Descriptor() ([]byte, []int) {
+	return file_analytics_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ActiveUsersTodayResponse) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
+type RecentActivityResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Events        []*Event               `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RecentActivityResponse) Reset() {
+	*x = RecentActivityResponse{}
+	mi := &file_analytics_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RecentActivityResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecentActivityResponse) ProtoMessage() {}
+
+func (x *RecentActivityResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_analytics_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecentActivityResponse.ProtoReflect.Descriptor instead.
+func (*RecentActivityResponse) Descriptor() ([]byte, []int) {
+	return file_analytics_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RecentActivityResponse) GetEvents() []*Event {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
+type Event struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EventType     string                 `protobuf:"bytes,1,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	OrgId         string                 `protobuf:"bytes,3,opt,name=org_id,json=orgId,proto3" json:"org_id,omitempty"`
+	Service       string                 `protobuf:"bytes,4,opt,name=service,proto3" json:"service,omitempty"`
+	EventTime     string                 `protobuf:"bytes,5,opt,name=event_time,json=eventTime,proto3" json:"event_time,omitempty"` // ISO string (simplest for now)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Event) Reset() {
+	*x = Event{}
+	mi := &file_analytics_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Event) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Event) ProtoMessage() {}
+
+func (x *Event) ProtoReflect() protoreflect.Message {
+	mi := &file_analytics_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Event.ProtoReflect.Descriptor instead.
+func (*Event) Descriptor() ([]byte, []int) {
+	return file_analytics_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Event) GetEventType() string {
+	if x != nil {
+		return x.EventType
+	}
+	return ""
+}
+
+func (x *Event) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *Event) GetOrgId() string {
+	if x != nil {
+		return x.OrgId
+	}
+	return ""
+}
+
+func (x *Event) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
+func (x *Event) GetEventTime() string {
+	if x != nil {
+		return x.EventTime
+	}
+	return ""
+}
+
 var File_analytics_proto protoreflect.FileDescriptor
 
 const file_analytics_proto_rawDesc = "" +
@@ -118,10 +326,27 @@ const file_analytics_proto_rawDesc = "" +
 	"\x19VehiclesInTransitResponse\x12\x14\n" +
 	"\x05count\x18\x01 \x01(\x04R\x05count\"*\n" +
 	"\x12TripsTodayResponse\x12\x14\n" +
-	"\x05count\x18\x01 \x01(\x04R\x05count2\xb0\x01\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count\",\n" +
+	"\x14TotalMembersResponse\x12\x14\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count\"0\n" +
+	"\x18ActiveUsersTodayResponse\x12\x14\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count\"B\n" +
+	"\x16RecentActivityResponse\x12(\n" +
+	"\x06events\x18\x01 \x03(\v2\x10.analytics.EventR\x06events\"\x8f\x01\n" +
+	"\x05Event\x12\x1d\n" +
+	"\n" +
+	"event_type\x18\x01 \x01(\tR\teventType\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x15\n" +
+	"\x06org_id\x18\x03 \x01(\tR\x05orgId\x12\x18\n" +
+	"\aservice\x18\x04 \x01(\tR\aservice\x12\x1d\n" +
+	"\n" +
+	"event_time\x18\x05 \x01(\tR\teventTime2\xa0\x03\n" +
 	"\x10AnalyticsService\x12T\n" +
 	"\x14GetVehiclesInTransit\x12\x16.google.protobuf.Empty\x1a$.analytics.VehiclesInTransitResponse\x12F\n" +
-	"\rGetTripsToday\x12\x16.google.protobuf.Empty\x1a\x1d.analytics.TripsTodayResponseB\"Z shared/proto/analytics;analyticsb\x06proto3"
+	"\rGetTripsToday\x12\x16.google.protobuf.Empty\x1a\x1d.analytics.TripsTodayResponse\x12J\n" +
+	"\x0fGetTotalMembers\x12\x16.google.protobuf.Empty\x1a\x1f.analytics.TotalMembersResponse\x12R\n" +
+	"\x13GetActiveUsersToday\x12\x16.google.protobuf.Empty\x1a#.analytics.ActiveUsersTodayResponse\x12N\n" +
+	"\x11GetRecentActivity\x12\x16.google.protobuf.Empty\x1a!.analytics.RecentActivityResponseB\"Z shared/proto/analytics;analyticsb\x06proto3"
 
 var (
 	file_analytics_proto_rawDescOnce sync.Once
@@ -135,22 +360,33 @@ func file_analytics_proto_rawDescGZIP() []byte {
 	return file_analytics_proto_rawDescData
 }
 
-var file_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_analytics_proto_goTypes = []any{
 	(*VehiclesInTransitResponse)(nil), // 0: analytics.VehiclesInTransitResponse
 	(*TripsTodayResponse)(nil),        // 1: analytics.TripsTodayResponse
-	(*emptypb.Empty)(nil),             // 2: google.protobuf.Empty
+	(*TotalMembersResponse)(nil),      // 2: analytics.TotalMembersResponse
+	(*ActiveUsersTodayResponse)(nil),  // 3: analytics.ActiveUsersTodayResponse
+	(*RecentActivityResponse)(nil),    // 4: analytics.RecentActivityResponse
+	(*Event)(nil),                     // 5: analytics.Event
+	(*emptypb.Empty)(nil),             // 6: google.protobuf.Empty
 }
 var file_analytics_proto_depIdxs = []int32{
-	2, // 0: analytics.AnalyticsService.GetVehiclesInTransit:input_type -> google.protobuf.Empty
-	2, // 1: analytics.AnalyticsService.GetTripsToday:input_type -> google.protobuf.Empty
-	0, // 2: analytics.AnalyticsService.GetVehiclesInTransit:output_type -> analytics.VehiclesInTransitResponse
-	1, // 3: analytics.AnalyticsService.GetTripsToday:output_type -> analytics.TripsTodayResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: analytics.RecentActivityResponse.events:type_name -> analytics.Event
+	6, // 1: analytics.AnalyticsService.GetVehiclesInTransit:input_type -> google.protobuf.Empty
+	6, // 2: analytics.AnalyticsService.GetTripsToday:input_type -> google.protobuf.Empty
+	6, // 3: analytics.AnalyticsService.GetTotalMembers:input_type -> google.protobuf.Empty
+	6, // 4: analytics.AnalyticsService.GetActiveUsersToday:input_type -> google.protobuf.Empty
+	6, // 5: analytics.AnalyticsService.GetRecentActivity:input_type -> google.protobuf.Empty
+	0, // 6: analytics.AnalyticsService.GetVehiclesInTransit:output_type -> analytics.VehiclesInTransitResponse
+	1, // 7: analytics.AnalyticsService.GetTripsToday:output_type -> analytics.TripsTodayResponse
+	2, // 8: analytics.AnalyticsService.GetTotalMembers:output_type -> analytics.TotalMembersResponse
+	3, // 9: analytics.AnalyticsService.GetActiveUsersToday:output_type -> analytics.ActiveUsersTodayResponse
+	4, // 10: analytics.AnalyticsService.GetRecentActivity:output_type -> analytics.RecentActivityResponse
+	6, // [6:11] is the sub-list for method output_type
+	1, // [1:6] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_analytics_proto_init() }
@@ -164,7 +400,7 @@ func file_analytics_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_analytics_proto_rawDesc), len(file_analytics_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

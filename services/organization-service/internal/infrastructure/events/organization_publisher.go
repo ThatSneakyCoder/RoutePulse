@@ -17,24 +17,28 @@ func NewOrganizationEventPublisher(rmq *rabbitmq.RabbitMQ) *OrganizationEventPub
 	}
 }
 
+// --------------------
+// Events
+// --------------------
+
+// Organization Created
 func (p *OrganizationEventPublisher) PublishOrganizationCreated(
 	ctx context.Context,
-	orgName string,
 	orgID string,
-	userID string,
+	ownerUserID string,
 ) error {
 	return p.publish(
 		ctx,
 		rabbitmq.OrganizationCreatedEvent,
-		userID,
+		ownerUserID,
 		rabbitmq.OrganizationCreatedEventPayload{
 			OrganizationID: orgID,
-			Name: orgName,
-			OwnerUserID: userID,
+			OwnerUserID:    ownerUserID,
 		},
 	)
 }
 
+// Member Added
 func (p *OrganizationEventPublisher) PublishOrganizationMemberAdded(
 	ctx context.Context,
 	userID string,
@@ -46,9 +50,9 @@ func (p *OrganizationEventPublisher) PublishOrganizationMemberAdded(
 		rabbitmq.OrganizationMemberAddedEvent,
 		userID,
 		rabbitmq.OrganizationMemberAddedEventPayload{
-			UserID: userID,
+			UserID:         userID,
 			OrganizationID: orgID,
-			Role: role,
+			Role:           role,
 		},
 	)
 }
@@ -74,4 +78,3 @@ func (p *OrganizationEventPublisher) publish(
 		},
 	)
 }
-

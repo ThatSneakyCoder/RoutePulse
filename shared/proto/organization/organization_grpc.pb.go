@@ -28,6 +28,7 @@ const (
 	OrganizationService_RemoveMember_FullMethodName            = "/organization.OrganizationService/RemoveMember"
 	OrganizationService_UpdateMemberRole_FullMethodName        = "/organization.OrganizationService/UpdateMemberRole"
 	OrganizationService_DeactivateOrganization_FullMethodName  = "/organization.OrganizationService/DeactivateOrganization"
+	OrganizationService_GetTotalMembers_FullMethodName         = "/organization.OrganizationService/GetTotalMembers"
 )
 
 // OrganizationServiceClient is the client API for OrganizationService service.
@@ -42,6 +43,7 @@ type OrganizationServiceClient interface {
 	RemoveMember(ctx context.Context, in *RemoveMemberRequest, opts ...grpc.CallOption) (*RemoveMemberResponse, error)
 	UpdateMemberRole(ctx context.Context, in *UpdateMemberRoleRequest, opts ...grpc.CallOption) (*UpdateMemberRoleResponse, error)
 	DeactivateOrganization(ctx context.Context, in *DeactivateOrganizationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetTotalMembers(ctx context.Context, in *GetTotalMembersRequest, opts ...grpc.CallOption) (*GetTotalMembersResponse, error)
 }
 
 type organizationServiceClient struct {
@@ -132,6 +134,16 @@ func (c *organizationServiceClient) DeactivateOrganization(ctx context.Context, 
 	return out, nil
 }
 
+func (c *organizationServiceClient) GetTotalMembers(ctx context.Context, in *GetTotalMembersRequest, opts ...grpc.CallOption) (*GetTotalMembersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTotalMembersResponse)
+	err := c.cc.Invoke(ctx, OrganizationService_GetTotalMembers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrganizationServiceServer is the server API for OrganizationService service.
 // All implementations must embed UnimplementedOrganizationServiceServer
 // for forward compatibility.
@@ -144,6 +156,7 @@ type OrganizationServiceServer interface {
 	RemoveMember(context.Context, *RemoveMemberRequest) (*RemoveMemberResponse, error)
 	UpdateMemberRole(context.Context, *UpdateMemberRoleRequest) (*UpdateMemberRoleResponse, error)
 	DeactivateOrganization(context.Context, *DeactivateOrganizationRequest) (*emptypb.Empty, error)
+	GetTotalMembers(context.Context, *GetTotalMembersRequest) (*GetTotalMembersResponse, error)
 	mustEmbedUnimplementedOrganizationServiceServer()
 }
 
@@ -177,6 +190,9 @@ func (UnimplementedOrganizationServiceServer) UpdateMemberRole(context.Context, 
 }
 func (UnimplementedOrganizationServiceServer) DeactivateOrganization(context.Context, *DeactivateOrganizationRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeactivateOrganization not implemented")
+}
+func (UnimplementedOrganizationServiceServer) GetTotalMembers(context.Context, *GetTotalMembersRequest) (*GetTotalMembersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTotalMembers not implemented")
 }
 func (UnimplementedOrganizationServiceServer) mustEmbedUnimplementedOrganizationServiceServer() {}
 func (UnimplementedOrganizationServiceServer) testEmbeddedByValue()                             {}
@@ -343,6 +359,24 @@ func _OrganizationService_DeactivateOrganization_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrganizationService_GetTotalMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTotalMembersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrganizationServiceServer).GetTotalMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrganizationService_GetTotalMembers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrganizationServiceServer).GetTotalMembers(ctx, req.(*GetTotalMembersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrganizationService_ServiceDesc is the grpc.ServiceDesc for OrganizationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -381,6 +415,10 @@ var OrganizationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeactivateOrganization",
 			Handler:    _OrganizationService_DeactivateOrganization_Handler,
+		},
+		{
+			MethodName: "GetTotalMembers",
+			Handler:    _OrganizationService_GetTotalMembers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

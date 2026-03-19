@@ -24,6 +24,93 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/analytics/active-users-today": {
+            "get": {
+                "description": "Returns number of active users today",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Get active users today",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.ActiveUsersTodayResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/recent-activity": {
+            "get": {
+                "description": "Returns latest analytics events",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Get recent activity",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.RecentActivityResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/analytics/total-members": {
+            "get": {
+                "description": "Returns total number of members in org",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Get total members",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.TotalMembersResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/analytics/trips-today": {
             "get": {
                 "description": "Returns the total number of trips completed today",
@@ -1761,6 +1848,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "main.ActiveUsersTodayResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
         "main.CompleteTripRequest": {
             "type": "object",
             "required": [
@@ -1909,6 +2004,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "vehicle_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.Event": {
+            "type": "object",
+            "properties": {
+                "event_time": {
+                    "type": "string"
+                },
+                "event_type": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "service": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -2101,6 +2216,17 @@ const docTemplate = `{
                 }
             }
         },
+        "main.RecentActivityResponse": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Event"
+                    }
+                }
+            }
+        },
         "main.RemoveOrganizationMemberResponse": {
             "type": "object",
             "properties": {
@@ -2139,6 +2265,14 @@ const docTemplate = `{
             "properties": {
                 "trip_id": {
                     "type": "string"
+                }
+            }
+        },
+        "main.TotalMembersResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
                 }
             }
         },

@@ -300,3 +300,31 @@ type ListAllVehiclesResponse struct {
 type ListAllTripsRequest struct {
 	UserID string `json:"user_id" validate:"required"`
 }
+
+// TotalMembersResponse represents total members count
+type TotalMembersResponse struct {
+	Count uint64 `json:"count"`
+}
+
+// ActiveUsersTodayResponse represents active users today count
+type ActiveUsersTodayResponse struct {
+	Count uint64 `json:"count"`
+}
+
+// Event represents a single analytics event
+type Event struct {
+	EventType string `json:"event_type"`
+	UserID    string `json:"user_id"`
+	OrgID     string `json:"org_id"`
+	Service   string `json:"service"`
+	EventTime string `json:"event_time"`
+}
+
+// RecentActivityResponse represents activity feed
+type RecentActivityResponse struct {
+	Events []Event `json:"events"`
+}
+
+type GetTotalMembersRequest struct {
+	OwnerUserID string `json:"owner_user_id"`
+}

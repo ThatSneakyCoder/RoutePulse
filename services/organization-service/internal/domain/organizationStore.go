@@ -104,6 +104,44 @@ func (s *OrganizationStore) Create(
 	return org, nil
 }
 
+func (s *OrganizationStore) CountTotalMembersByOwner(
+	ctx context.Context,
+	ownerUserID uuid.UUID,
+) (uint64, error) {
+
+	s.log.Debugw("counting total members by owner",
+		"owner_user_id", ownerUserID,
+	)
+
+	const query = `
+		SELECT COUNT(*)
+		FROM organization_members om
+		JOIN organizations o ON o.id = om.organization_id
+		WHERE o.owner_user_id = $1
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	var count uint64
+
+	err := s.db.QueryRowContext(ctx, query, ownerUserID).Scan(&count)
+	if err != nil {
+		s.log.Errorw("failed to count total members",
+			"owner_user_id", ownerUserID,
+			"err", err,
+		)
+		return 0, err
+	}
+
+	s.log.Debugw("total members counted successfully",
+		"owner_user_id", ownerUserID,
+		"count", count,
+	)
+
+	return count, nil
+}
+
 func (s *OrganizationStore) ListByUserID(
 	ctx context.Context,
 	userID uuid.UUID,

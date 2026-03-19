@@ -7,13 +7,25 @@ option go_package = "shared/proto/analytics;analytics";
 import "google/protobuf/empty.proto";
 
 service AnalyticsService {
-    // get vehicles in transit
+    // existing
     rpc GetVehiclesInTransit(google.protobuf.Empty)
       returns (VehiclesInTransitResponse);
 
-    // get total trips today
     rpc GetTripsToday(google.protobuf.Empty)
       returns (TripsTodayResponse);
+
+
+    // total members in org
+    rpc GetTotalMembers(google.protobuf.Empty)
+      returns (TotalMembersResponse);
+
+    // active users today
+    rpc GetActiveUsersToday(google.protobuf.Empty)
+      returns (ActiveUsersTodayResponse);
+
+    // recent activity feed
+    rpc GetRecentActivity(google.protobuf.Empty)
+      returns (RecentActivityResponse);
 }
 
 message VehiclesInTransitResponse {
@@ -22,4 +34,24 @@ message VehiclesInTransitResponse {
 
 message TripsTodayResponse {
   uint64 count = 1;
+}
+
+message TotalMembersResponse {
+  uint64 count = 1;
+}
+
+message ActiveUsersTodayResponse {
+  uint64 count = 1;
+}
+
+message RecentActivityResponse {
+  repeated Event events = 1;
+}
+
+message Event {
+  string event_type = 1;
+  string user_id = 2;
+  string org_id = 3;
+  string service = 4;
+  string event_time = 5; // ISO string (simplest for now)
 }

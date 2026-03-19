@@ -18,15 +18,17 @@ import { Home } from "./components/landingPage/Home.jsx";
 
 import { organizationMutationAction } from "./actions/createOrganizationAction.js";
 import { organizationDetailsAction } from "./actions/organizationDetailsAction.js";
+import { UserAnalytics } from "./components/DashboardPage/Analytics/UserAnalytics.jsx";
 import { Vehicles } from "./components/DashboardPage/Fleet/Vehicles.jsx";
 import { OrganizationDetails } from "./components/DashboardPage/Organizations/OrganizationDetails.jsx";
 import { ActiveShipments } from "./components/DashboardPage/Shipments/ActiveShipments.jsx";
+import { CompletedShipments } from "./components/DashboardPage/Shipments/CompletedShipments.jsx";
 import { DashboardError } from "./errors/DashboardError";
+import { analyticsLoader } from "./loaders/AnalyticsLoader.js";
 import { dashboardLoader } from "./loaders/DashboardLoader.js";
 import { fleetLoader } from "./loaders/FleetLoader.js";
 import { organizationDetailsLoader } from "./loaders/OrganizationDetailsLoader.js";
 import { shipmentsLoader } from "./loaders/ShipmentsLoader.js";
-import { CompletedShipments } from "./components/DashboardPage/Shipments/CompletedShipments.jsx";
 
 const router = createBrowserRouter([
   {
@@ -96,11 +98,12 @@ const router = createBrowserRouter([
               },
             ],
           },
-
-          // { path: "shipments/active", Component: ActiveShipments },
-          // { path: "shipments/complete", Component: CompletedShipments },
-
-          // { path: "analytics", Component: Analytics },
+          {
+            id: "analytics",
+            path: "analytics",
+            loader: analyticsLoader,
+            Component: UserAnalytics,
+          },
 
           // { path: "customers", Component: Customers },
           // { path: "teams", Component: Teams },
