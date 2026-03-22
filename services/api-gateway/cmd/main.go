@@ -86,6 +86,14 @@ func main() {
 	)
 	defer fleetClient.Close()
 
+	// tracking service
+	trackingClient, err := grpc.NewTrackingServiceClient()
+	log.Infow(
+		"connected to downstream service",
+		"service", "tracking-service",
+	)
+	defer trackingClient.Close()
+
 	// Metrics
 	metrics := newMetrics()
 
@@ -97,6 +105,7 @@ func main() {
 		analyticsClient:    analyticsClient,
 		organizationClient: organizationClient,
 		fleetClient:        fleetClient,
+		trackingClient:     trackingClient,
 	}
 
 	app.limiters = rateLimiters{

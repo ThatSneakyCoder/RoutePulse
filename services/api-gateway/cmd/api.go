@@ -31,6 +31,7 @@ type application struct {
 	analyticsClient    *grpc.AnalyticsServiceClient
 	organizationClient *grpc.OrganizationServiceClient
 	fleetClient        *grpc.FleetServiceClient
+	trackingClient     *grpc.TrackingServiceClient
 	limiters           rateLimiters
 }
 
