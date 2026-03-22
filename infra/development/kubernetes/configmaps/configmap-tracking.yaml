@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tracking-config
+data:
+  TRACKING_SERVICE_ADDR: tracking-service:9093
+  TRACKING_SERVICE_PORT: "9093"

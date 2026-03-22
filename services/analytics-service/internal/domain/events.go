@@ -21,5 +21,5 @@ type Event struct {
 	UserID    string
 	OrgID     string
 	Service   string
-	EventTime string
+	EventTime time.Time
 }

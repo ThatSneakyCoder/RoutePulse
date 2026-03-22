@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 
 export const UserAnalytics = () => {
-  const { totalMembers, activeUsersToday, recentEvents } = useLoaderData();
+  const { totalMembers, activeUsersToday, recentActivity } = useLoaderData();
 
   return (
     <div className="p-8">
@@ -44,9 +44,9 @@ export const UserAnalytics = () => {
           Recent Activity
         </h2>
 
-        {recentEvents && recentEvents.length > 0 ? (
+        {recentActivity && recentActivity.length > 0 ? (
           <div className="space-y-4">
-            {recentEvents.map((event, index) => (
+            {recentActivity.map((event, index) => (
               <div
                 key={index}
                 className="flex justify-between items-center border-b border-slate-700 pb-2"

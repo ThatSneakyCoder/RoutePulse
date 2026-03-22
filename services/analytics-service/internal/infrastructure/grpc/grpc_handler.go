@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"time"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/analytics-service/internal/service"
 	pb "github.com/ThatSneakyCoder/RoutePulse/shared/proto/analytics"
@@ -135,7 +136,7 @@ func (h *gRPCHandler) GetRecentActivity(
 			UserId:    e.UserID,
 			OrgId:     e.OrgID,
 			Service:   e.Service,
-			EventTime: e.EventTime,
+			EventTime: e.EventTime.Format(time.RFC3339),
 		}
 	}
 

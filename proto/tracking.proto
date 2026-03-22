@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package tracking;
+
+option go_package = "shared/proto/tracking;tracking";
+
+service TrackingService {
+    // rpc GetRoute(GetRouteRequest) returns (GetRouteResponse);
+}
+
