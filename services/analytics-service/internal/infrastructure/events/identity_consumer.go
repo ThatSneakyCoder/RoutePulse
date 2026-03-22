@@ -55,7 +55,7 @@ func (c *identityConsumer) Listen() error {
 					"identity-service",
 					rabbitmq.IdentityUserRegisteredEvent,
 					payload.UserID,
-					payload.UserID,
+					"",
 				)
 
 			case rabbitmq.IdentityUserEmailVerifiedEvent:
@@ -70,7 +70,7 @@ func (c *identityConsumer) Listen() error {
 					"identity-service",
 					rabbitmq.IdentityUserEmailVerifiedEvent,
 					payload.UserID,
-					payload.UserID,
+					"",
 				)
 
 			case rabbitmq.IdentityUserLoggedInEvent:
@@ -85,7 +85,7 @@ func (c *identityConsumer) Listen() error {
 					"identity-service",
 					rabbitmq.IdentityUserLoggedInEvent,
 					payload.UserID,
-					payload.UserID,
+					"",
 				)
 
 			case rabbitmq.OrganizationCreatedEvent:

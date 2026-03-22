@@ -8,9 +8,12 @@ k8s_yaml('./infra/development/kubernetes/secrets/secrets-identity.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-organization.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-fleet.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-rabbitmq.yaml')
+k8s_yaml('./infra/development/kubernetes/secrets/secrets-clickhouse.yaml')
 k8s_yaml('./infra/development/kubernetes/configmaps/configmap.yaml')
+k8s_yaml('./infra/development/kubernetes/configmaps/configmap-ch.yaml')
 k8s_yaml('./infra/development/kubernetes/configmaps/configmap-org.yaml')
 k8s_yaml('./infra/development/kubernetes/configmaps/configmap-fleet.yaml')
+k8s_yaml('./infra/development/kubernetes/configmaps/configmap-tracking.yaml')
 
 ### End of K8s Config ###
 
@@ -48,6 +51,27 @@ k8s_yaml('./infra/development/kubernetes/clickhouse.yaml')
 k8s_resource('clickhouse', port_forwards=['18123:8123'], labels='tooling')
 
 ### clickhouse end ###
+
+### tracking service postgres Migration Job Start ###
+
+# k8s_yaml('./infra/development/kubernetes/tracking/tracking-migrate-job.yaml')
+
+# k8s_resource(
+#   'tracking-db-migrate',
+#   resource_deps=['postgres-org', 'tracking-service-compile'],
+#   labels='migrations'
+# )
+
+# docker_build(
+#   'routepulse/tracking-migrate',
+#   '.',
+#   dockerfile='./infra/development/docker/tracking-migrate.Dockerfile',
+#   only=[
+#     './services/tracking-service/internal/migrate/migrations',
+#   ],
+# )
+
+### tracking service postgres Migration Job End ###
 
 ### organization service postgres Migration Job Start ###
 
@@ -177,6 +201,43 @@ k8s_resource(
 )
 
 ### End of API Gateway ###
+
+### Tracking Service start ###
+
+tracking_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/tracking-service ./services/tracking-service/cmd'
+
+local_resource(
+  'tracking-service-compile',
+  tracking_compile_cmd,
+  deps=['./services/tracking-service', './shared'], labels="compiles")
+
+
+docker_build_with_restart(
+  'routepulse/tracking-service',
+  '.',
+  entrypoint=['/app/build/tracking-service'],
+  dockerfile='./infra/development/docker/tracking-service.Dockerfile',
+  only=[
+    './build/tracking-service',
+    './shared',
+  ],
+  live_update=[
+    sync('./build', '/app/build'),
+    sync('./shared', '/app/shared'),
+  ],
+)
+
+k8s_yaml('./infra/development/kubernetes/tracking/tracking-service-deployment.yaml')
+k8s_resource(
+  'tracking-service', 
+  port_forwards=9093,
+  resource_deps=[
+    # 'postgres', 
+    'tracking-service-compile'], 
+    labels="services"
+)
+
+### Tracking Service end ###
 
 ### Identity Service start ###
 

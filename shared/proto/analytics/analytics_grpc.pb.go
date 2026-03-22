@@ -22,16 +22,24 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	AnalyticsService_GetVehiclesInTransit_FullMethodName = "/analytics.AnalyticsService/GetVehiclesInTransit"
 	AnalyticsService_GetTripsToday_FullMethodName        = "/analytics.AnalyticsService/GetTripsToday"
+	AnalyticsService_GetTotalMembers_FullMethodName      = "/analytics.AnalyticsService/GetTotalMembers"
+	AnalyticsService_GetActiveUsersToday_FullMethodName  = "/analytics.AnalyticsService/GetActiveUsersToday"
+	AnalyticsService_GetRecentActivity_FullMethodName    = "/analytics.AnalyticsService/GetRecentActivity"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AnalyticsServiceClient interface {
-	// get vehicles in transit
+	// existing
 	GetVehiclesInTransit(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*VehiclesInTransitResponse, error)
-	// get total trips today
 	GetTripsToday(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TripsTodayResponse, error)
+	// total members in org
+	GetTotalMembers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TotalMembersResponse, error)
+	// active users today
+	GetActiveUsersToday(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ActiveUsersTodayResponse, error)
+	// recent activity feed
+	GetRecentActivity(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RecentActivityResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -62,14 +70,49 @@ func (c *analyticsServiceClient) GetTripsToday(ctx context.Context, in *emptypb.
 	return out, nil
 }
 
+func (c *analyticsServiceClient) GetTotalMembers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TotalMembersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TotalMembersResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_GetTotalMembers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) GetActiveUsersToday(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ActiveUsersTodayResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ActiveUsersTodayResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_GetActiveUsersToday_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analyticsServiceClient) GetRecentActivity(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RecentActivityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RecentActivityResponse)
+	err := c.cc.Invoke(ctx, AnalyticsService_GetRecentActivity_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
 type AnalyticsServiceServer interface {
-	// get vehicles in transit
+	// existing
 	GetVehiclesInTransit(context.Context, *emptypb.Empty) (*VehiclesInTransitResponse, error)
-	// get total trips today
 	GetTripsToday(context.Context, *emptypb.Empty) (*TripsTodayResponse, error)
+	// total members in org
+	GetTotalMembers(context.Context, *emptypb.Empty) (*TotalMembersResponse, error)
+	// active users today
+	GetActiveUsersToday(context.Context, *emptypb.Empty) (*ActiveUsersTodayResponse, error)
+	// recent activity feed
+	GetRecentActivity(context.Context, *emptypb.Empty) (*RecentActivityResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -85,6 +128,15 @@ func (UnimplementedAnalyticsServiceServer) GetVehiclesInTransit(context.Context,
 }
 func (UnimplementedAnalyticsServiceServer) GetTripsToday(context.Context, *emptypb.Empty) (*TripsTodayResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetTripsToday not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) GetTotalMembers(context.Context, *emptypb.Empty) (*TotalMembersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTotalMembers not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) GetActiveUsersToday(context.Context, *emptypb.Empty) (*ActiveUsersTodayResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetActiveUsersToday not implemented")
+}
+func (UnimplementedAnalyticsServiceServer) GetRecentActivity(context.Context, *emptypb.Empty) (*RecentActivityResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRecentActivity not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -143,6 +195,60 @@ func _AnalyticsService_GetTripsToday_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnalyticsService_GetTotalMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).GetTotalMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_GetTotalMembers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).GetTotalMembers(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_GetActiveUsersToday_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).GetActiveUsersToday(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_GetActiveUsersToday_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).GetActiveUsersToday(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AnalyticsService_GetRecentActivity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalyticsServiceServer).GetRecentActivity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AnalyticsService_GetRecentActivity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalyticsServiceServer).GetRecentActivity(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -157,6 +263,18 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTripsToday",
 			Handler:    _AnalyticsService_GetTripsToday_Handler,
+		},
+		{
+			MethodName: "GetTotalMembers",
+			Handler:    _AnalyticsService_GetTotalMembers_Handler,
+		},
+		{
+			MethodName: "GetActiveUsersToday",
+			Handler:    _AnalyticsService_GetActiveUsersToday_Handler,
+		},
+		{
+			MethodName: "GetRecentActivity",
+			Handler:    _AnalyticsService_GetRecentActivity_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

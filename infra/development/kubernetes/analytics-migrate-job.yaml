@@ -21,15 +21,15 @@ spec:
             - name: CLICKHOUSE_USER
               valueFrom:
                 secretKeyRef:
-                  name: routepulse-credentials
+                  name: routepulse-ch-credentials
                   key: user
             - name: CLICKHOUSE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: routepulse-credentials
+                  name: routepulse-ch-credentials
                   key: password
             - name: CLICKHOUSE_DB
               valueFrom:
                 secretKeyRef:
-                  name: routepulse-credentials
-                  key: db-ch
+                  name: routepulse-ch-credentials
+                  key: db

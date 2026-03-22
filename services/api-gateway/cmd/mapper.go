@@ -1,9 +1,9 @@
 package main
 
 import (
+	pbFleet "github.com/ThatSneakyCoder/RoutePulse/shared/proto/fleet"
 	pb "github.com/ThatSneakyCoder/RoutePulse/shared/proto/identity"
 	pbOrg "github.com/ThatSneakyCoder/RoutePulse/shared/proto/organization"
-	pbFleet "github.com/ThatSneakyCoder/RoutePulse/shared/proto/fleet"
 )
 
 func (p *CreateUserRequest) toProto() *pb.RegisterUserRequest {
@@ -121,5 +121,89 @@ func (p *CreateVehicleRequest) toProto() *pbFleet.CreateVehicleRequest {
 func (p *ListVehiclesRequest) toProto() *pbFleet.ListVehiclesRequest {
 	return &pbFleet.ListVehiclesRequest{
 		OrganizationId: p.OrganizationID,
+	}
+}
+
+func (p *GetVehicleRequest) toProto() *pbFleet.GetVehicleRequest {
+	return &pbFleet.GetVehicleRequest{
+		VehicleId: p.VehicleID,
+	}
+}
+
+func (p *CreateDriverRequest) toProto() *pbFleet.CreateDriverRequest {
+	return &pbFleet.CreateDriverRequest{
+		OrganizationId: p.OrganizationID,
+		FirstName:      p.FirstName,
+		LastName:       p.LastName,
+		VehicleId:      p.VehicleID,
+	}
+}
+
+func (p *ListDriversRequest) toProto() *pbFleet.ListDriversRequest {
+	return &pbFleet.ListDriversRequest{
+		OrganizationId: p.OrganizationID,
+	}
+}
+
+func (p *CreateTripRequest) toProto() *pbFleet.CreateTripRequest {
+	return &pbFleet.CreateTripRequest{
+		OrganizationId: p.OrganizationID,
+		VehicleId:      p.VehicleID,
+		DriverId:       p.DriverID,
+	}
+}
+
+func (p *ListTripsRequest) toProto() *pbFleet.ListTripsRequest {
+	return &pbFleet.ListTripsRequest{
+		OrganizationId: p.OrganizationID,
+	}
+}
+
+func (p *UpdateVehicleRequest) toProto() *pbFleet.UpdateVehicleRequest {
+	return &pbFleet.UpdateVehicleRequest{
+		VehicleId:   p.VehicleID,
+		PlateNumber: p.PlateNumber,
+		VehicleType: p.VehicleType,
+		Capacity:    p.Capacity,
+	}
+}
+
+func (p *UpdateVehicleStatusRequest) toProto() *pbFleet.UpdateVehicleStatusRequest {
+	return &pbFleet.UpdateVehicleStatusRequest{
+		VehicleId: p.VehicleID,
+		Status:    p.Status,
+	}
+}
+
+func (p *UpdateDriverRequest) toProto() *pbFleet.UpdateDriverRequest {
+	return &pbFleet.UpdateDriverRequest{
+		DriverId:  p.DriverID,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+	}
+}
+
+func (p *UpdateDriverStatusRequest) toProto() *pbFleet.UpdateDriverStatusRequest {
+	return &pbFleet.UpdateDriverStatusRequest{
+		DriverId: p.DriverID,
+		Status:   p.Status,
+	}
+}
+
+func (p *StartTripRequest) toProto() *pbFleet.StartTripRequest {
+	return &pbFleet.StartTripRequest{
+		TripId: p.TripID,
+	}
+}
+
+func (p *CompleteTripRequest) toProto() *pbFleet.CompleteTripRequest {
+	return &pbFleet.CompleteTripRequest{
+		TripId: p.TripID,
+	}
+}
+
+func toGetTotalMembersGRPC(req GetTotalMembersRequest) *pbOrg.GetTotalMembersRequest {
+	return &pbOrg.GetTotalMembersRequest{
+		OwnerUserId: req.OwnerUserID,
 	}
 }

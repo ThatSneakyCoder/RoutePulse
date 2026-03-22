@@ -152,24 +152,36 @@ func (app *application) mount() http.Handler {
 			r.Route("/fleet", func(r chi.Router) {
 
 				r.Route("/vehicles", func(r chi.Router) {
+
 					r.Post("/", app.createVehicleHandler)
 					r.Get("/", app.listVehiclesHandler)
+					r.Get("/all", app.listAllVehiclesOfUser)
 					r.Get("/{vehicleId}", app.getVehicleHandler)
+
+					r.Put("/{vehicleId}", app.updateVehicleHandler)
+
+					r.Patch("/{vehicleId}/status", app.updateVehicleStatusHandler)
 				})
 
 				r.Route("/drivers", func(r chi.Router) {
+
 					r.Post("/", app.createDriverHandler)
 					r.Get("/", app.listDriversHandler)
+
+					r.Put("/{driverId}", app.updateDriverHandler)
+
+					r.Patch("/{driverId}/status", app.updateDriverStatusHandler)
 				})
 
 				r.Route("/trips", func(r chi.Router) {
+
 					r.Post("/", app.createTripHandler)
 					r.Get("/", app.listTripsHandler)
+					r.Get("/all", app.listAllTripsHandler)
 
 					r.Post("/{tripId}/start", app.startTripHandler)
 					r.Post("/{tripId}/complete", app.completeTripHandler)
 				})
-
 			})
 		})
 
@@ -180,9 +192,12 @@ func (app *application) mount() http.Handler {
 			r.Route("/analytics", func(r chi.Router) {
 				r.Get("/vehicles-in-transit", app.getVehiclesInTransit)
 				r.Get("/trips-today", app.getTripsToday)
+
+				r.Get("/total-members", app.getTotalMembers)
+				r.Get("/active-users-today", app.getActiveUsersToday)
+				r.Get("/recent-activity", app.getRecentActivity)
 			})
 		})
-
 	})
 
 	return r

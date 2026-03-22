@@ -28,37 +28,37 @@ spec:
           - name: ANALYTICS_SERVICE_ADDR
             valueFrom:
               configMapKeyRef:
-                name: identity-config
+                name: ch-config
                 key: ANALYTICS_SERVICE_ADDR
           - name: ANALYTICS_SERVICE_PORT
             valueFrom:
               configMapKeyRef:  
-                name: identity-config
+                name: ch-config
                 key: ANALYTICS_SERVICE_PORT
           - name: CLICKHOUSE_HOST
             valueFrom:
               configMapKeyRef:  
-                name: identity-config
+                name: ch-config
                 key: CLICKHOUSE_HOST
           - name: CLICKHOUSE_PORT
             valueFrom:
               configMapKeyRef:  
-                name: identity-config
+                name: ch-config
                 key: CLICKHOUSE_PORT
           - name: CLICKHOUSE_DB
             valueFrom:
               secretKeyRef:
-                name: routepulse-credentials
-                key: db-ch
+                name: routepulse-ch-credentials
+                key: db
           - name: CLICKHOUSE_USER
             valueFrom:
               secretKeyRef:
-                name: routepulse-credentials
+                name: routepulse-ch-credentials
                 key: user
           - name: CLICKHOUSE_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: routepulse-credentials
+                name: routepulse-ch-credentials
                 key: password
 ---
 apiVersion: v1

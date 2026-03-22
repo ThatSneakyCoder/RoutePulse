@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracking-service
+  template:
+    metadata:
+      labels:
+        app: tracking-service
+    spec:
+      containers:
+        - name: tracking-service
+          image: routepulse/tracking-service
+          ports:
+            - containerPort: 9093
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "125m"
+            limits:
+              memory: "128Mi"
+              cpu: "125m"
+          env:
+          - name: TRACKING_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: tracking-config
+                key: TRACKING_SERVICE_ADDR
+          - name: TRACKING_SERVICE_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: tracking-config
+                key: TRACKING_SERVICE_PORT
+          # - name: POSTGRES_USER
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: routepulse-tracking-credentials
+          #       key: user
+          # - name: POSTGRES_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: routepulse-tracking-credentials
+          #       key: password
+          # - name: POSTGRES_DB
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: routepulse-tracking-credentials
+          #       key: db
+          # - name: POSTGRES_HOST
+          #   value: postgres-fleet
+          # - name: POSTGRES_PORT
+          #   value: "5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracking-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9093
+      targetPort: 9093
+  selector:
+    app: tracking-service

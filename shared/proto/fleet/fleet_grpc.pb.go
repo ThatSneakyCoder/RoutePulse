@@ -19,15 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FleetService_CreateVehicle_FullMethodName = "/fleet.FleetService/CreateVehicle"
-	FleetService_GetVehicle_FullMethodName    = "/fleet.FleetService/GetVehicle"
-	FleetService_ListVehicles_FullMethodName  = "/fleet.FleetService/ListVehicles"
-	FleetService_CreateDriver_FullMethodName  = "/fleet.FleetService/CreateDriver"
-	FleetService_ListDrivers_FullMethodName   = "/fleet.FleetService/ListDrivers"
-	FleetService_CreateTrip_FullMethodName    = "/fleet.FleetService/CreateTrip"
-	FleetService_ListTrips_FullMethodName     = "/fleet.FleetService/ListTrips"
-	FleetService_StartTrip_FullMethodName     = "/fleet.FleetService/StartTrip"
-	FleetService_CompleteTrip_FullMethodName  = "/fleet.FleetService/CompleteTrip"
+	FleetService_CreateVehicle_FullMethodName       = "/fleet.FleetService/CreateVehicle"
+	FleetService_GetVehicle_FullMethodName          = "/fleet.FleetService/GetVehicle"
+	FleetService_ListVehicles_FullMethodName        = "/fleet.FleetService/ListVehicles"
+	FleetService_UpdateVehicle_FullMethodName       = "/fleet.FleetService/UpdateVehicle"
+	FleetService_UpdateVehicleStatus_FullMethodName = "/fleet.FleetService/UpdateVehicleStatus"
+	FleetService_CreateDriver_FullMethodName        = "/fleet.FleetService/CreateDriver"
+	FleetService_ListDrivers_FullMethodName         = "/fleet.FleetService/ListDrivers"
+	FleetService_UpdateDriver_FullMethodName        = "/fleet.FleetService/UpdateDriver"
+	FleetService_UpdateDriverStatus_FullMethodName  = "/fleet.FleetService/UpdateDriverStatus"
+	FleetService_CreateTrip_FullMethodName          = "/fleet.FleetService/CreateTrip"
+	FleetService_ListTrips_FullMethodName           = "/fleet.FleetService/ListTrips"
+	FleetService_StartTrip_FullMethodName           = "/fleet.FleetService/StartTrip"
+	FleetService_CompleteTrip_FullMethodName        = "/fleet.FleetService/CompleteTrip"
 )
 
 // FleetServiceClient is the client API for FleetService service.
@@ -37,8 +41,12 @@ type FleetServiceClient interface {
 	CreateVehicle(ctx context.Context, in *CreateVehicleRequest, opts ...grpc.CallOption) (*CreateVehicleResponse, error)
 	GetVehicle(ctx context.Context, in *GetVehicleRequest, opts ...grpc.CallOption) (*GetVehicleResponse, error)
 	ListVehicles(ctx context.Context, in *ListVehiclesRequest, opts ...grpc.CallOption) (*ListVehiclesResponse, error)
+	UpdateVehicle(ctx context.Context, in *UpdateVehicleRequest, opts ...grpc.CallOption) (*UpdateVehicleResponse, error)
+	UpdateVehicleStatus(ctx context.Context, in *UpdateVehicleStatusRequest, opts ...grpc.CallOption) (*UpdateVehicleStatusResponse, error)
 	CreateDriver(ctx context.Context, in *CreateDriverRequest, opts ...grpc.CallOption) (*CreateDriverResponse, error)
 	ListDrivers(ctx context.Context, in *ListDriversRequest, opts ...grpc.CallOption) (*ListDriversResponse, error)
+	UpdateDriver(ctx context.Context, in *UpdateDriverRequest, opts ...grpc.CallOption) (*UpdateDriverResponse, error)
+	UpdateDriverStatus(ctx context.Context, in *UpdateDriverStatusRequest, opts ...grpc.CallOption) (*UpdateDriverStatusResponse, error)
 	CreateTrip(ctx context.Context, in *CreateTripRequest, opts ...grpc.CallOption) (*CreateTripResponse, error)
 	ListTrips(ctx context.Context, in *ListTripsRequest, opts ...grpc.CallOption) (*ListTripsResponse, error)
 	StartTrip(ctx context.Context, in *StartTripRequest, opts ...grpc.CallOption) (*StartTripResponse, error)
@@ -83,6 +91,26 @@ func (c *fleetServiceClient) ListVehicles(ctx context.Context, in *ListVehiclesR
 	return out, nil
 }
 
+func (c *fleetServiceClient) UpdateVehicle(ctx context.Context, in *UpdateVehicleRequest, opts ...grpc.CallOption) (*UpdateVehicleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateVehicleResponse)
+	err := c.cc.Invoke(ctx, FleetService_UpdateVehicle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fleetServiceClient) UpdateVehicleStatus(ctx context.Context, in *UpdateVehicleStatusRequest, opts ...grpc.CallOption) (*UpdateVehicleStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateVehicleStatusResponse)
+	err := c.cc.Invoke(ctx, FleetService_UpdateVehicleStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fleetServiceClient) CreateDriver(ctx context.Context, in *CreateDriverRequest, opts ...grpc.CallOption) (*CreateDriverResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateDriverResponse)
@@ -97,6 +125,26 @@ func (c *fleetServiceClient) ListDrivers(ctx context.Context, in *ListDriversReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListDriversResponse)
 	err := c.cc.Invoke(ctx, FleetService_ListDrivers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fleetServiceClient) UpdateDriver(ctx context.Context, in *UpdateDriverRequest, opts ...grpc.CallOption) (*UpdateDriverResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateDriverResponse)
+	err := c.cc.Invoke(ctx, FleetService_UpdateDriver_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fleetServiceClient) UpdateDriverStatus(ctx context.Context, in *UpdateDriverStatusRequest, opts ...grpc.CallOption) (*UpdateDriverStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateDriverStatusResponse)
+	err := c.cc.Invoke(ctx, FleetService_UpdateDriverStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -150,8 +198,12 @@ type FleetServiceServer interface {
 	CreateVehicle(context.Context, *CreateVehicleRequest) (*CreateVehicleResponse, error)
 	GetVehicle(context.Context, *GetVehicleRequest) (*GetVehicleResponse, error)
 	ListVehicles(context.Context, *ListVehiclesRequest) (*ListVehiclesResponse, error)
+	UpdateVehicle(context.Context, *UpdateVehicleRequest) (*UpdateVehicleResponse, error)
+	UpdateVehicleStatus(context.Context, *UpdateVehicleStatusRequest) (*UpdateVehicleStatusResponse, error)
 	CreateDriver(context.Context, *CreateDriverRequest) (*CreateDriverResponse, error)
 	ListDrivers(context.Context, *ListDriversRequest) (*ListDriversResponse, error)
+	UpdateDriver(context.Context, *UpdateDriverRequest) (*UpdateDriverResponse, error)
+	UpdateDriverStatus(context.Context, *UpdateDriverStatusRequest) (*UpdateDriverStatusResponse, error)
 	CreateTrip(context.Context, *CreateTripRequest) (*CreateTripResponse, error)
 	ListTrips(context.Context, *ListTripsRequest) (*ListTripsResponse, error)
 	StartTrip(context.Context, *StartTripRequest) (*StartTripResponse, error)
@@ -175,11 +227,23 @@ func (UnimplementedFleetServiceServer) GetVehicle(context.Context, *GetVehicleRe
 func (UnimplementedFleetServiceServer) ListVehicles(context.Context, *ListVehiclesRequest) (*ListVehiclesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListVehicles not implemented")
 }
+func (UnimplementedFleetServiceServer) UpdateVehicle(context.Context, *UpdateVehicleRequest) (*UpdateVehicleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateVehicle not implemented")
+}
+func (UnimplementedFleetServiceServer) UpdateVehicleStatus(context.Context, *UpdateVehicleStatusRequest) (*UpdateVehicleStatusResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateVehicleStatus not implemented")
+}
 func (UnimplementedFleetServiceServer) CreateDriver(context.Context, *CreateDriverRequest) (*CreateDriverResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateDriver not implemented")
 }
 func (UnimplementedFleetServiceServer) ListDrivers(context.Context, *ListDriversRequest) (*ListDriversResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListDrivers not implemented")
+}
+func (UnimplementedFleetServiceServer) UpdateDriver(context.Context, *UpdateDriverRequest) (*UpdateDriverResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateDriver not implemented")
+}
+func (UnimplementedFleetServiceServer) UpdateDriverStatus(context.Context, *UpdateDriverStatusRequest) (*UpdateDriverStatusResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateDriverStatus not implemented")
 }
 func (UnimplementedFleetServiceServer) CreateTrip(context.Context, *CreateTripRequest) (*CreateTripResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateTrip not implemented")
@@ -268,6 +332,42 @@ func _FleetService_ListVehicles_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FleetService_UpdateVehicle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateVehicleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FleetServiceServer).UpdateVehicle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FleetService_UpdateVehicle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FleetServiceServer).UpdateVehicle(ctx, req.(*UpdateVehicleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FleetService_UpdateVehicleStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateVehicleStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FleetServiceServer).UpdateVehicleStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FleetService_UpdateVehicleStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FleetServiceServer).UpdateVehicleStatus(ctx, req.(*UpdateVehicleStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FleetService_CreateDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateDriverRequest)
 	if err := dec(in); err != nil {
@@ -300,6 +400,42 @@ func _FleetService_ListDrivers_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FleetServiceServer).ListDrivers(ctx, req.(*ListDriversRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FleetService_UpdateDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateDriverRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FleetServiceServer).UpdateDriver(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FleetService_UpdateDriver_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FleetServiceServer).UpdateDriver(ctx, req.(*UpdateDriverRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FleetService_UpdateDriverStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateDriverStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FleetServiceServer).UpdateDriverStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FleetService_UpdateDriverStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FleetServiceServer).UpdateDriverStatus(ctx, req.(*UpdateDriverStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -396,12 +532,28 @@ var FleetService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FleetService_ListVehicles_Handler,
 		},
 		{
+			MethodName: "UpdateVehicle",
+			Handler:    _FleetService_UpdateVehicle_Handler,
+		},
+		{
+			MethodName: "UpdateVehicleStatus",
+			Handler:    _FleetService_UpdateVehicleStatus_Handler,
+		},
+		{
 			MethodName: "CreateDriver",
 			Handler:    _FleetService_CreateDriver_Handler,
 		},
 		{
 			MethodName: "ListDrivers",
 			Handler:    _FleetService_ListDrivers_Handler,
+		},
+		{
+			MethodName: "UpdateDriver",
+			Handler:    _FleetService_UpdateDriver_Handler,
+		},
+		{
+			MethodName: "UpdateDriverStatus",
+			Handler:    _FleetService_UpdateDriverStatus_Handler,
 		},
 		{
 			MethodName: "CreateTrip",

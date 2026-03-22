@@ -22,6 +22,94 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetTotalMembersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OwnerUserId   string                 `protobuf:"bytes,1,opt,name=owner_user_id,json=ownerUserId,proto3" json:"owner_user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTotalMembersRequest) Reset() {
+	*x = GetTotalMembersRequest{}
+	mi := &file_organization_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTotalMembersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTotalMembersRequest) ProtoMessage() {}
+
+func (x *GetTotalMembersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_organization_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTotalMembersRequest.ProtoReflect.Descriptor instead.
+func (*GetTotalMembersRequest) Descriptor() ([]byte, []int) {
+	return file_organization_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetTotalMembersRequest) GetOwnerUserId() string {
+	if x != nil {
+		return x.OwnerUserId
+	}
+	return ""
+}
+
+type GetTotalMembersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Count         uint64                 `protobuf:"varint,1,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTotalMembersResponse) Reset() {
+	*x = GetTotalMembersResponse{}
+	mi := &file_organization_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTotalMembersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTotalMembersResponse) ProtoMessage() {}
+
+func (x *GetTotalMembersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_organization_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTotalMembersResponse.ProtoReflect.Descriptor instead.
+func (*GetTotalMembersResponse) Descriptor() ([]byte, []int) {
+	return file_organization_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetTotalMembersResponse) GetCount() uint64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
 type Organization struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
@@ -36,7 +124,7 @@ type Organization struct {
 
 func (x *Organization) Reset() {
 	*x = Organization{}
-	mi := &file_organization_proto_msgTypes[0]
+	mi := &file_organization_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -48,7 +136,7 @@ func (x *Organization) String() string {
 func (*Organization) ProtoMessage() {}
 
 func (x *Organization) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[0]
+	mi := &file_organization_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +149,7 @@ func (x *Organization) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Organization.ProtoReflect.Descriptor instead.
 func (*Organization) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{0}
+	return file_organization_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Organization) GetOrganizationId() string {
@@ -117,7 +205,7 @@ type OrganizationMember struct {
 
 func (x *OrganizationMember) Reset() {
 	*x = OrganizationMember{}
-	mi := &file_organization_proto_msgTypes[1]
+	mi := &file_organization_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -129,7 +217,7 @@ func (x *OrganizationMember) String() string {
 func (*OrganizationMember) ProtoMessage() {}
 
 func (x *OrganizationMember) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[1]
+	mi := &file_organization_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -142,7 +230,7 @@ func (x *OrganizationMember) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OrganizationMember.ProtoReflect.Descriptor instead.
 func (*OrganizationMember) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{1}
+	return file_organization_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *OrganizationMember) GetUserId() string {
@@ -175,7 +263,7 @@ type ListOrganizationMembersRequest struct {
 
 func (x *ListOrganizationMembersRequest) Reset() {
 	*x = ListOrganizationMembersRequest{}
-	mi := &file_organization_proto_msgTypes[2]
+	mi := &file_organization_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -187,7 +275,7 @@ func (x *ListOrganizationMembersRequest) String() string {
 func (*ListOrganizationMembersRequest) ProtoMessage() {}
 
 func (x *ListOrganizationMembersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[2]
+	mi := &file_organization_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -200,7 +288,7 @@ func (x *ListOrganizationMembersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOrganizationMembersRequest.ProtoReflect.Descriptor instead.
 func (*ListOrganizationMembersRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{2}
+	return file_organization_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ListOrganizationMembersRequest) GetOrganizationId() string {
@@ -219,7 +307,7 @@ type ListOrganizationMembersResponse struct {
 
 func (x *ListOrganizationMembersResponse) Reset() {
 	*x = ListOrganizationMembersResponse{}
-	mi := &file_organization_proto_msgTypes[3]
+	mi := &file_organization_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -231,7 +319,7 @@ func (x *ListOrganizationMembersResponse) String() string {
 func (*ListOrganizationMembersResponse) ProtoMessage() {}
 
 func (x *ListOrganizationMembersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[3]
+	mi := &file_organization_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -244,7 +332,7 @@ func (x *ListOrganizationMembersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOrganizationMembersResponse.ProtoReflect.Descriptor instead.
 func (*ListOrganizationMembersResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{3}
+	return file_organization_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListOrganizationMembersResponse) GetMembers() []*OrganizationMember {
@@ -264,7 +352,7 @@ type CreateOrganizationRequest struct {
 
 func (x *CreateOrganizationRequest) Reset() {
 	*x = CreateOrganizationRequest{}
-	mi := &file_organization_proto_msgTypes[4]
+	mi := &file_organization_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -276,7 +364,7 @@ func (x *CreateOrganizationRequest) String() string {
 func (*CreateOrganizationRequest) ProtoMessage() {}
 
 func (x *CreateOrganizationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[4]
+	mi := &file_organization_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -289,7 +377,7 @@ func (x *CreateOrganizationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrganizationRequest.ProtoReflect.Descriptor instead.
 func (*CreateOrganizationRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{4}
+	return file_organization_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateOrganizationRequest) GetName() string {
@@ -315,7 +403,7 @@ type CreateOrganizationResponse struct {
 
 func (x *CreateOrganizationResponse) Reset() {
 	*x = CreateOrganizationResponse{}
-	mi := &file_organization_proto_msgTypes[5]
+	mi := &file_organization_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -327,7 +415,7 @@ func (x *CreateOrganizationResponse) String() string {
 func (*CreateOrganizationResponse) ProtoMessage() {}
 
 func (x *CreateOrganizationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[5]
+	mi := &file_organization_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -340,7 +428,7 @@ func (x *CreateOrganizationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrganizationResponse.ProtoReflect.Descriptor instead.
 func (*CreateOrganizationResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{5}
+	return file_organization_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *CreateOrganizationResponse) GetOrganization() *Organization {
@@ -359,7 +447,7 @@ type GetOrganizationRequest struct {
 
 func (x *GetOrganizationRequest) Reset() {
 	*x = GetOrganizationRequest{}
-	mi := &file_organization_proto_msgTypes[6]
+	mi := &file_organization_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -371,7 +459,7 @@ func (x *GetOrganizationRequest) String() string {
 func (*GetOrganizationRequest) ProtoMessage() {}
 
 func (x *GetOrganizationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[6]
+	mi := &file_organization_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -384,7 +472,7 @@ func (x *GetOrganizationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrganizationRequest.ProtoReflect.Descriptor instead.
 func (*GetOrganizationRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{6}
+	return file_organization_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetOrganizationRequest) GetOrganizationId() string {
@@ -404,7 +492,7 @@ type GetOrganizationResponse struct {
 
 func (x *GetOrganizationResponse) Reset() {
 	*x = GetOrganizationResponse{}
-	mi := &file_organization_proto_msgTypes[7]
+	mi := &file_organization_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -416,7 +504,7 @@ func (x *GetOrganizationResponse) String() string {
 func (*GetOrganizationResponse) ProtoMessage() {}
 
 func (x *GetOrganizationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[7]
+	mi := &file_organization_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -429,7 +517,7 @@ func (x *GetOrganizationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrganizationResponse.ProtoReflect.Descriptor instead.
 func (*GetOrganizationResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{7}
+	return file_organization_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetOrganizationResponse) GetOrganization() *Organization {
@@ -455,7 +543,7 @@ type ListUserOrganizationsRequest struct {
 
 func (x *ListUserOrganizationsRequest) Reset() {
 	*x = ListUserOrganizationsRequest{}
-	mi := &file_organization_proto_msgTypes[8]
+	mi := &file_organization_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -467,7 +555,7 @@ func (x *ListUserOrganizationsRequest) String() string {
 func (*ListUserOrganizationsRequest) ProtoMessage() {}
 
 func (x *ListUserOrganizationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[8]
+	mi := &file_organization_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -480,7 +568,7 @@ func (x *ListUserOrganizationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUserOrganizationsRequest.ProtoReflect.Descriptor instead.
 func (*ListUserOrganizationsRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{8}
+	return file_organization_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListUserOrganizationsRequest) GetUserId() string {
@@ -499,7 +587,7 @@ type ListUserOrganizationsResponse struct {
 
 func (x *ListUserOrganizationsResponse) Reset() {
 	*x = ListUserOrganizationsResponse{}
-	mi := &file_organization_proto_msgTypes[9]
+	mi := &file_organization_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -511,7 +599,7 @@ func (x *ListUserOrganizationsResponse) String() string {
 func (*ListUserOrganizationsResponse) ProtoMessage() {}
 
 func (x *ListUserOrganizationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[9]
+	mi := &file_organization_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -524,7 +612,7 @@ func (x *ListUserOrganizationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUserOrganizationsResponse.ProtoReflect.Descriptor instead.
 func (*ListUserOrganizationsResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{9}
+	return file_organization_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ListUserOrganizationsResponse) GetOrganizations() []*Organization {
@@ -545,7 +633,7 @@ type AddMemberRequest struct {
 
 func (x *AddMemberRequest) Reset() {
 	*x = AddMemberRequest{}
-	mi := &file_organization_proto_msgTypes[10]
+	mi := &file_organization_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -557,7 +645,7 @@ func (x *AddMemberRequest) String() string {
 func (*AddMemberRequest) ProtoMessage() {}
 
 func (x *AddMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[10]
+	mi := &file_organization_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -570,7 +658,7 @@ func (x *AddMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddMemberRequest.ProtoReflect.Descriptor instead.
 func (*AddMemberRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{10}
+	return file_organization_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *AddMemberRequest) GetOrganizationId() string {
@@ -603,7 +691,7 @@ type AddMemberResponse struct {
 
 func (x *AddMemberResponse) Reset() {
 	*x = AddMemberResponse{}
-	mi := &file_organization_proto_msgTypes[11]
+	mi := &file_organization_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -615,7 +703,7 @@ func (x *AddMemberResponse) String() string {
 func (*AddMemberResponse) ProtoMessage() {}
 
 func (x *AddMemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[11]
+	mi := &file_organization_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -628,7 +716,7 @@ func (x *AddMemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddMemberResponse.ProtoReflect.Descriptor instead.
 func (*AddMemberResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{11}
+	return file_organization_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *AddMemberResponse) GetSuccess() bool {
@@ -648,7 +736,7 @@ type RemoveMemberRequest struct {
 
 func (x *RemoveMemberRequest) Reset() {
 	*x = RemoveMemberRequest{}
-	mi := &file_organization_proto_msgTypes[12]
+	mi := &file_organization_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -660,7 +748,7 @@ func (x *RemoveMemberRequest) String() string {
 func (*RemoveMemberRequest) ProtoMessage() {}
 
 func (x *RemoveMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[12]
+	mi := &file_organization_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -673,7 +761,7 @@ func (x *RemoveMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveMemberRequest.ProtoReflect.Descriptor instead.
 func (*RemoveMemberRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{12}
+	return file_organization_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RemoveMemberRequest) GetOrganizationId() string {
@@ -699,7 +787,7 @@ type RemoveMemberResponse struct {
 
 func (x *RemoveMemberResponse) Reset() {
 	*x = RemoveMemberResponse{}
-	mi := &file_organization_proto_msgTypes[13]
+	mi := &file_organization_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -711,7 +799,7 @@ func (x *RemoveMemberResponse) String() string {
 func (*RemoveMemberResponse) ProtoMessage() {}
 
 func (x *RemoveMemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[13]
+	mi := &file_organization_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -724,7 +812,7 @@ func (x *RemoveMemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveMemberResponse.ProtoReflect.Descriptor instead.
 func (*RemoveMemberResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{13}
+	return file_organization_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *RemoveMemberResponse) GetSuccess() bool {
@@ -745,7 +833,7 @@ type UpdateMemberRoleRequest struct {
 
 func (x *UpdateMemberRoleRequest) Reset() {
 	*x = UpdateMemberRoleRequest{}
-	mi := &file_organization_proto_msgTypes[14]
+	mi := &file_organization_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -757,7 +845,7 @@ func (x *UpdateMemberRoleRequest) String() string {
 func (*UpdateMemberRoleRequest) ProtoMessage() {}
 
 func (x *UpdateMemberRoleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[14]
+	mi := &file_organization_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -770,7 +858,7 @@ func (x *UpdateMemberRoleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateMemberRoleRequest.ProtoReflect.Descriptor instead.
 func (*UpdateMemberRoleRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{14}
+	return file_organization_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *UpdateMemberRoleRequest) GetOrganizationId() string {
@@ -803,7 +891,7 @@ type UpdateMemberRoleResponse struct {
 
 func (x *UpdateMemberRoleResponse) Reset() {
 	*x = UpdateMemberRoleResponse{}
-	mi := &file_organization_proto_msgTypes[15]
+	mi := &file_organization_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -815,7 +903,7 @@ func (x *UpdateMemberRoleResponse) String() string {
 func (*UpdateMemberRoleResponse) ProtoMessage() {}
 
 func (x *UpdateMemberRoleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[15]
+	mi := &file_organization_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -828,7 +916,7 @@ func (x *UpdateMemberRoleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateMemberRoleResponse.ProtoReflect.Descriptor instead.
 func (*UpdateMemberRoleResponse) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{15}
+	return file_organization_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *UpdateMemberRoleResponse) GetSuccess() bool {
@@ -847,7 +935,7 @@ type DeactivateOrganizationRequest struct {
 
 func (x *DeactivateOrganizationRequest) Reset() {
 	*x = DeactivateOrganizationRequest{}
-	mi := &file_organization_proto_msgTypes[16]
+	mi := &file_organization_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -859,7 +947,7 @@ func (x *DeactivateOrganizationRequest) String() string {
 func (*DeactivateOrganizationRequest) ProtoMessage() {}
 
 func (x *DeactivateOrganizationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_organization_proto_msgTypes[16]
+	mi := &file_organization_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -872,7 +960,7 @@ func (x *DeactivateOrganizationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeactivateOrganizationRequest.ProtoReflect.Descriptor instead.
 func (*DeactivateOrganizationRequest) Descriptor() ([]byte, []int) {
-	return file_organization_proto_rawDescGZIP(), []int{16}
+	return file_organization_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *DeactivateOrganizationRequest) GetOrganizationId() string {
@@ -886,7 +974,11 @@ var File_organization_proto protoreflect.FileDescriptor
 
 const file_organization_proto_rawDesc = "" +
 	"\n" +
-	"\x12organization.proto\x12\forganization\x1a\x1bgoogle/protobuf/empty.proto\"\xca\x01\n" +
+	"\x12organization.proto\x12\forganization\x1a\x1bgoogle/protobuf/empty.proto\"<\n" +
+	"\x16GetTotalMembersRequest\x12\"\n" +
+	"\rowner_user_id\x18\x01 \x01(\tR\vownerUserId\"/\n" +
+	"\x17GetTotalMembersResponse\x12\x14\n" +
+	"\x05count\x18\x01 \x01(\x04R\x05count\"\xca\x01\n" +
 	"\fOrganization\x12'\n" +
 	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\"\n" +
@@ -936,7 +1028,7 @@ const file_organization_proto_rawDesc = "" +
 	"\x18UpdateMemberRoleResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"H\n" +
 	"\x1dDeactivateOrganizationRequest\x12'\n" +
-	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId2\xaf\x06\n" +
+	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId2\x8f\a\n" +
 	"\x13OrganizationService\x12g\n" +
 	"\x12CreateOrganization\x12'.organization.CreateOrganizationRequest\x1a(.organization.CreateOrganizationResponse\x12^\n" +
 	"\x0fGetOrganization\x12$.organization.GetOrganizationRequest\x1a%.organization.GetOrganizationResponse\x12p\n" +
@@ -945,7 +1037,8 @@ const file_organization_proto_rawDesc = "" +
 	"\tAddMember\x12\x1e.organization.AddMemberRequest\x1a\x1f.organization.AddMemberResponse\x12U\n" +
 	"\fRemoveMember\x12!.organization.RemoveMemberRequest\x1a\".organization.RemoveMemberResponse\x12a\n" +
 	"\x10UpdateMemberRole\x12%.organization.UpdateMemberRoleRequest\x1a&.organization.UpdateMemberRoleResponse\x12]\n" +
-	"\x16DeactivateOrganization\x12+.organization.DeactivateOrganizationRequest\x1a\x16.google.protobuf.EmptyB(Z&shared/proto/organization;organizationb\x06proto3"
+	"\x16DeactivateOrganization\x12+.organization.DeactivateOrganizationRequest\x1a\x16.google.protobuf.Empty\x12^\n" +
+	"\x0fGetTotalMembers\x12$.organization.GetTotalMembersRequest\x1a%.organization.GetTotalMembersResponseB(Z&shared/proto/organization;organizationb\x06proto3"
 
 var (
 	file_organization_proto_rawDescOnce sync.Once
@@ -959,51 +1052,55 @@ func file_organization_proto_rawDescGZIP() []byte {
 	return file_organization_proto_rawDescData
 }
 
-var file_organization_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_organization_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_organization_proto_goTypes = []any{
-	(*Organization)(nil),                    // 0: organization.Organization
-	(*OrganizationMember)(nil),              // 1: organization.OrganizationMember
-	(*ListOrganizationMembersRequest)(nil),  // 2: organization.ListOrganizationMembersRequest
-	(*ListOrganizationMembersResponse)(nil), // 3: organization.ListOrganizationMembersResponse
-	(*CreateOrganizationRequest)(nil),       // 4: organization.CreateOrganizationRequest
-	(*CreateOrganizationResponse)(nil),      // 5: organization.CreateOrganizationResponse
-	(*GetOrganizationRequest)(nil),          // 6: organization.GetOrganizationRequest
-	(*GetOrganizationResponse)(nil),         // 7: organization.GetOrganizationResponse
-	(*ListUserOrganizationsRequest)(nil),    // 8: organization.ListUserOrganizationsRequest
-	(*ListUserOrganizationsResponse)(nil),   // 9: organization.ListUserOrganizationsResponse
-	(*AddMemberRequest)(nil),                // 10: organization.AddMemberRequest
-	(*AddMemberResponse)(nil),               // 11: organization.AddMemberResponse
-	(*RemoveMemberRequest)(nil),             // 12: organization.RemoveMemberRequest
-	(*RemoveMemberResponse)(nil),            // 13: organization.RemoveMemberResponse
-	(*UpdateMemberRoleRequest)(nil),         // 14: organization.UpdateMemberRoleRequest
-	(*UpdateMemberRoleResponse)(nil),        // 15: organization.UpdateMemberRoleResponse
-	(*DeactivateOrganizationRequest)(nil),   // 16: organization.DeactivateOrganizationRequest
-	(*emptypb.Empty)(nil),                   // 17: google.protobuf.Empty
+	(*GetTotalMembersRequest)(nil),          // 0: organization.GetTotalMembersRequest
+	(*GetTotalMembersResponse)(nil),         // 1: organization.GetTotalMembersResponse
+	(*Organization)(nil),                    // 2: organization.Organization
+	(*OrganizationMember)(nil),              // 3: organization.OrganizationMember
+	(*ListOrganizationMembersRequest)(nil),  // 4: organization.ListOrganizationMembersRequest
+	(*ListOrganizationMembersResponse)(nil), // 5: organization.ListOrganizationMembersResponse
+	(*CreateOrganizationRequest)(nil),       // 6: organization.CreateOrganizationRequest
+	(*CreateOrganizationResponse)(nil),      // 7: organization.CreateOrganizationResponse
+	(*GetOrganizationRequest)(nil),          // 8: organization.GetOrganizationRequest
+	(*GetOrganizationResponse)(nil),         // 9: organization.GetOrganizationResponse
+	(*ListUserOrganizationsRequest)(nil),    // 10: organization.ListUserOrganizationsRequest
+	(*ListUserOrganizationsResponse)(nil),   // 11: organization.ListUserOrganizationsResponse
+	(*AddMemberRequest)(nil),                // 12: organization.AddMemberRequest
+	(*AddMemberResponse)(nil),               // 13: organization.AddMemberResponse
+	(*RemoveMemberRequest)(nil),             // 14: organization.RemoveMemberRequest
+	(*RemoveMemberResponse)(nil),            // 15: organization.RemoveMemberResponse
+	(*UpdateMemberRoleRequest)(nil),         // 16: organization.UpdateMemberRoleRequest
+	(*UpdateMemberRoleResponse)(nil),        // 17: organization.UpdateMemberRoleResponse
+	(*DeactivateOrganizationRequest)(nil),   // 18: organization.DeactivateOrganizationRequest
+	(*emptypb.Empty)(nil),                   // 19: google.protobuf.Empty
 }
 var file_organization_proto_depIdxs = []int32{
-	1,  // 0: organization.ListOrganizationMembersResponse.members:type_name -> organization.OrganizationMember
-	0,  // 1: organization.CreateOrganizationResponse.organization:type_name -> organization.Organization
-	0,  // 2: organization.GetOrganizationResponse.organization:type_name -> organization.Organization
-	1,  // 3: organization.GetOrganizationResponse.members:type_name -> organization.OrganizationMember
-	0,  // 4: organization.ListUserOrganizationsResponse.organizations:type_name -> organization.Organization
-	4,  // 5: organization.OrganizationService.CreateOrganization:input_type -> organization.CreateOrganizationRequest
-	6,  // 6: organization.OrganizationService.GetOrganization:input_type -> organization.GetOrganizationRequest
-	8,  // 7: organization.OrganizationService.ListUserOrganizations:input_type -> organization.ListUserOrganizationsRequest
-	2,  // 8: organization.OrganizationService.ListOrganizationMembers:input_type -> organization.ListOrganizationMembersRequest
-	10, // 9: organization.OrganizationService.AddMember:input_type -> organization.AddMemberRequest
-	12, // 10: organization.OrganizationService.RemoveMember:input_type -> organization.RemoveMemberRequest
-	14, // 11: organization.OrganizationService.UpdateMemberRole:input_type -> organization.UpdateMemberRoleRequest
-	16, // 12: organization.OrganizationService.DeactivateOrganization:input_type -> organization.DeactivateOrganizationRequest
-	5,  // 13: organization.OrganizationService.CreateOrganization:output_type -> organization.CreateOrganizationResponse
-	7,  // 14: organization.OrganizationService.GetOrganization:output_type -> organization.GetOrganizationResponse
-	9,  // 15: organization.OrganizationService.ListUserOrganizations:output_type -> organization.ListUserOrganizationsResponse
-	3,  // 16: organization.OrganizationService.ListOrganizationMembers:output_type -> organization.ListOrganizationMembersResponse
-	11, // 17: organization.OrganizationService.AddMember:output_type -> organization.AddMemberResponse
-	13, // 18: organization.OrganizationService.RemoveMember:output_type -> organization.RemoveMemberResponse
-	15, // 19: organization.OrganizationService.UpdateMemberRole:output_type -> organization.UpdateMemberRoleResponse
-	17, // 20: organization.OrganizationService.DeactivateOrganization:output_type -> google.protobuf.Empty
-	13, // [13:21] is the sub-list for method output_type
-	5,  // [5:13] is the sub-list for method input_type
+	3,  // 0: organization.ListOrganizationMembersResponse.members:type_name -> organization.OrganizationMember
+	2,  // 1: organization.CreateOrganizationResponse.organization:type_name -> organization.Organization
+	2,  // 2: organization.GetOrganizationResponse.organization:type_name -> organization.Organization
+	3,  // 3: organization.GetOrganizationResponse.members:type_name -> organization.OrganizationMember
+	2,  // 4: organization.ListUserOrganizationsResponse.organizations:type_name -> organization.Organization
+	6,  // 5: organization.OrganizationService.CreateOrganization:input_type -> organization.CreateOrganizationRequest
+	8,  // 6: organization.OrganizationService.GetOrganization:input_type -> organization.GetOrganizationRequest
+	10, // 7: organization.OrganizationService.ListUserOrganizations:input_type -> organization.ListUserOrganizationsRequest
+	4,  // 8: organization.OrganizationService.ListOrganizationMembers:input_type -> organization.ListOrganizationMembersRequest
+	12, // 9: organization.OrganizationService.AddMember:input_type -> organization.AddMemberRequest
+	14, // 10: organization.OrganizationService.RemoveMember:input_type -> organization.RemoveMemberRequest
+	16, // 11: organization.OrganizationService.UpdateMemberRole:input_type -> organization.UpdateMemberRoleRequest
+	18, // 12: organization.OrganizationService.DeactivateOrganization:input_type -> organization.DeactivateOrganizationRequest
+	0,  // 13: organization.OrganizationService.GetTotalMembers:input_type -> organization.GetTotalMembersRequest
+	7,  // 14: organization.OrganizationService.CreateOrganization:output_type -> organization.CreateOrganizationResponse
+	9,  // 15: organization.OrganizationService.GetOrganization:output_type -> organization.GetOrganizationResponse
+	11, // 16: organization.OrganizationService.ListUserOrganizations:output_type -> organization.ListUserOrganizationsResponse
+	5,  // 17: organization.OrganizationService.ListOrganizationMembers:output_type -> organization.ListOrganizationMembersResponse
+	13, // 18: organization.OrganizationService.AddMember:output_type -> organization.AddMemberResponse
+	15, // 19: organization.OrganizationService.RemoveMember:output_type -> organization.RemoveMemberResponse
+	17, // 20: organization.OrganizationService.UpdateMemberRole:output_type -> organization.UpdateMemberRoleResponse
+	19, // 21: organization.OrganizationService.DeactivateOrganization:output_type -> google.protobuf.Empty
+	1,  // 22: organization.OrganizationService.GetTotalMembers:output_type -> organization.GetTotalMembersResponse
+	14, // [14:23] is the sub-list for method output_type
+	5,  // [5:14] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -1020,7 +1117,7 @@ func file_organization_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_organization_proto_rawDesc), len(file_organization_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

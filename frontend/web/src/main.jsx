@@ -17,11 +17,18 @@ import { NotFoundPage } from "./components/NotFoundPage.jsx";
 import { Home } from "./components/landingPage/Home.jsx";
 
 import { organizationMutationAction } from "./actions/createOrganizationAction.js";
+import { organizationDetailsAction } from "./actions/organizationDetailsAction.js";
+import { UserAnalytics } from "./components/DashboardPage/Analytics/UserAnalytics.jsx";
+import { Vehicles } from "./components/DashboardPage/Fleet/Vehicles.jsx";
 import { OrganizationDetails } from "./components/DashboardPage/Organizations/OrganizationDetails.jsx";
+import { ActiveShipments } from "./components/DashboardPage/Shipments/ActiveShipments.jsx";
+import { CompletedShipments } from "./components/DashboardPage/Shipments/CompletedShipments.jsx";
 import { DashboardError } from "./errors/DashboardError";
+import { analyticsLoader } from "./loaders/AnalyticsLoader.js";
 import { dashboardLoader } from "./loaders/DashboardLoader.js";
+import { fleetLoader } from "./loaders/FleetLoader.js";
 import { organizationDetailsLoader } from "./loaders/OrganizationDetailsLoader.js";
-import { organizationDetailsAction } from "./actions/organizationDetailsAction";
+import { shipmentsLoader } from "./loaders/ShipmentsLoader.js";
 
 const router = createBrowserRouter([
   {
@@ -65,19 +72,38 @@ const router = createBrowserRouter([
               },
             ],
           },
-
-          // { path: "fleet/vehicles", Component: AllVehicles },
-          // { path: "fleet/active", Component: ActiveFleet },
-          // { path: "fleet/maintenance", Component: Maintenance },
-          // { path: "fleet/telematics", Component: Telematics },
-          // { path: "fleet/driversDirectory", Component: DriversDirectory },
-
-          // { path: "shipments/active", Component: ActiveShipments },
-          // { path: "shipments/complete", Component: CompletedShipments },
-
-          // { path: "warehouse", Component: Warehouse },
-          // { path: "routes", Component: RoutePlanning },
-          // { path: "analytics", Component: Analytics },
+          {
+            id: "fleet",
+            path: "fleet",
+            loader: fleetLoader,
+            children: [
+              {
+                path: "vehicles/all",
+                Component: Vehicles,
+              },
+            ],
+          },
+          {
+            id: "shipments",
+            path: "shipments",
+            loader: shipmentsLoader,
+            children: [
+              {
+                path: "active",
+                Component: ActiveShipments,
+              },
+              {
+                path: "complete",
+                Component: CompletedShipments,
+              },
+            ],
+          },
+          {
+            id: "analytics",
+            path: "analytics",
+            loader: analyticsLoader,
+            Component: UserAnalytics,
+          },
 
           // { path: "customers", Component: Customers },
           // { path: "teams", Component: Teams },

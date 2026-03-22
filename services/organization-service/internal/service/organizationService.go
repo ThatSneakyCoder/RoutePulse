@@ -76,12 +76,51 @@ func (s *OrganizationService) CreateOrganization(
 		"owner_user_id", ownerUserID,
 	)
 
-	// Emitting to rmq
-	if err := s.rmqPublisher.PublishOrganizationCreated(ctx, created.Name, created.ID.String(), created.OwnerUserID.String()); err != nil {
+	// Emitting to rmq (updated payload)
+	if err := s.rmqPublisher.PublishOrganizationCreated(
+		ctx,
+		created.ID.String(),
+		created.OwnerUserID.String(),
+	); err != nil {
 		s.log.Errorw("failed to publish event to rabbitmq", "err", err)
 	}
 
 	return created, nil
+}
+
+func (s *OrganizationService) GetTotalMembers(
+	ctx context.Context,
+	ownerUserID string,
+) (uint64, error) {
+
+	s.log.Infow("getting total members",
+		"owner_user_id", ownerUserID,
+	)
+
+	ownerID, err := uuid.Parse(ownerUserID)
+	if err != nil {
+		s.log.Warnw("invalid owner user id",
+			"owner_user_id", ownerUserID,
+			"err", err,
+		)
+		return 0, err
+	}
+
+	count, err := s.repo.CountTotalMembersByOwner(ctx, ownerID)
+	if err != nil {
+		s.log.Errorw("failed to get total members",
+			"owner_user_id", ownerUserID,
+			"err", err,
+		)
+		return 0, err
+	}
+
+	s.log.Infow("total members fetched",
+		"owner_user_id", ownerUserID,
+		"count", count,
+	)
+
+	return count, nil
 }
 
 func (s *OrganizationService) ListOrganizationsByUserID(

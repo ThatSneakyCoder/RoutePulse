@@ -18,10 +18,15 @@ func NewIdentityEventPublisher(rmq *rabbitmq.RabbitMQ) *IdentityEventPublisher {
 }
 
 // PublishUserRegistered emits an event when a new user is registered
+
+// --------------------
+// Events
+// --------------------
+
+// User Registered (no org yet)
 func (p *IdentityEventPublisher) PublishUserRegistered(
 	ctx context.Context,
 	userID string,
-	email string,
 ) error {
 	return p.publish(
 		ctx,
@@ -29,15 +34,14 @@ func (p *IdentityEventPublisher) PublishUserRegistered(
 		userID,
 		rabbitmq.IdentityUserRegisteredEventPayload{
 			UserID: userID,
-			Email:  email,
 		},
 	)
 }
 
+// Email Verified (no org yet)
 func (p *IdentityEventPublisher) PublishEmailVerified(
 	ctx context.Context,
 	userID string,
-	email string,
 ) error {
 	return p.publish(
 		ctx,
@@ -45,15 +49,15 @@ func (p *IdentityEventPublisher) PublishEmailVerified(
 		userID,
 		rabbitmq.IdentityUserEmailVerifiedEventPayload{
 			UserID: userID,
-			Email:  email,
 		},
 	)
 }
 
+// Login (org-aware)
 func (p *IdentityEventPublisher) PublishLogin(
 	ctx context.Context,
 	userID string,
-	email string,
+	orgID string,
 ) error {
 	return p.publish(
 		ctx,
@@ -61,7 +65,7 @@ func (p *IdentityEventPublisher) PublishLogin(
 		userID,
 		rabbitmq.IdentityUserLoggedInEventPayload{
 			UserID: userID,
-			Email:  email,
+			OrgID:  orgID,
 		},
 	)
 }
@@ -87,4 +91,3 @@ func (p *IdentityEventPublisher) publish(
 		},
 	)
 }
-

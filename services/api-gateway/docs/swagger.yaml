@@ -1,5 +1,34 @@
 basePath: /v1
 definitions:
+  main.ActiveUsersTodayResponse:
+    properties:
+      count:
+        type: integer
+    type: object
+  main.CompleteTripRequest:
+    properties:
+      trip_id:
+        type: string
+    required:
+    - trip_id
+    type: object
+  main.CreateDriverRequest:
+    properties:
+      first_name:
+        maxLength: 255
+        type: string
+      last_name:
+        maxLength: 255
+        type: string
+      organization_id:
+        type: string
+      vehicle_id:
+        type: string
+    required:
+    - first_name
+    - last_name
+    - organization_id
+    type: object
   main.CreateOrganizationRequest:
     properties:
       name:
@@ -7,6 +36,19 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  main.CreateTripRequest:
+    properties:
+      driver_id:
+        type: string
+      organization_id:
+        type: string
+      vehicle_id:
+        type: string
+    required:
+    - driver_id
+    - organization_id
+    - vehicle_id
     type: object
   main.CreateUserRequest:
     properties:
@@ -51,6 +93,36 @@ definitions:
     - organization_id
     - plate_number
     type: object
+  main.DriverResponse:
+    properties:
+      created_at:
+        type: integer
+      driver_id:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      organization_id:
+        type: string
+      status:
+        type: string
+      vehicle_id:
+        type: string
+    type: object
+  main.Event:
+    properties:
+      event_time:
+        type: string
+      event_type:
+        type: string
+      org_id:
+        type: string
+      service:
+        type: string
+      user_id:
+        type: string
+    type: object
   main.ForgotPasswordRequest:
     properties:
       email:
@@ -88,6 +160,27 @@ definitions:
     properties:
       success:
         type: boolean
+    type: object
+  main.ListAllVehiclesResponse:
+    properties:
+      vehicles:
+        items:
+          $ref: '#/definitions/main.VehicleResponse'
+        type: array
+    type: object
+  main.ListDriversResponse:
+    properties:
+      drivers:
+        items:
+          $ref: '#/definitions/main.DriverResponse'
+        type: array
+    type: object
+  main.ListTripsResponse:
+    properties:
+      trips:
+        items:
+          $ref: '#/definitions/main.TripResponse'
+        type: array
     type: object
   main.ListUserOrganizationsResponse:
     properties:
@@ -153,6 +246,13 @@ definitions:
       updated_at:
         type: integer
     type: object
+  main.RecentActivityResponse:
+    properties:
+      events:
+        items:
+          $ref: '#/definitions/main.Event'
+        type: array
+    type: object
   main.RemoveOrganizationMemberResponse:
     properties:
       success:
@@ -174,10 +274,63 @@ definitions:
     - new_password
     - token
     type: object
+  main.StartTripRequest:
+    properties:
+      trip_id:
+        type: string
+    required:
+    - trip_id
+    type: object
+  main.TotalMembersResponse:
+    properties:
+      count:
+        type: integer
+    type: object
+  main.TripResponse:
+    properties:
+      created_at:
+        type: integer
+      driver_id:
+        type: string
+      organization_id:
+        type: string
+      status:
+        type: string
+      trip_id:
+        type: string
+      vehicle_id:
+        type: string
+    type: object
   main.TripsTodayResponse:
     properties:
       count:
         type: integer
+    type: object
+  main.UpdateDriverRequest:
+    properties:
+      driver_id:
+        type: string
+      first_name:
+        maxLength: 255
+        type: string
+      last_name:
+        maxLength: 255
+        type: string
+    required:
+    - driver_id
+    type: object
+  main.UpdateDriverStatusRequest:
+    properties:
+      driver_id:
+        type: string
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+    required:
+    - driver_id
+    - status
     type: object
   main.UpdateMemberRoleBody:
     properties:
@@ -190,6 +343,39 @@ definitions:
     properties:
       success:
         type: boolean
+    type: object
+  main.UpdateVehicleRequest:
+    properties:
+      capacity:
+        minimum: 0
+        type: integer
+      plate_number:
+        maxLength: 50
+        type: string
+      vehicle_id:
+        type: string
+      vehicle_type:
+        enum:
+        - truck
+        - van
+        - bike
+        - car
+        type: string
+    required:
+    - vehicle_id
+    type: object
+  main.UpdateVehicleStatusRequest:
+    properties:
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+      vehicle_id:
+        type: string
+    required:
+    - status
+    - vehicle_id
     type: object
   main.UserResponse:
     properties:
@@ -276,6 +462,63 @@ info:
   title: Fleet Management System API
   version: "1.0"
 paths:
+  /analytics/active-users-today:
+    get:
+      description: Returns number of active users today
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ActiveUsersTodayResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get active users today
+      tags:
+      - Analytics
+  /analytics/recent-activity:
+    get:
+      description: Returns latest analytics events
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.RecentActivityResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get recent activity
+      tags:
+      - Analytics
+  /analytics/total-members:
+    get:
+      description: Returns total number of members in org
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.TotalMembersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get total members
+      tags:
+      - Analytics
   /analytics/trips-today:
     get:
       description: Returns the total number of trips completed today
@@ -518,6 +761,315 @@ paths:
       summary: Verify user email
       tags:
       - Users
+  /fleet/drivers:
+    get:
+      description: Get all drivers belonging to an organization
+      parameters:
+      - description: Organization ID
+        in: query
+        name: organization_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListDriversResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List drivers
+      tags:
+      - Fleet
+    post:
+      consumes:
+      - application/json
+      description: Create a new driver in the fleet service
+      parameters:
+      - description: Create driver payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateDriverRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.DriverResponse'
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create driver
+      tags:
+      - Fleet
+  /fleet/drivers/{driverId}:
+    put:
+      consumes:
+      - application/json
+      description: Update driver first or last name
+      parameters:
+      - description: Update driver payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateDriverRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update driver profile
+      tags:
+      - Fleet
+  /fleet/drivers/{driverId}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Activate or deactivate driver
+      parameters:
+      - description: Driver status payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateDriverStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update driver status
+      tags:
+      - Fleet
+  /fleet/trips:
+    get:
+      description: Get trips for organization
+      parameters:
+      - description: Organization ID
+        in: query
+        name: organization_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListTripsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List trips
+      tags:
+      - Fleet
+    post:
+      consumes:
+      - application/json
+      description: Create a new trip
+      parameters:
+      - description: Create trip payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateTripRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.TripResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create trip
+      tags:
+      - Fleet
+  /fleet/trips/{tripId}/complete:
+    post:
+      consumes:
+      - application/json
+      description: Marks trip as completed and sets end_time
+      parameters:
+      - description: Complete trip payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.CompleteTripRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Complete trip
+      tags:
+      - Fleet
+  /fleet/trips/{tripId}/start:
+    post:
+      consumes:
+      - application/json
+      description: Marks trip as started and sets start_time
+      parameters:
+      - description: Start trip payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.StartTripRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Start trip
+      tags:
+      - Fleet
+  /fleet/trips/all:
+    get:
+      description: Get trips across all organizations of authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListTripsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all trips for user
+      tags:
+      - Fleet
   /fleet/vehicles:
     get:
       description: Returns vehicles belonging to an organization
@@ -584,6 +1136,135 @@ paths:
       security:
       - BearerAuth: []
       summary: Create vehicle
+      tags:
+      - Fleet
+  /fleet/vehicles/{vehicleId}:
+    get:
+      description: Get vehicle details by vehicle ID
+      parameters:
+      - description: Vehicle ID
+        in: path
+        name: vehicleId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.VehicleResponse'
+        "404":
+          description: Vehicle not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get vehicle
+      tags:
+      - Fleet
+    put:
+      consumes:
+      - application/json
+      description: Update vehicle plate, type, or capacity
+      parameters:
+      - description: Update vehicle payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateVehicleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update vehicle metadata
+      tags:
+      - Fleet
+  /fleet/vehicles/{vehicleId}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Activate or deactivate vehicle
+      parameters:
+      - description: Vehicle status payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateVehicleStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update vehicle status
+      tags:
+      - Fleet
+  /fleet/vehicles/allVehicles:
+    get:
+      description: Returns vehicles belonging to all organizations of the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.ListAllVehiclesResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all vehicles of user
       tags:
       - Fleet
   /health:
