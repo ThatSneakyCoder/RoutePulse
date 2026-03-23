@@ -63,88 +63,96 @@ export const DriverTripConsole = () => {
       </header>
 
       <section className="rounded-3xl border border-slate-800 bg-slate-900 p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                Trip Queue
-              </p>
-              <h2 className="mt-2 text-xl font-semibold text-white">
-                Assigned and Active Trips
-              </h2>
-            </div>
-            <p className="text-sm text-slate-400">{sortedTrips.length} total</p>
-          </div>
-
-          {actionData?.error ? (
-            <p className="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-              {actionData.error}
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+              Trip Queue
             </p>
-          ) : null}
+            <h2 className="mt-2 text-xl font-semibold text-white">
+              Assigned and Active Trips
+            </h2>
+          </div>
+          <p className="text-sm text-slate-400">{sortedTrips.length} total</p>
+        </div>
 
-          <div className="mt-6 space-y-4">
-            {sortedTrips.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-950/50 p-8 text-center">
-                <p className="text-base font-medium text-white">No trips available.</p>
-                <p className="mt-2 text-sm text-slate-400">
-                  Create a trip first, then drivers can start it from here.
-                </p>
-              </div>
-            ) : (
-              sortedTrips.map((trip) => (
-                <article
-                  key={trip.trip_id}
-                  className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"
-                >
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-lg font-semibold text-white">{trip.trip_id}</h3>
-                        <StatusBadge status={trip.status} />
-                      </div>
+        {actionData?.error ? (
+          <p className="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+            {actionData.error}
+          </p>
+        ) : null}
 
-                      <div className="grid gap-2 text-sm text-slate-400 sm:grid-cols-2">
-                        <InfoRow
-                          icon={Route}
-                          value={organizationNames[trip.organization_id] ?? trip.organization_id}
-                        />
-                        <InfoRow
-                          icon={UserRound}
-                          value={driverNames[trip.driver_id] ?? trip.driver_id}
-                        />
-                        <InfoRow
-                          icon={Truck}
-                          value={vehicleNames[trip.vehicle_id] ?? trip.vehicle_id}
-                        />
-                        <InfoRow
-                          icon={CalendarDays}
-                          value={new Date(trip.created_at * 1000).toLocaleString()}
-                        />
-                      </div>
+        <div className="mt-6 space-y-4">
+          {sortedTrips.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-950/50 p-8 text-center">
+              <p className="text-base font-medium text-white">No trips available.</p>
+              <p className="mt-2 text-sm text-slate-400">
+                Create a trip first, then drivers can start it from here.
+              </p>
+            </div>
+          ) : (
+            sortedTrips.map((trip) => (
+              <article
+                key={trip.trip_id}
+                className="rounded-2xl border border-slate-800 bg-slate-950/70 p-5"
+              >
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-lg font-semibold text-white">{trip.trip_id}</h3>
+                      <StatusBadge status={trip.status} />
                     </div>
 
-                    <div className="flex flex-wrap gap-3">
-                      {trip.status === "created" ? (
-                        <TripActionButton
-                          intent="start-trip"
-                          tripId={trip.trip_id}
-                          disabled={isSubmitting}
-                          label="Start Trip"
-                        />
-                      ) : null}
-                      {trip.status === "active" ? (
+                    <div className="grid gap-2 text-sm text-slate-400 sm:grid-cols-2">
+                      <InfoRow
+                        icon={Route}
+                        value={organizationNames[trip.organization_id] ?? trip.organization_id}
+                      />
+                      <InfoRow
+                        icon={UserRound}
+                        value={driverNames[trip.driver_id] ?? trip.driver_id}
+                      />
+                      <InfoRow
+                        icon={Truck}
+                        value={vehicleNames[trip.vehicle_id] ?? trip.vehicle_id}
+                      />
+                      <InfoRow
+                        icon={CalendarDays}
+                        value={new Date(trip.created_at * 1000).toLocaleString()}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-3">
+                    {trip.status === "created" ? (
+                      <TripActionButton
+                        intent="start-trip"
+                        tripId={trip.trip_id}
+                        disabled={isSubmitting}
+                        label="Start Trip"
+                      />
+                    ) : null}
+                    {trip.status === "active" ? (
+                      <>
+                        <Link
+                          to={`/dashboard/trip/${trip.trip_id}/live`}
+                          className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:border-slate-600 hover:text-white"
+                        >
+                          Resume Tracking
+                        </Link>
                         <TripActionButton
                           intent="complete-trip"
                           tripId={trip.trip_id}
                           disabled={isSubmitting}
                           label="Complete Trip"
                         />
-                      ) : null}
-                    </div>
+                      </>
+                    ) : null}
                   </div>
-                </article>
-              ))
-            )}
-          </div>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
       </section>
 
       <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 text-sm text-cyan-100">

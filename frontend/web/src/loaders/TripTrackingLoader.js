@@ -6,7 +6,15 @@ export async function tripTrackingLoader({ params }) {
 
   try {
     const [currentRes, historyRes, geometryRes] = await Promise.all([
-      instance.get(`/v1/tracking/trips/${tripId}/current`),
+      instance
+        .get(`/v1/tracking/trips/${tripId}/current`)
+        .catch((err) => {
+          if (err.response?.status === 404) {
+            return null;
+          }
+
+          throw err;
+        }),
       instance.get(`/v1/tracking/trips/${tripId}/history`, {
         params: { limit: 200 },
       }),
@@ -14,7 +22,7 @@ export async function tripTrackingLoader({ params }) {
     ]);
 
     return {
-      currentLocation: currentRes.data.data[0] ?? null,
+      currentLocation: currentRes?.data?.data?.[0] ?? null,
       locationHistory: historyRes.data.data[0] ?? { trip_id: tripId, points: [] },
       geometry: geometryRes.data.data[0] ?? {
         trip_id: tripId,
