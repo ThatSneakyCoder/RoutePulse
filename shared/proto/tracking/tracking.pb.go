@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -20,20 +21,641 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Coordinate struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Latitude      float64                `protobuf:"fixed64,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude     float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Coordinate) Reset() {
+	*x = Coordinate{}
+	mi := &file_tracking_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Coordinate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Coordinate) ProtoMessage() {}
+
+func (x *Coordinate) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Coordinate.ProtoReflect.Descriptor instead.
+func (*Coordinate) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Coordinate) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *Coordinate) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+type TripCurrentLocation struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TripId        string                 `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	DriverId      string                 `protobuf:"bytes,2,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
+	VehicleId     string                 `protobuf:"bytes,3,opt,name=vehicle_id,json=vehicleId,proto3" json:"vehicle_id,omitempty"`
+	Latitude      float64                `protobuf:"fixed64,4,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude     float64                `protobuf:"fixed64,5,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	RecordedAt    int64                  `protobuf:"varint,6,opt,name=recorded_at,json=recordedAt,proto3" json:"recorded_at,omitempty"`
+	Connection    string                 `protobuf:"bytes,7,opt,name=connection,proto3" json:"connection,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TripCurrentLocation) Reset() {
+	*x = TripCurrentLocation{}
+	mi := &file_tracking_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TripCurrentLocation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TripCurrentLocation) ProtoMessage() {}
+
+func (x *TripCurrentLocation) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TripCurrentLocation.ProtoReflect.Descriptor instead.
+func (*TripCurrentLocation) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *TripCurrentLocation) GetTripId() string {
+	if x != nil {
+		return x.TripId
+	}
+	return ""
+}
+
+func (x *TripCurrentLocation) GetDriverId() string {
+	if x != nil {
+		return x.DriverId
+	}
+	return ""
+}
+
+func (x *TripCurrentLocation) GetVehicleId() string {
+	if x != nil {
+		return x.VehicleId
+	}
+	return ""
+}
+
+func (x *TripCurrentLocation) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *TripCurrentLocation) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *TripCurrentLocation) GetRecordedAt() int64 {
+	if x != nil {
+		return x.RecordedAt
+	}
+	return 0
+}
+
+func (x *TripCurrentLocation) GetConnection() string {
+	if x != nil {
+		return x.Connection
+	}
+	return ""
+}
+
+type TripLocationHistoryPoint struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Latitude      float64                `protobuf:"fixed64,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude     float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	RecordedAt    int64                  `protobuf:"varint,3,opt,name=recorded_at,json=recordedAt,proto3" json:"recorded_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TripLocationHistoryPoint) Reset() {
+	*x = TripLocationHistoryPoint{}
+	mi := &file_tracking_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TripLocationHistoryPoint) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TripLocationHistoryPoint) ProtoMessage() {}
+
+func (x *TripLocationHistoryPoint) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TripLocationHistoryPoint.ProtoReflect.Descriptor instead.
+func (*TripLocationHistoryPoint) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TripLocationHistoryPoint) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *TripLocationHistoryPoint) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *TripLocationHistoryPoint) GetRecordedAt() int64 {
+	if x != nil {
+		return x.RecordedAt
+	}
+	return 0
+}
+
+type TripGeometry struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	TripId          string                 `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	PlannedGeometry []*Coordinate          `protobuf:"bytes,2,rep,name=planned_geometry,json=plannedGeometry,proto3" json:"planned_geometry,omitempty"`
+	ActualGeometry  []*Coordinate          `protobuf:"bytes,3,rep,name=actual_geometry,json=actualGeometry,proto3" json:"actual_geometry,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *TripGeometry) Reset() {
+	*x = TripGeometry{}
+	mi := &file_tracking_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TripGeometry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TripGeometry) ProtoMessage() {}
+
+func (x *TripGeometry) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TripGeometry.ProtoReflect.Descriptor instead.
+func (*TripGeometry) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TripGeometry) GetTripId() string {
+	if x != nil {
+		return x.TripId
+	}
+	return ""
+}
+
+func (x *TripGeometry) GetPlannedGeometry() []*Coordinate {
+	if x != nil {
+		return x.PlannedGeometry
+	}
+	return nil
+}
+
+func (x *TripGeometry) GetActualGeometry() []*Coordinate {
+	if x != nil {
+		return x.ActualGeometry
+	}
+	return nil
+}
+
+type GetTripCurrentLocationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TripId        string                 `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTripCurrentLocationRequest) Reset() {
+	*x = GetTripCurrentLocationRequest{}
+	mi := &file_tracking_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTripCurrentLocationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTripCurrentLocationRequest) ProtoMessage() {}
+
+func (x *GetTripCurrentLocationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTripCurrentLocationRequest.ProtoReflect.Descriptor instead.
+func (*GetTripCurrentLocationRequest) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetTripCurrentLocationRequest) GetTripId() string {
+	if x != nil {
+		return x.TripId
+	}
+	return ""
+}
+
+type GetTripCurrentLocationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Location      *TripCurrentLocation   `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTripCurrentLocationResponse) Reset() {
+	*x = GetTripCurrentLocationResponse{}
+	mi := &file_tracking_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTripCurrentLocationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTripCurrentLocationResponse) ProtoMessage() {}
+
+func (x *GetTripCurrentLocationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTripCurrentLocationResponse.ProtoReflect.Descriptor instead.
+func (*GetTripCurrentLocationResponse) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetTripCurrentLocationResponse) GetLocation() *TripCurrentLocation {
+	if x != nil {
+		return x.Location
+	}
+	return nil
+}
+
+type GetTripLocationHistoryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TripId        string                 `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTripLocationHistoryRequest) Reset() {
+	*x = GetTripLocationHistoryRequest{}
+	mi := &file_tracking_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTripLocationHistoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTripLocationHistoryRequest) ProtoMessage() {}
+
+func (x *GetTripLocationHistoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTripLocationHistoryRequest.ProtoReflect.Descriptor instead.
+func (*GetTripLocationHistoryRequest) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetTripLocationHistoryRequest) GetTripId() string {
+	if x != nil {
+		return x.TripId
+	}
+	return ""
+}
+
+func (x *GetTripLocationHistoryRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type GetTripLocationHistoryResponse struct {
+	state         protoimpl.MessageState      `protogen:"open.v1"`
+	TripId        string                      `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	Points        []*TripLocationHistoryPoint `protobuf:"bytes,2,rep,name=points,proto3" json:"points,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTripLocationHistoryResponse) Reset() {
+	*x = GetTripLocationHistoryResponse{}
+	mi := &file_tracking_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTripLocationHistoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTripLocationHistoryResponse) ProtoMessage() {}
+
+func (x *GetTripLocationHistoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTripLocationHistoryResponse.ProtoReflect.Descriptor instead.
+func (*GetTripLocationHistoryResponse) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetTripLocationHistoryResponse) GetTripId() string {
+	if x != nil {
+		return x.TripId
+	}
+	return ""
+}
+
+func (x *GetTripLocationHistoryResponse) GetPoints() []*TripLocationHistoryPoint {
+	if x != nil {
+		return x.Points
+	}
+	return nil
+}
+
+type GetTripGeometryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TripId        string                 `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTripGeometryRequest) Reset() {
+	*x = GetTripGeometryRequest{}
+	mi := &file_tracking_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTripGeometryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTripGeometryRequest) ProtoMessage() {}
+
+func (x *GetTripGeometryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTripGeometryRequest.ProtoReflect.Descriptor instead.
+func (*GetTripGeometryRequest) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetTripGeometryRequest) GetTripId() string {
+	if x != nil {
+		return x.TripId
+	}
+	return ""
+}
+
+type GetTripGeometryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Geometry      *TripGeometry          `protobuf:"bytes,1,opt,name=geometry,proto3" json:"geometry,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTripGeometryResponse) Reset() {
+	*x = GetTripGeometryResponse{}
+	mi := &file_tracking_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTripGeometryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTripGeometryResponse) ProtoMessage() {}
+
+func (x *GetTripGeometryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tracking_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTripGeometryResponse.ProtoReflect.Descriptor instead.
+func (*GetTripGeometryResponse) Descriptor() ([]byte, []int) {
+	return file_tracking_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetTripGeometryResponse) GetGeometry() *TripGeometry {
+	if x != nil {
+		return x.Geometry
+	}
+	return nil
+}
+
 var File_tracking_proto protoreflect.FileDescriptor
 
 const file_tracking_proto_rawDesc = "" +
 	"\n" +
-	"\x0etracking.proto\x12\btracking2\x11\n" +
-	"\x0fTrackingServiceB Z\x1eshared/proto/tracking;trackingb\x06proto3"
+	"\x0etracking.proto\x12\btracking\"F\n" +
+	"\n" +
+	"Coordinate\x12\x1a\n" +
+	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\"\xe5\x01\n" +
+	"\x13TripCurrentLocation\x12\x17\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\x12\x1b\n" +
+	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x1d\n" +
+	"\n" +
+	"vehicle_id\x18\x03 \x01(\tR\tvehicleId\x12\x1a\n" +
+	"\blatitude\x18\x04 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x05 \x01(\x01R\tlongitude\x12\x1f\n" +
+	"\vrecorded_at\x18\x06 \x01(\x03R\n" +
+	"recordedAt\x12\x1e\n" +
+	"\n" +
+	"connection\x18\a \x01(\tR\n" +
+	"connection\"u\n" +
+	"\x18TripLocationHistoryPoint\x12\x1a\n" +
+	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\x12\x1f\n" +
+	"\vrecorded_at\x18\x03 \x01(\x03R\n" +
+	"recordedAt\"\xa7\x01\n" +
+	"\fTripGeometry\x12\x17\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\x12?\n" +
+	"\x10planned_geometry\x18\x02 \x03(\v2\x14.tracking.CoordinateR\x0fplannedGeometry\x12=\n" +
+	"\x0factual_geometry\x18\x03 \x03(\v2\x14.tracking.CoordinateR\x0eactualGeometry\"8\n" +
+	"\x1dGetTripCurrentLocationRequest\x12\x17\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\"[\n" +
+	"\x1eGetTripCurrentLocationResponse\x129\n" +
+	"\blocation\x18\x01 \x01(\v2\x1d.tracking.TripCurrentLocationR\blocation\"N\n" +
+	"\x1dGetTripLocationHistoryRequest\x12\x17\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\"u\n" +
+	"\x1eGetTripLocationHistoryResponse\x12\x17\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\x12:\n" +
+	"\x06points\x18\x02 \x03(\v2\".tracking.TripLocationHistoryPointR\x06points\"1\n" +
+	"\x16GetTripGeometryRequest\x12\x17\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\"M\n" +
+	"\x17GetTripGeometryResponse\x122\n" +
+	"\bgeometry\x18\x01 \x01(\v2\x16.tracking.TripGeometryR\bgeometry2\xc3\x02\n" +
+	"\x0fTrackingService\x12k\n" +
+	"\x16GetTripCurrentLocation\x12'.tracking.GetTripCurrentLocationRequest\x1a(.tracking.GetTripCurrentLocationResponse\x12k\n" +
+	"\x16GetTripLocationHistory\x12'.tracking.GetTripLocationHistoryRequest\x1a(.tracking.GetTripLocationHistoryResponse\x12V\n" +
+	"\x0fGetTripGeometry\x12 .tracking.GetTripGeometryRequest\x1a!.tracking.GetTripGeometryResponseB Z\x1eshared/proto/tracking;trackingb\x06proto3"
 
-var file_tracking_proto_goTypes = []any{}
+var (
+	file_tracking_proto_rawDescOnce sync.Once
+	file_tracking_proto_rawDescData []byte
+)
+
+func file_tracking_proto_rawDescGZIP() []byte {
+	file_tracking_proto_rawDescOnce.Do(func() {
+		file_tracking_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_tracking_proto_rawDesc), len(file_tracking_proto_rawDesc)))
+	})
+	return file_tracking_proto_rawDescData
+}
+
+var file_tracking_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_tracking_proto_goTypes = []any{
+	(*Coordinate)(nil),                     // 0: tracking.Coordinate
+	(*TripCurrentLocation)(nil),            // 1: tracking.TripCurrentLocation
+	(*TripLocationHistoryPoint)(nil),       // 2: tracking.TripLocationHistoryPoint
+	(*TripGeometry)(nil),                   // 3: tracking.TripGeometry
+	(*GetTripCurrentLocationRequest)(nil),  // 4: tracking.GetTripCurrentLocationRequest
+	(*GetTripCurrentLocationResponse)(nil), // 5: tracking.GetTripCurrentLocationResponse
+	(*GetTripLocationHistoryRequest)(nil),  // 6: tracking.GetTripLocationHistoryRequest
+	(*GetTripLocationHistoryResponse)(nil), // 7: tracking.GetTripLocationHistoryResponse
+	(*GetTripGeometryRequest)(nil),         // 8: tracking.GetTripGeometryRequest
+	(*GetTripGeometryResponse)(nil),        // 9: tracking.GetTripGeometryResponse
+}
 var file_tracking_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: tracking.TripGeometry.planned_geometry:type_name -> tracking.Coordinate
+	0, // 1: tracking.TripGeometry.actual_geometry:type_name -> tracking.Coordinate
+	1, // 2: tracking.GetTripCurrentLocationResponse.location:type_name -> tracking.TripCurrentLocation
+	2, // 3: tracking.GetTripLocationHistoryResponse.points:type_name -> tracking.TripLocationHistoryPoint
+	3, // 4: tracking.GetTripGeometryResponse.geometry:type_name -> tracking.TripGeometry
+	4, // 5: tracking.TrackingService.GetTripCurrentLocation:input_type -> tracking.GetTripCurrentLocationRequest
+	6, // 6: tracking.TrackingService.GetTripLocationHistory:input_type -> tracking.GetTripLocationHistoryRequest
+	8, // 7: tracking.TrackingService.GetTripGeometry:input_type -> tracking.GetTripGeometryRequest
+	5, // 8: tracking.TrackingService.GetTripCurrentLocation:output_type -> tracking.GetTripCurrentLocationResponse
+	7, // 9: tracking.TrackingService.GetTripLocationHistory:output_type -> tracking.GetTripLocationHistoryResponse
+	9, // 10: tracking.TrackingService.GetTripGeometry:output_type -> tracking.GetTripGeometryResponse
+	8, // [8:11] is the sub-list for method output_type
+	5, // [5:8] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_tracking_proto_init() }
@@ -47,12 +669,13 @@ func file_tracking_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tracking_proto_rawDesc), len(file_tracking_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_tracking_proto_goTypes,
 		DependencyIndexes: file_tracking_proto_depIdxs,
+		MessageInfos:      file_tracking_proto_msgTypes,
 	}.Build()
 	File_tracking_proto = out.File
 	file_tracking_proto_goTypes = nil

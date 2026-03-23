@@ -22,4 +22,5 @@ infra/development/kubernetes/secrets/secrets-identity.yaml
 infra/development/kubernetes/secrets/secrets-organization.yaml
 infra/development/kubernetes/secrets/secrets-rabbitmq.yaml
 infra/development/kubernetes/secrets/secrets-fleet.yaml
+infra/development/kubernetes/secrets/secrets-tracking.yaml
 infra/development/kubernetes/secrets/secrets-clickhouse.yaml

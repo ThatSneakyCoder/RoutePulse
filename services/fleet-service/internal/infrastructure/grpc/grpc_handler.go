@@ -286,6 +286,10 @@ func (h *gRPCHandler) CreateTrip(
 		req.OrganizationId,
 		req.VehicleId,
 		req.DriverId,
+		req.StartLatitude,
+		req.StartLongitude,
+		req.EndLatitude,
+		req.EndLongitude,
 	)
 
 	if err != nil {
@@ -306,6 +310,44 @@ func (h *gRPCHandler) CreateTrip(
 			DriverId:       trip.DriverID,
 			Status:         trip.Status,
 			CreatedAt:      trip.CreatedAt.Unix(),
+		},
+	}, nil
+}
+
+func (h *gRPCHandler) PreviewRoute(
+	ctx context.Context,
+	req *pb.PreviewRouteRequest,
+) (*pb.PreviewRouteResponse, error) {
+
+	route, err := h.service.PreviewRoute(
+		ctx,
+		req.StartLatitude,
+		req.StartLongitude,
+		req.EndLatitude,
+		req.EndLongitude,
+	)
+	if err != nil {
+		h.log.Errorw(
+			"grpc PreviewRoute failed",
+			"error", err,
+		)
+
+		return nil, err
+	}
+
+	geometry := make([]*pb.Coordinate, 0, len(route.Geometry))
+	for _, point := range route.Geometry {
+		geometry = append(geometry, &pb.Coordinate{
+			Latitude:  point.Latitude,
+			Longitude: point.Longitude,
+		})
+	}
+
+	return &pb.PreviewRouteResponse{
+		Route: &pb.RoutePreview{
+			DistanceMeters:  route.DistanceMeters,
+			DurationSeconds: route.DurationSeconds,
+			Geometry:        geometry,
 		},
 	}, nil
 }

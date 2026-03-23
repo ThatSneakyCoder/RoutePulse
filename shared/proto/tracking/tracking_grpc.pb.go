@@ -7,7 +7,10 @@
 package tracking
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,10 +18,19 @@ import (
 // Requires gRPC-Go v1.64.0 or later.
 const _ = grpc.SupportPackageIsVersion9
 
+const (
+	TrackingService_GetTripCurrentLocation_FullMethodName = "/tracking.TrackingService/GetTripCurrentLocation"
+	TrackingService_GetTripLocationHistory_FullMethodName = "/tracking.TrackingService/GetTripLocationHistory"
+	TrackingService_GetTripGeometry_FullMethodName        = "/tracking.TrackingService/GetTripGeometry"
+)
+
 // TrackingServiceClient is the client API for TrackingService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TrackingServiceClient interface {
+	GetTripCurrentLocation(ctx context.Context, in *GetTripCurrentLocationRequest, opts ...grpc.CallOption) (*GetTripCurrentLocationResponse, error)
+	GetTripLocationHistory(ctx context.Context, in *GetTripLocationHistoryRequest, opts ...grpc.CallOption) (*GetTripLocationHistoryResponse, error)
+	GetTripGeometry(ctx context.Context, in *GetTripGeometryRequest, opts ...grpc.CallOption) (*GetTripGeometryResponse, error)
 }
 
 type trackingServiceClient struct {
@@ -29,10 +41,43 @@ func NewTrackingServiceClient(cc grpc.ClientConnInterface) TrackingServiceClient
 	return &trackingServiceClient{cc}
 }
 
+func (c *trackingServiceClient) GetTripCurrentLocation(ctx context.Context, in *GetTripCurrentLocationRequest, opts ...grpc.CallOption) (*GetTripCurrentLocationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTripCurrentLocationResponse)
+	err := c.cc.Invoke(ctx, TrackingService_GetTripCurrentLocation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trackingServiceClient) GetTripLocationHistory(ctx context.Context, in *GetTripLocationHistoryRequest, opts ...grpc.CallOption) (*GetTripLocationHistoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTripLocationHistoryResponse)
+	err := c.cc.Invoke(ctx, TrackingService_GetTripLocationHistory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trackingServiceClient) GetTripGeometry(ctx context.Context, in *GetTripGeometryRequest, opts ...grpc.CallOption) (*GetTripGeometryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTripGeometryResponse)
+	err := c.cc.Invoke(ctx, TrackingService_GetTripGeometry_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TrackingServiceServer is the server API for TrackingService service.
 // All implementations must embed UnimplementedTrackingServiceServer
 // for forward compatibility.
 type TrackingServiceServer interface {
+	GetTripCurrentLocation(context.Context, *GetTripCurrentLocationRequest) (*GetTripCurrentLocationResponse, error)
+	GetTripLocationHistory(context.Context, *GetTripLocationHistoryRequest) (*GetTripLocationHistoryResponse, error)
+	GetTripGeometry(context.Context, *GetTripGeometryRequest) (*GetTripGeometryResponse, error)
 	mustEmbedUnimplementedTrackingServiceServer()
 }
 
@@ -43,6 +88,15 @@ type TrackingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTrackingServiceServer struct{}
 
+func (UnimplementedTrackingServiceServer) GetTripCurrentLocation(context.Context, *GetTripCurrentLocationRequest) (*GetTripCurrentLocationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTripCurrentLocation not implemented")
+}
+func (UnimplementedTrackingServiceServer) GetTripLocationHistory(context.Context, *GetTripLocationHistoryRequest) (*GetTripLocationHistoryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTripLocationHistory not implemented")
+}
+func (UnimplementedTrackingServiceServer) GetTripGeometry(context.Context, *GetTripGeometryRequest) (*GetTripGeometryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTripGeometry not implemented")
+}
 func (UnimplementedTrackingServiceServer) mustEmbedUnimplementedTrackingServiceServer() {}
 func (UnimplementedTrackingServiceServer) testEmbeddedByValue()                         {}
 
@@ -64,13 +118,80 @@ func RegisterTrackingServiceServer(s grpc.ServiceRegistrar, srv TrackingServiceS
 	s.RegisterService(&TrackingService_ServiceDesc, srv)
 }
 
+func _TrackingService_GetTripCurrentLocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTripCurrentLocationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrackingServiceServer).GetTripCurrentLocation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrackingService_GetTripCurrentLocation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrackingServiceServer).GetTripCurrentLocation(ctx, req.(*GetTripCurrentLocationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrackingService_GetTripLocationHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTripLocationHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrackingServiceServer).GetTripLocationHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrackingService_GetTripLocationHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrackingServiceServer).GetTripLocationHistory(ctx, req.(*GetTripLocationHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrackingService_GetTripGeometry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTripGeometryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrackingServiceServer).GetTripGeometry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrackingService_GetTripGeometry_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrackingServiceServer).GetTripGeometry(ctx, req.(*GetTripGeometryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TrackingService_ServiceDesc is the grpc.ServiceDesc for TrackingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TrackingService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "tracking.TrackingService",
 	HandlerType: (*TrackingServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "tracking.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetTripCurrentLocation",
+			Handler:    _TrackingService_GetTripCurrentLocation_Handler,
+		},
+		{
+			MethodName: "GetTripLocationHistory",
+			Handler:    _TrackingService_GetTripLocationHistory_Handler,
+		},
+		{
+			MethodName: "GetTripGeometry",
+			Handler:    _TrackingService_GetTripGeometry_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "tracking.proto",
 }

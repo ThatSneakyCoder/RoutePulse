@@ -41,13 +41,33 @@ definitions:
     properties:
       driver_id:
         type: string
+      end_latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      end_longitude:
+        maximum: 180
+        minimum: -180
+        type: number
       organization_id:
         type: string
+      start_latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      start_longitude:
+        maximum: 180
+        minimum: -180
+        type: number
       vehicle_id:
         type: string
     required:
     - driver_id
+    - end_latitude
+    - end_longitude
     - organization_id
+    - start_latitude
+    - start_longitude
     - vehicle_id
     type: object
   main.CreateUserRequest:

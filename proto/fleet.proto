@@ -49,6 +49,9 @@ service FleetService {
   rpc CreateTrip (CreateTripRequest)
     returns (CreateTripResponse);
 
+  rpc PreviewRoute (PreviewRouteRequest)
+    returns (PreviewRouteResponse);
+
   rpc ListTrips (ListTripsRequest)
     returns (ListTripsResponse);
 
@@ -104,6 +107,17 @@ message Trip {
   int64 end_time = 7;
 
   int64 created_at = 8;
+}
+
+message Coordinate {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message RoutePreview {
+  double distance_meters = 1;
+  double duration_seconds = 2;
+  repeated Coordinate geometry = 3;
 }
 
 //
@@ -207,10 +221,25 @@ message CreateTripRequest {
   string organization_id = 1;
   string vehicle_id = 2;
   string driver_id = 3;
+  double start_latitude = 4;
+  double start_longitude = 5;
+  double end_latitude = 6;
+  double end_longitude = 7;
 }
 
 message CreateTripResponse {
   Trip trip = 1;
+}
+
+message PreviewRouteRequest {
+  double start_latitude = 1;
+  double start_longitude = 2;
+  double end_latitude = 3;
+  double end_longitude = 4;
+}
+
+message PreviewRouteResponse {
+  RoutePreview route = 1;
 }
 
 message ListTripsRequest {

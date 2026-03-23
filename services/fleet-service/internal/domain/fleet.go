@@ -35,7 +35,22 @@ type Trip struct {
 	VehicleID      string
 	DriverID       string
 	Status         string
+	StartLatitude  float64
+	StartLongitude float64
+	EndLatitude    float64
+	EndLongitude   float64
 	StartTime      *time.Time
 	EndTime        *time.Time
 	CreatedAt      time.Time
+}
+
+type Coordinate struct {
+	Latitude  float64
+	Longitude float64
+}
+
+type RoutePreview struct {
+	DistanceMeters  float64
+	DurationSeconds float64
+	Geometry        []Coordinate
 }

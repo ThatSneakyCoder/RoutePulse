@@ -443,6 +443,53 @@ func (app *application) createTripHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func (app *application) previewRouteHandler(w http.ResponseWriter, r *http.Request) {
+
+	var payload PreviewRouteRequest
+
+	if err := readJSON(w, r, &payload); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	if err := Validate.Struct(payload); err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	resp, err := app.fleetClient.Client.PreviewRoute(
+		r.Context(),
+		payload.toProto(),
+	)
+	if err != nil {
+		app.handleGRPCError(w, r, err)
+		return
+	}
+
+	route := resp.GetRoute()
+	result := RoutePreviewResponse{
+		DistanceMeters:  route.GetDistanceMeters(),
+		DurationSeconds: route.GetDurationSeconds(),
+		Geometry:        []CoordinateResponse{},
+	}
+
+	for _, point := range route.GetGeometry() {
+		result.Geometry = append(result.Geometry, CoordinateResponse{
+			Latitude:  point.GetLatitude(),
+			Longitude: point.GetLongitude(),
+		})
+	}
+
+	if err := app.jsonResponse(w, http.StatusOK, result); err != nil {
+		app.log.Errorw(
+			"failed to write preview route response",
+			"error", err,
+		)
+
+		app.internalServerError(w, r, err)
+	}
+}
+
 // listTripsHandler godoc
 //
 //	@Summary		List trips

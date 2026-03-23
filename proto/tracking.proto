@@ -5,6 +5,65 @@ package tracking;
 option go_package = "shared/proto/tracking;tracking";
 
 service TrackingService {
-    // rpc GetRoute(GetRouteRequest) returns (GetRouteResponse);
+  rpc GetTripCurrentLocation(GetTripCurrentLocationRequest)
+    returns (GetTripCurrentLocationResponse);
+
+  rpc GetTripLocationHistory(GetTripLocationHistoryRequest)
+    returns (GetTripLocationHistoryResponse);
+
+  rpc GetTripGeometry(GetTripGeometryRequest)
+    returns (GetTripGeometryResponse);
 }
 
+message Coordinate {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message TripCurrentLocation {
+  string trip_id = 1;
+  string driver_id = 2;
+  string vehicle_id = 3;
+  double latitude = 4;
+  double longitude = 5;
+  int64 recorded_at = 6;
+  string connection = 7;
+}
+
+message TripLocationHistoryPoint {
+  double latitude = 1;
+  double longitude = 2;
+  int64 recorded_at = 3;
+}
+
+message TripGeometry {
+  string trip_id = 1;
+  repeated Coordinate planned_geometry = 2;
+  repeated Coordinate actual_geometry = 3;
+}
+
+message GetTripCurrentLocationRequest {
+  string trip_id = 1;
+}
+
+message GetTripCurrentLocationResponse {
+  TripCurrentLocation location = 1;
+}
+
+message GetTripLocationHistoryRequest {
+  string trip_id = 1;
+  int32 limit = 2;
+}
+
+message GetTripLocationHistoryResponse {
+  string trip_id = 1;
+  repeated TripLocationHistoryPoint points = 2;
+}
+
+message GetTripGeometryRequest {
+  string trip_id = 1;
+}
+
+message GetTripGeometryResponse {
+  TripGeometry geometry = 1;
+}

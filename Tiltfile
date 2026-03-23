@@ -7,6 +7,7 @@ load('ext://restart_process', 'docker_build_with_restart')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-identity.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-organization.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-fleet.yaml')
+k8s_yaml('./infra/development/kubernetes/secrets/secrets-tracking.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-rabbitmq.yaml')
 k8s_yaml('./infra/development/kubernetes/secrets/secrets-clickhouse.yaml')
 k8s_yaml('./infra/development/kubernetes/configmaps/configmap.yaml')
@@ -54,22 +55,25 @@ k8s_resource('clickhouse', port_forwards=['18123:8123'], labels='tooling')
 
 ### tracking service postgres Migration Job Start ###
 
-# k8s_yaml('./infra/development/kubernetes/tracking/tracking-migrate-job.yaml')
+k8s_yaml('./infra/development/kubernetes/tracking/postgres-tracking.yaml')
+k8s_resource('postgres-tracking', port_forwards=['15435:5432'], labels='tooling')
 
-# k8s_resource(
-#   'tracking-db-migrate',
-#   resource_deps=['postgres-org', 'tracking-service-compile'],
-#   labels='migrations'
-# )
+k8s_yaml('./infra/development/kubernetes/tracking/tracking-migrate-job.yaml')
 
-# docker_build(
-#   'routepulse/tracking-migrate',
-#   '.',
-#   dockerfile='./infra/development/docker/tracking-migrate.Dockerfile',
-#   only=[
-#     './services/tracking-service/internal/migrate/migrations',
-#   ],
-# )
+k8s_resource(
+  'tracking-db-migrate',
+  resource_deps=['postgres-tracking', 'tracking-service-compile'],
+  labels='migrations'
+)
+
+docker_build(
+  'routepulse/tracking-migrate',
+  '.',
+  dockerfile='./infra/development/docker/tracking-migrate.Dockerfile',
+  only=[
+    './services/tracking-service/internal/migrate/migrations',
+  ],
+)
 
 ### tracking service postgres Migration Job End ###
 
@@ -232,7 +236,7 @@ k8s_resource(
   'tracking-service', 
   port_forwards=9093,
   resource_deps=[
-    # 'postgres', 
+    'postgres-tracking',
     'tracking-service-compile'], 
     labels="services"
 )
