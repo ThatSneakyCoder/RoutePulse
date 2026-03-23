@@ -6,9 +6,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/domain"
+	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/infrastructure/db"
+	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/service"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
@@ -44,7 +46,26 @@ func main() {
 		cancel()
 	}()
 
-	// database if any needs to be connected here
+	dsn :=
+		"postgres://" +
+			cfg.db.user + ":" +
+			cfg.db.password +
+			"@" + cfg.db.host + ":" + cfg.db.port + "/" +
+			cfg.db.name +
+			"?sslmode=" + cfg.db.sslMode
+
+	dbConn, err := db.New(db.Config{
+		DSN:          dsn,
+		MaxOpenConns: 25,
+		MaxIdleConns: 25,
+		MaxIdleTime:  5 * time.Minute,
+	})
+	if err != nil {
+		log.Fatalw("failed to connect to tracking database", "err", err)
+	}
+	defer dbConn.Close()
+
+	log.Info("database connection established in tracking service")
 
 	// gRPC listener
 	lis, err := net.Listen("tcp", ":"+cfg.grpcAddr)
@@ -65,8 +86,9 @@ func main() {
 	// Setup RabbitMQ publisher
 	publisher := events.NewTrackingEventPublisher(rabbitmq)
 
-	trackingRepository := domain.NewTrackingStore(nil, log)
-	trackingSvc := service.NewTrackingService(trackingRepository, log, publisher)
+	trackingRepo := domain.NewTrackingStore(dbConn, log)
+
+	trackingSvc := service.NewTrackingService(trackingRepo, log, publisher)
 
 	grpcServer := grpcserver.NewServer()
 	grpc.NewGRPCHandler(grpcServer, trackingSvc, log)

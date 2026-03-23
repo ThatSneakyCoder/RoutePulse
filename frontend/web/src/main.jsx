@@ -15,10 +15,20 @@ import { Register } from "./components/Auth/Register.jsx";
 import { HealthCheck } from "./components/HealthCheck.jsx";
 import { NotFoundPage } from "./components/NotFoundPage.jsx";
 import { Home } from "./components/landingPage/Home.jsx";
+import { TripDetails } from "./components/DashboardPage/Trips/TripDetails.jsx";
+import { Trips } from "./components/DashboardPage/Trips/Trips.jsx";
+import { CreateTrip } from "./components/DashboardPage/Trips/CreateTrip.jsx";
+import { DriverTripConsole } from "./components/DashboardPage/Trips/DriverTripConsole.jsx";
+import { LiveTripTracking } from "./components/DashboardPage/Trips/LiveTripTracking.jsx";
 
 import { organizationMutationAction } from "./actions/createOrganizationAction.js";
+import { createTripAction } from "./actions/createTripAction.js";
+import { createDriverAction } from "./actions/createDriverAction.js";
+import { createVehicleAction } from "./actions/createVehicleAction.js";
+import { tripOperationsAction } from "./actions/tripOperationsAction.js";
 import { organizationDetailsAction } from "./actions/organizationDetailsAction.js";
 import { UserAnalytics } from "./components/DashboardPage/Analytics/UserAnalytics.jsx";
+import { Drivers } from "./components/DashboardPage/Fleet/Drivers.jsx";
 import { Vehicles } from "./components/DashboardPage/Fleet/Vehicles.jsx";
 import { OrganizationDetails } from "./components/DashboardPage/Organizations/OrganizationDetails.jsx";
 import { ActiveShipments } from "./components/DashboardPage/Shipments/ActiveShipments.jsx";
@@ -29,6 +39,8 @@ import { dashboardLoader } from "./loaders/DashboardLoader.js";
 import { fleetLoader } from "./loaders/FleetLoader.js";
 import { organizationDetailsLoader } from "./loaders/OrganizationDetailsLoader.js";
 import { shipmentsLoader } from "./loaders/ShipmentsLoader.js";
+import { tripLoader } from "./loaders/TripLoader.js";
+import { tripTrackingLoader } from "./loaders/TripTrackingLoader.js";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +92,12 @@ const router = createBrowserRouter([
               {
                 path: "vehicles/all",
                 Component: Vehicles,
+                action: createVehicleAction,
+              },
+              {
+                path: "drivers/all",
+                Component: Drivers,
+                action: createDriverAction,
               },
             ],
           },
@@ -103,6 +121,37 @@ const router = createBrowserRouter([
             path: "analytics",
             loader: analyticsLoader,
             Component: UserAnalytics,
+          },
+          {
+            id: "trip",
+            path: "trip",
+            loader: tripLoader,
+            children: [
+              {
+                index: true,
+                Component: Trips,
+              },
+              {
+                path: "create",
+                Component: CreateTrip,
+                action: createTripAction,
+              },
+              {
+                path: "driver-console",
+                Component: DriverTripConsole,
+                action: tripOperationsAction,
+              },
+              {
+                path: ":tripId/live",
+                Component: LiveTripTracking,
+                loader: tripTrackingLoader,
+                action: tripOperationsAction,
+              },
+              {
+                path: ":tripId",
+                Component: TripDetails,
+              },
+            ],
           },
 
           // { path: "customers", Component: Customers },

@@ -35,25 +35,27 @@ spec:
               configMapKeyRef:
                 name: tracking-config
                 key: TRACKING_SERVICE_PORT
-          # - name: POSTGRES_USER
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: routepulse-tracking-credentials
-          #       key: user
-          # - name: POSTGRES_PASSWORD
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: routepulse-tracking-credentials
-          #       key: password
-          # - name: POSTGRES_DB
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: routepulse-tracking-credentials
-          #       key: db
-          # - name: POSTGRES_HOST
-          #   value: postgres-fleet
-          # - name: POSTGRES_PORT
-          #   value: "5432"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-tracking-credentials
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-tracking-credentials
+                key: password
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: routepulse-tracking-credentials
+                key: db
+          - name: POSTGRES_HOST
+            value: postgres-tracking
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: POSTGRES_SSLMODE
+            value: disable
 ---
 apiVersion: v1
 kind: Service

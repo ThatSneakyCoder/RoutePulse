@@ -4,6 +4,7 @@ import (
 	pbFleet "github.com/ThatSneakyCoder/RoutePulse/shared/proto/fleet"
 	pb "github.com/ThatSneakyCoder/RoutePulse/shared/proto/identity"
 	pbOrg "github.com/ThatSneakyCoder/RoutePulse/shared/proto/organization"
+	pbTracking "github.com/ThatSneakyCoder/RoutePulse/shared/proto/tracking"
 )
 
 func (p *CreateUserRequest) toProto() *pb.RegisterUserRequest {
@@ -150,12 +151,44 @@ func (p *CreateTripRequest) toProto() *pbFleet.CreateTripRequest {
 		OrganizationId: p.OrganizationID,
 		VehicleId:      p.VehicleID,
 		DriverId:       p.DriverID,
+		StartLatitude:  *p.StartLatitude,
+		StartLongitude: *p.StartLongitude,
+		EndLatitude:    *p.EndLatitude,
+		EndLongitude:   *p.EndLongitude,
+	}
+}
+
+func (p *PreviewRouteRequest) toProto() *pbFleet.PreviewRouteRequest {
+	return &pbFleet.PreviewRouteRequest{
+		StartLatitude:  *p.StartLatitude,
+		StartLongitude: *p.StartLongitude,
+		EndLatitude:    *p.EndLatitude,
+		EndLongitude:   *p.EndLongitude,
 	}
 }
 
 func (p *ListTripsRequest) toProto() *pbFleet.ListTripsRequest {
 	return &pbFleet.ListTripsRequest{
 		OrganizationId: p.OrganizationID,
+	}
+}
+
+func (p *GetTripTrackingRequest) toTrackingCurrentProto() *pbTracking.GetTripCurrentLocationRequest {
+	return &pbTracking.GetTripCurrentLocationRequest{
+		TripId: p.TripID,
+	}
+}
+
+func (p *GetTripTrackingRequest) toTrackingGeometryProto() *pbTracking.GetTripGeometryRequest {
+	return &pbTracking.GetTripGeometryRequest{
+		TripId: p.TripID,
+	}
+}
+
+func (p *GetTripLocationHistoryRequest) toTrackingHistoryProto() *pbTracking.GetTripLocationHistoryRequest {
+	return &pbTracking.GetTripLocationHistoryRequest{
+		TripId: p.TripID,
+		Limit:  p.Limit,
 	}
 }
 

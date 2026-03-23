@@ -11,12 +11,15 @@ import {
   FiUser,
 } from "react-icons/fi";
 
+import { GiPathDistance } from "react-icons/gi";
+
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export const RouteSelect = () => {
   const [fleetOpen, setFleetOpen] = useState(true);
   const [shipmentOpen, setShipmentOpen] = useState(false);
+  const [tripOpen, setTripOpen] = useState(true);
 
   return (
     <div className="space-y-8">
@@ -30,6 +33,17 @@ export const RouteSelect = () => {
 
         <Route Icon={FiUser} title="My Organization" to="/dashboard/organization" />
 
+        <CollapsibleRoute
+          Icon={GiPathDistance}
+          title="Trip"
+          open={tripOpen}
+          toggle={() => setTripOpen(!tripOpen)}
+        >
+          <SubRoute title="All Trips" to="/dashboard/trip" end />
+          <SubRoute title="Create Trip" to="/dashboard/trip/create" />
+          <SubRoute title="Driver Console" to="/dashboard/trip/driver-console" />
+        </CollapsibleRoute>
+
         {/* Fleet Management */}
         <CollapsibleRoute
           Icon={FiTruck}
@@ -38,6 +52,7 @@ export const RouteSelect = () => {
           toggle={() => setFleetOpen(!fleetOpen)}
         >
           <SubRoute title="All Vehicles" to="/dashboard/fleet/vehicles/all" />
+          <SubRoute title="Drivers" to="/dashboard/fleet/drivers/all" />
         </CollapsibleRoute>
 
         {/* Shipments */}
@@ -113,10 +128,11 @@ const CollapsibleRoute = ({ Icon, title, open, toggle, children }) => {
   );
 };
 
-const SubRoute = ({ title, to }) => {
+const SubRoute = ({ title, to, end }) => {
   return (
     <NavLink
       to={to}
+      end={end}
       className={({ isActive }) =>
         `block w-full text-left px-2 py-1.5 rounded-md text-sm transition ${
           isActive

@@ -2,7 +2,11 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"net/http"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/fleet-service/internal/domain"
 	"github.com/ThatSneakyCoder/RoutePulse/services/fleet-service/internal/infrastructure/events"
@@ -227,6 +231,10 @@ func (s *FleetService) CreateTrip(
 	orgID string,
 	vehicleID string,
 	driverID string,
+	startLatitude float64,
+	startLongitude float64,
+	endLatitude float64,
+	endLongitude float64,
 ) (*domain.Trip, error) {
 
 	s.log.Infow(
@@ -277,6 +285,10 @@ func (s *FleetService) CreateTrip(
 		VehicleID:      vehicleID,
 		DriverID:       driverID,
 		Status:         "created",
+		StartLatitude:  startLatitude,
+		StartLongitude: startLongitude,
+		EndLatitude:    endLatitude,
+		EndLongitude:   endLongitude,
 	}
 
 	err := s.repo.CreateTrip(ctx, trip)
@@ -303,6 +315,81 @@ func (s *FleetService) CreateTrip(
 	)
 
 	return trip, nil
+}
+
+func (s *FleetService) PreviewRoute(
+	ctx context.Context,
+	startLatitude float64,
+	startLongitude float64,
+	endLatitude float64,
+	endLongitude float64,
+) (*domain.RoutePreview, error) {
+
+	baseURL := "http://router.project-osrm.org"
+	url := fmt.Sprintf(
+		"%s/route/v1/driving/%f,%f;%f,%f?overview=full&geometries=geojson",
+		baseURL,
+		startLongitude, startLatitude,
+		endLongitude, endLatitude,
+	)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch route from OSRM: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("osrm route lookup failed: %s", string(body))
+	}
+
+	var payload struct {
+		Routes []struct {
+			Distance float64 `json:"distance"`
+			Duration float64 `json:"duration"`
+			Geometry struct {
+				Coordinates [][]float64 `json:"coordinates"`
+			} `json:"geometry"`
+		} `json:"routes"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+		return nil, fmt.Errorf("failed to decode osrm response: %w", err)
+	}
+
+	if len(payload.Routes) == 0 {
+		return nil, errors.New("no route returned from osrm")
+	}
+
+	route := payload.Routes[0]
+	geometry := make([]domain.Coordinate, 0, len(route.Geometry.Coordinates))
+
+	for _, point := range route.Geometry.Coordinates {
+		if len(point) < 2 {
+			continue
+		}
+
+		geometry = append(geometry, domain.Coordinate{
+			Latitude:  point[1],
+			Longitude: point[0],
+		})
+	}
+
+	if len(geometry) == 0 {
+		return nil, errors.New("route geometry was empty")
+	}
+
+	return &domain.RoutePreview{
+		DistanceMeters:  route.Distance,
+		DurationSeconds: route.Duration,
+		Geometry:        geometry,
+	}, nil
 }
 
 func (s *FleetService) ListTrips(

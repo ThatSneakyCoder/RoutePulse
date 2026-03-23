@@ -305,6 +305,118 @@ func (x *Trip) GetCreatedAt() int64 {
 	return 0
 }
 
+type Coordinate struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Latitude      float64                `protobuf:"fixed64,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude     float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Coordinate) Reset() {
+	*x = Coordinate{}
+	mi := &file_fleet_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Coordinate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Coordinate) ProtoMessage() {}
+
+func (x *Coordinate) ProtoReflect() protoreflect.Message {
+	mi := &file_fleet_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Coordinate.ProtoReflect.Descriptor instead.
+func (*Coordinate) Descriptor() ([]byte, []int) {
+	return file_fleet_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Coordinate) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *Coordinate) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+type RoutePreview struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	DistanceMeters  float64                `protobuf:"fixed64,1,opt,name=distance_meters,json=distanceMeters,proto3" json:"distance_meters,omitempty"`
+	DurationSeconds float64                `protobuf:"fixed64,2,opt,name=duration_seconds,json=durationSeconds,proto3" json:"duration_seconds,omitempty"`
+	Geometry        []*Coordinate          `protobuf:"bytes,3,rep,name=geometry,proto3" json:"geometry,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *RoutePreview) Reset() {
+	*x = RoutePreview{}
+	mi := &file_fleet_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RoutePreview) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoutePreview) ProtoMessage() {}
+
+func (x *RoutePreview) ProtoReflect() protoreflect.Message {
+	mi := &file_fleet_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoutePreview.ProtoReflect.Descriptor instead.
+func (*RoutePreview) Descriptor() ([]byte, []int) {
+	return file_fleet_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RoutePreview) GetDistanceMeters() float64 {
+	if x != nil {
+		return x.DistanceMeters
+	}
+	return 0
+}
+
+func (x *RoutePreview) GetDurationSeconds() float64 {
+	if x != nil {
+		return x.DurationSeconds
+	}
+	return 0
+}
+
+func (x *RoutePreview) GetGeometry() []*Coordinate {
+	if x != nil {
+		return x.Geometry
+	}
+	return nil
+}
+
 type CreateVehicleRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
@@ -317,7 +429,7 @@ type CreateVehicleRequest struct {
 
 func (x *CreateVehicleRequest) Reset() {
 	*x = CreateVehicleRequest{}
-	mi := &file_fleet_proto_msgTypes[3]
+	mi := &file_fleet_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -329,7 +441,7 @@ func (x *CreateVehicleRequest) String() string {
 func (*CreateVehicleRequest) ProtoMessage() {}
 
 func (x *CreateVehicleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[3]
+	mi := &file_fleet_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -342,7 +454,7 @@ func (x *CreateVehicleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateVehicleRequest.ProtoReflect.Descriptor instead.
 func (*CreateVehicleRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{3}
+	return file_fleet_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateVehicleRequest) GetOrganizationId() string {
@@ -382,7 +494,7 @@ type CreateVehicleResponse struct {
 
 func (x *CreateVehicleResponse) Reset() {
 	*x = CreateVehicleResponse{}
-	mi := &file_fleet_proto_msgTypes[4]
+	mi := &file_fleet_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -394,7 +506,7 @@ func (x *CreateVehicleResponse) String() string {
 func (*CreateVehicleResponse) ProtoMessage() {}
 
 func (x *CreateVehicleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[4]
+	mi := &file_fleet_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -407,7 +519,7 @@ func (x *CreateVehicleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateVehicleResponse.ProtoReflect.Descriptor instead.
 func (*CreateVehicleResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{4}
+	return file_fleet_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateVehicleResponse) GetVehicle() *Vehicle {
@@ -426,7 +538,7 @@ type GetVehicleRequest struct {
 
 func (x *GetVehicleRequest) Reset() {
 	*x = GetVehicleRequest{}
-	mi := &file_fleet_proto_msgTypes[5]
+	mi := &file_fleet_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -438,7 +550,7 @@ func (x *GetVehicleRequest) String() string {
 func (*GetVehicleRequest) ProtoMessage() {}
 
 func (x *GetVehicleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[5]
+	mi := &file_fleet_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -451,7 +563,7 @@ func (x *GetVehicleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVehicleRequest.ProtoReflect.Descriptor instead.
 func (*GetVehicleRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{5}
+	return file_fleet_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetVehicleRequest) GetVehicleId() string {
@@ -470,7 +582,7 @@ type GetVehicleResponse struct {
 
 func (x *GetVehicleResponse) Reset() {
 	*x = GetVehicleResponse{}
-	mi := &file_fleet_proto_msgTypes[6]
+	mi := &file_fleet_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -482,7 +594,7 @@ func (x *GetVehicleResponse) String() string {
 func (*GetVehicleResponse) ProtoMessage() {}
 
 func (x *GetVehicleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[6]
+	mi := &file_fleet_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -495,7 +607,7 @@ func (x *GetVehicleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVehicleResponse.ProtoReflect.Descriptor instead.
 func (*GetVehicleResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{6}
+	return file_fleet_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetVehicleResponse) GetVehicle() *Vehicle {
@@ -514,7 +626,7 @@ type ListVehiclesRequest struct {
 
 func (x *ListVehiclesRequest) Reset() {
 	*x = ListVehiclesRequest{}
-	mi := &file_fleet_proto_msgTypes[7]
+	mi := &file_fleet_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -526,7 +638,7 @@ func (x *ListVehiclesRequest) String() string {
 func (*ListVehiclesRequest) ProtoMessage() {}
 
 func (x *ListVehiclesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[7]
+	mi := &file_fleet_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -539,7 +651,7 @@ func (x *ListVehiclesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVehiclesRequest.ProtoReflect.Descriptor instead.
 func (*ListVehiclesRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{7}
+	return file_fleet_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ListVehiclesRequest) GetOrganizationId() string {
@@ -558,7 +670,7 @@ type ListVehiclesResponse struct {
 
 func (x *ListVehiclesResponse) Reset() {
 	*x = ListVehiclesResponse{}
-	mi := &file_fleet_proto_msgTypes[8]
+	mi := &file_fleet_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -570,7 +682,7 @@ func (x *ListVehiclesResponse) String() string {
 func (*ListVehiclesResponse) ProtoMessage() {}
 
 func (x *ListVehiclesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[8]
+	mi := &file_fleet_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -583,7 +695,7 @@ func (x *ListVehiclesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListVehiclesResponse.ProtoReflect.Descriptor instead.
 func (*ListVehiclesResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{8}
+	return file_fleet_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListVehiclesResponse) GetVehicles() []*Vehicle {
@@ -605,7 +717,7 @@ type UpdateVehicleRequest struct {
 
 func (x *UpdateVehicleRequest) Reset() {
 	*x = UpdateVehicleRequest{}
-	mi := &file_fleet_proto_msgTypes[9]
+	mi := &file_fleet_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -617,7 +729,7 @@ func (x *UpdateVehicleRequest) String() string {
 func (*UpdateVehicleRequest) ProtoMessage() {}
 
 func (x *UpdateVehicleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[9]
+	mi := &file_fleet_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -630,7 +742,7 @@ func (x *UpdateVehicleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateVehicleRequest.ProtoReflect.Descriptor instead.
 func (*UpdateVehicleRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{9}
+	return file_fleet_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UpdateVehicleRequest) GetVehicleId() string {
@@ -670,7 +782,7 @@ type UpdateVehicleResponse struct {
 
 func (x *UpdateVehicleResponse) Reset() {
 	*x = UpdateVehicleResponse{}
-	mi := &file_fleet_proto_msgTypes[10]
+	mi := &file_fleet_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -682,7 +794,7 @@ func (x *UpdateVehicleResponse) String() string {
 func (*UpdateVehicleResponse) ProtoMessage() {}
 
 func (x *UpdateVehicleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[10]
+	mi := &file_fleet_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -695,7 +807,7 @@ func (x *UpdateVehicleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateVehicleResponse.ProtoReflect.Descriptor instead.
 func (*UpdateVehicleResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{10}
+	return file_fleet_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *UpdateVehicleResponse) GetSuccess() bool {
@@ -715,7 +827,7 @@ type UpdateVehicleStatusRequest struct {
 
 func (x *UpdateVehicleStatusRequest) Reset() {
 	*x = UpdateVehicleStatusRequest{}
-	mi := &file_fleet_proto_msgTypes[11]
+	mi := &file_fleet_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -727,7 +839,7 @@ func (x *UpdateVehicleStatusRequest) String() string {
 func (*UpdateVehicleStatusRequest) ProtoMessage() {}
 
 func (x *UpdateVehicleStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[11]
+	mi := &file_fleet_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -740,7 +852,7 @@ func (x *UpdateVehicleStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateVehicleStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateVehicleStatusRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{11}
+	return file_fleet_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UpdateVehicleStatusRequest) GetVehicleId() string {
@@ -766,7 +878,7 @@ type UpdateVehicleStatusResponse struct {
 
 func (x *UpdateVehicleStatusResponse) Reset() {
 	*x = UpdateVehicleStatusResponse{}
-	mi := &file_fleet_proto_msgTypes[12]
+	mi := &file_fleet_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -778,7 +890,7 @@ func (x *UpdateVehicleStatusResponse) String() string {
 func (*UpdateVehicleStatusResponse) ProtoMessage() {}
 
 func (x *UpdateVehicleStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[12]
+	mi := &file_fleet_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -791,7 +903,7 @@ func (x *UpdateVehicleStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateVehicleStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateVehicleStatusResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{12}
+	return file_fleet_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *UpdateVehicleStatusResponse) GetSuccess() bool {
@@ -813,7 +925,7 @@ type CreateDriverRequest struct {
 
 func (x *CreateDriverRequest) Reset() {
 	*x = CreateDriverRequest{}
-	mi := &file_fleet_proto_msgTypes[13]
+	mi := &file_fleet_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -825,7 +937,7 @@ func (x *CreateDriverRequest) String() string {
 func (*CreateDriverRequest) ProtoMessage() {}
 
 func (x *CreateDriverRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[13]
+	mi := &file_fleet_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -838,7 +950,7 @@ func (x *CreateDriverRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateDriverRequest.ProtoReflect.Descriptor instead.
 func (*CreateDriverRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{13}
+	return file_fleet_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CreateDriverRequest) GetOrganizationId() string {
@@ -878,7 +990,7 @@ type CreateDriverResponse struct {
 
 func (x *CreateDriverResponse) Reset() {
 	*x = CreateDriverResponse{}
-	mi := &file_fleet_proto_msgTypes[14]
+	mi := &file_fleet_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -890,7 +1002,7 @@ func (x *CreateDriverResponse) String() string {
 func (*CreateDriverResponse) ProtoMessage() {}
 
 func (x *CreateDriverResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[14]
+	mi := &file_fleet_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -903,7 +1015,7 @@ func (x *CreateDriverResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateDriverResponse.ProtoReflect.Descriptor instead.
 func (*CreateDriverResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{14}
+	return file_fleet_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CreateDriverResponse) GetDriver() *Driver {
@@ -922,7 +1034,7 @@ type ListDriversRequest struct {
 
 func (x *ListDriversRequest) Reset() {
 	*x = ListDriversRequest{}
-	mi := &file_fleet_proto_msgTypes[15]
+	mi := &file_fleet_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -934,7 +1046,7 @@ func (x *ListDriversRequest) String() string {
 func (*ListDriversRequest) ProtoMessage() {}
 
 func (x *ListDriversRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[15]
+	mi := &file_fleet_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -947,7 +1059,7 @@ func (x *ListDriversRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDriversRequest.ProtoReflect.Descriptor instead.
 func (*ListDriversRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{15}
+	return file_fleet_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ListDriversRequest) GetOrganizationId() string {
@@ -966,7 +1078,7 @@ type ListDriversResponse struct {
 
 func (x *ListDriversResponse) Reset() {
 	*x = ListDriversResponse{}
-	mi := &file_fleet_proto_msgTypes[16]
+	mi := &file_fleet_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -978,7 +1090,7 @@ func (x *ListDriversResponse) String() string {
 func (*ListDriversResponse) ProtoMessage() {}
 
 func (x *ListDriversResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[16]
+	mi := &file_fleet_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -991,7 +1103,7 @@ func (x *ListDriversResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDriversResponse.ProtoReflect.Descriptor instead.
 func (*ListDriversResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{16}
+	return file_fleet_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ListDriversResponse) GetDrivers() []*Driver {
@@ -1012,7 +1124,7 @@ type UpdateDriverRequest struct {
 
 func (x *UpdateDriverRequest) Reset() {
 	*x = UpdateDriverRequest{}
-	mi := &file_fleet_proto_msgTypes[17]
+	mi := &file_fleet_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1024,7 +1136,7 @@ func (x *UpdateDriverRequest) String() string {
 func (*UpdateDriverRequest) ProtoMessage() {}
 
 func (x *UpdateDriverRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[17]
+	mi := &file_fleet_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1037,7 +1149,7 @@ func (x *UpdateDriverRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDriverRequest.ProtoReflect.Descriptor instead.
 func (*UpdateDriverRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{17}
+	return file_fleet_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *UpdateDriverRequest) GetDriverId() string {
@@ -1070,7 +1182,7 @@ type UpdateDriverResponse struct {
 
 func (x *UpdateDriverResponse) Reset() {
 	*x = UpdateDriverResponse{}
-	mi := &file_fleet_proto_msgTypes[18]
+	mi := &file_fleet_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1082,7 +1194,7 @@ func (x *UpdateDriverResponse) String() string {
 func (*UpdateDriverResponse) ProtoMessage() {}
 
 func (x *UpdateDriverResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[18]
+	mi := &file_fleet_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1095,7 +1207,7 @@ func (x *UpdateDriverResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDriverResponse.ProtoReflect.Descriptor instead.
 func (*UpdateDriverResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{18}
+	return file_fleet_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *UpdateDriverResponse) GetSuccess() bool {
@@ -1115,7 +1227,7 @@ type UpdateDriverStatusRequest struct {
 
 func (x *UpdateDriverStatusRequest) Reset() {
 	*x = UpdateDriverStatusRequest{}
-	mi := &file_fleet_proto_msgTypes[19]
+	mi := &file_fleet_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1127,7 +1239,7 @@ func (x *UpdateDriverStatusRequest) String() string {
 func (*UpdateDriverStatusRequest) ProtoMessage() {}
 
 func (x *UpdateDriverStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[19]
+	mi := &file_fleet_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1140,7 +1252,7 @@ func (x *UpdateDriverStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDriverStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateDriverStatusRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{19}
+	return file_fleet_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *UpdateDriverStatusRequest) GetDriverId() string {
@@ -1166,7 +1278,7 @@ type UpdateDriverStatusResponse struct {
 
 func (x *UpdateDriverStatusResponse) Reset() {
 	*x = UpdateDriverStatusResponse{}
-	mi := &file_fleet_proto_msgTypes[20]
+	mi := &file_fleet_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1178,7 +1290,7 @@ func (x *UpdateDriverStatusResponse) String() string {
 func (*UpdateDriverStatusResponse) ProtoMessage() {}
 
 func (x *UpdateDriverStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[20]
+	mi := &file_fleet_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1191,7 +1303,7 @@ func (x *UpdateDriverStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDriverStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateDriverStatusResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{20}
+	return file_fleet_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *UpdateDriverStatusResponse) GetSuccess() bool {
@@ -1206,13 +1318,17 @@ type CreateTripRequest struct {
 	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	VehicleId      string                 `protobuf:"bytes,2,opt,name=vehicle_id,json=vehicleId,proto3" json:"vehicle_id,omitempty"`
 	DriverId       string                 `protobuf:"bytes,3,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
+	StartLatitude  float64                `protobuf:"fixed64,4,opt,name=start_latitude,json=startLatitude,proto3" json:"start_latitude,omitempty"`
+	StartLongitude float64                `protobuf:"fixed64,5,opt,name=start_longitude,json=startLongitude,proto3" json:"start_longitude,omitempty"`
+	EndLatitude    float64                `protobuf:"fixed64,6,opt,name=end_latitude,json=endLatitude,proto3" json:"end_latitude,omitempty"`
+	EndLongitude   float64                `protobuf:"fixed64,7,opt,name=end_longitude,json=endLongitude,proto3" json:"end_longitude,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CreateTripRequest) Reset() {
 	*x = CreateTripRequest{}
-	mi := &file_fleet_proto_msgTypes[21]
+	mi := &file_fleet_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1224,7 +1340,7 @@ func (x *CreateTripRequest) String() string {
 func (*CreateTripRequest) ProtoMessage() {}
 
 func (x *CreateTripRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[21]
+	mi := &file_fleet_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1237,7 +1353,7 @@ func (x *CreateTripRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTripRequest.ProtoReflect.Descriptor instead.
 func (*CreateTripRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{21}
+	return file_fleet_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *CreateTripRequest) GetOrganizationId() string {
@@ -1261,6 +1377,34 @@ func (x *CreateTripRequest) GetDriverId() string {
 	return ""
 }
 
+func (x *CreateTripRequest) GetStartLatitude() float64 {
+	if x != nil {
+		return x.StartLatitude
+	}
+	return 0
+}
+
+func (x *CreateTripRequest) GetStartLongitude() float64 {
+	if x != nil {
+		return x.StartLongitude
+	}
+	return 0
+}
+
+func (x *CreateTripRequest) GetEndLatitude() float64 {
+	if x != nil {
+		return x.EndLatitude
+	}
+	return 0
+}
+
+func (x *CreateTripRequest) GetEndLongitude() float64 {
+	if x != nil {
+		return x.EndLongitude
+	}
+	return 0
+}
+
 type CreateTripResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Trip          *Trip                  `protobuf:"bytes,1,opt,name=trip,proto3" json:"trip,omitempty"`
@@ -1270,7 +1414,7 @@ type CreateTripResponse struct {
 
 func (x *CreateTripResponse) Reset() {
 	*x = CreateTripResponse{}
-	mi := &file_fleet_proto_msgTypes[22]
+	mi := &file_fleet_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1282,7 +1426,7 @@ func (x *CreateTripResponse) String() string {
 func (*CreateTripResponse) ProtoMessage() {}
 
 func (x *CreateTripResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[22]
+	mi := &file_fleet_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1295,12 +1439,124 @@ func (x *CreateTripResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTripResponse.ProtoReflect.Descriptor instead.
 func (*CreateTripResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{22}
+	return file_fleet_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *CreateTripResponse) GetTrip() *Trip {
 	if x != nil {
 		return x.Trip
+	}
+	return nil
+}
+
+type PreviewRouteRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	StartLatitude  float64                `protobuf:"fixed64,1,opt,name=start_latitude,json=startLatitude,proto3" json:"start_latitude,omitempty"`
+	StartLongitude float64                `protobuf:"fixed64,2,opt,name=start_longitude,json=startLongitude,proto3" json:"start_longitude,omitempty"`
+	EndLatitude    float64                `protobuf:"fixed64,3,opt,name=end_latitude,json=endLatitude,proto3" json:"end_latitude,omitempty"`
+	EndLongitude   float64                `protobuf:"fixed64,4,opt,name=end_longitude,json=endLongitude,proto3" json:"end_longitude,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *PreviewRouteRequest) Reset() {
+	*x = PreviewRouteRequest{}
+	mi := &file_fleet_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PreviewRouteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviewRouteRequest) ProtoMessage() {}
+
+func (x *PreviewRouteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_fleet_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviewRouteRequest.ProtoReflect.Descriptor instead.
+func (*PreviewRouteRequest) Descriptor() ([]byte, []int) {
+	return file_fleet_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *PreviewRouteRequest) GetStartLatitude() float64 {
+	if x != nil {
+		return x.StartLatitude
+	}
+	return 0
+}
+
+func (x *PreviewRouteRequest) GetStartLongitude() float64 {
+	if x != nil {
+		return x.StartLongitude
+	}
+	return 0
+}
+
+func (x *PreviewRouteRequest) GetEndLatitude() float64 {
+	if x != nil {
+		return x.EndLatitude
+	}
+	return 0
+}
+
+func (x *PreviewRouteRequest) GetEndLongitude() float64 {
+	if x != nil {
+		return x.EndLongitude
+	}
+	return 0
+}
+
+type PreviewRouteResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Route         *RoutePreview          `protobuf:"bytes,1,opt,name=route,proto3" json:"route,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PreviewRouteResponse) Reset() {
+	*x = PreviewRouteResponse{}
+	mi := &file_fleet_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PreviewRouteResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviewRouteResponse) ProtoMessage() {}
+
+func (x *PreviewRouteResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_fleet_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviewRouteResponse.ProtoReflect.Descriptor instead.
+func (*PreviewRouteResponse) Descriptor() ([]byte, []int) {
+	return file_fleet_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *PreviewRouteResponse) GetRoute() *RoutePreview {
+	if x != nil {
+		return x.Route
 	}
 	return nil
 }
@@ -1314,7 +1570,7 @@ type ListTripsRequest struct {
 
 func (x *ListTripsRequest) Reset() {
 	*x = ListTripsRequest{}
-	mi := &file_fleet_proto_msgTypes[23]
+	mi := &file_fleet_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1326,7 +1582,7 @@ func (x *ListTripsRequest) String() string {
 func (*ListTripsRequest) ProtoMessage() {}
 
 func (x *ListTripsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[23]
+	mi := &file_fleet_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1339,7 +1595,7 @@ func (x *ListTripsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTripsRequest.ProtoReflect.Descriptor instead.
 func (*ListTripsRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{23}
+	return file_fleet_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *ListTripsRequest) GetOrganizationId() string {
@@ -1358,7 +1614,7 @@ type ListTripsResponse struct {
 
 func (x *ListTripsResponse) Reset() {
 	*x = ListTripsResponse{}
-	mi := &file_fleet_proto_msgTypes[24]
+	mi := &file_fleet_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1370,7 +1626,7 @@ func (x *ListTripsResponse) String() string {
 func (*ListTripsResponse) ProtoMessage() {}
 
 func (x *ListTripsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[24]
+	mi := &file_fleet_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1383,7 +1639,7 @@ func (x *ListTripsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTripsResponse.ProtoReflect.Descriptor instead.
 func (*ListTripsResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{24}
+	return file_fleet_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *ListTripsResponse) GetTrips() []*Trip {
@@ -1402,7 +1658,7 @@ type StartTripRequest struct {
 
 func (x *StartTripRequest) Reset() {
 	*x = StartTripRequest{}
-	mi := &file_fleet_proto_msgTypes[25]
+	mi := &file_fleet_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1414,7 +1670,7 @@ func (x *StartTripRequest) String() string {
 func (*StartTripRequest) ProtoMessage() {}
 
 func (x *StartTripRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[25]
+	mi := &file_fleet_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1427,7 +1683,7 @@ func (x *StartTripRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartTripRequest.ProtoReflect.Descriptor instead.
 func (*StartTripRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{25}
+	return file_fleet_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *StartTripRequest) GetTripId() string {
@@ -1446,7 +1702,7 @@ type StartTripResponse struct {
 
 func (x *StartTripResponse) Reset() {
 	*x = StartTripResponse{}
-	mi := &file_fleet_proto_msgTypes[26]
+	mi := &file_fleet_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1458,7 +1714,7 @@ func (x *StartTripResponse) String() string {
 func (*StartTripResponse) ProtoMessage() {}
 
 func (x *StartTripResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[26]
+	mi := &file_fleet_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1471,7 +1727,7 @@ func (x *StartTripResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartTripResponse.ProtoReflect.Descriptor instead.
 func (*StartTripResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{26}
+	return file_fleet_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *StartTripResponse) GetSuccess() bool {
@@ -1490,7 +1746,7 @@ type CompleteTripRequest struct {
 
 func (x *CompleteTripRequest) Reset() {
 	*x = CompleteTripRequest{}
-	mi := &file_fleet_proto_msgTypes[27]
+	mi := &file_fleet_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1502,7 +1758,7 @@ func (x *CompleteTripRequest) String() string {
 func (*CompleteTripRequest) ProtoMessage() {}
 
 func (x *CompleteTripRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[27]
+	mi := &file_fleet_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1515,7 +1771,7 @@ func (x *CompleteTripRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteTripRequest.ProtoReflect.Descriptor instead.
 func (*CompleteTripRequest) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{27}
+	return file_fleet_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *CompleteTripRequest) GetTripId() string {
@@ -1534,7 +1790,7 @@ type CompleteTripResponse struct {
 
 func (x *CompleteTripResponse) Reset() {
 	*x = CompleteTripResponse{}
-	mi := &file_fleet_proto_msgTypes[28]
+	mi := &file_fleet_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1546,7 +1802,7 @@ func (x *CompleteTripResponse) String() string {
 func (*CompleteTripResponse) ProtoMessage() {}
 
 func (x *CompleteTripResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_fleet_proto_msgTypes[28]
+	mi := &file_fleet_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1559,7 +1815,7 @@ func (x *CompleteTripResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteTripResponse.ProtoReflect.Descriptor instead.
 func (*CompleteTripResponse) Descriptor() ([]byte, []int) {
-	return file_fleet_proto_rawDescGZIP(), []int{28}
+	return file_fleet_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *CompleteTripResponse) GetSuccess() bool {
@@ -1606,7 +1862,15 @@ const file_fleet_proto_rawDesc = "" +
 	"start_time\x18\x06 \x01(\x03R\tstartTime\x12\x19\n" +
 	"\bend_time\x18\a \x01(\x03R\aendTime\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\b \x01(\x03R\tcreatedAt\"\xa1\x01\n" +
+	"created_at\x18\b \x01(\x03R\tcreatedAt\"F\n" +
+	"\n" +
+	"Coordinate\x12\x1a\n" +
+	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\"\x91\x01\n" +
+	"\fRoutePreview\x12'\n" +
+	"\x0fdistance_meters\x18\x01 \x01(\x01R\x0edistanceMeters\x12)\n" +
+	"\x10duration_seconds\x18\x02 \x01(\x01R\x0fdurationSeconds\x12-\n" +
+	"\bgeometry\x18\x03 \x03(\v2\x11.fleet.CoordinateR\bgeometry\"\xa1\x01\n" +
 	"\x14CreateVehicleRequest\x12'\n" +
 	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId\x12!\n" +
 	"\fplate_number\x18\x02 \x01(\tR\vplateNumber\x12!\n" +
@@ -1661,14 +1925,25 @@ const file_fleet_proto_rawDesc = "" +
 	"\tdriver_id\x18\x01 \x01(\tR\bdriverId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\"6\n" +
 	"\x1aUpdateDriverStatusResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"x\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\x90\x02\n" +
 	"\x11CreateTripRequest\x12'\n" +
 	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId\x12\x1d\n" +
 	"\n" +
 	"vehicle_id\x18\x02 \x01(\tR\tvehicleId\x12\x1b\n" +
-	"\tdriver_id\x18\x03 \x01(\tR\bdriverId\"5\n" +
+	"\tdriver_id\x18\x03 \x01(\tR\bdriverId\x12%\n" +
+	"\x0estart_latitude\x18\x04 \x01(\x01R\rstartLatitude\x12'\n" +
+	"\x0fstart_longitude\x18\x05 \x01(\x01R\x0estartLongitude\x12!\n" +
+	"\fend_latitude\x18\x06 \x01(\x01R\vendLatitude\x12#\n" +
+	"\rend_longitude\x18\a \x01(\x01R\fendLongitude\"5\n" +
 	"\x12CreateTripResponse\x12\x1f\n" +
-	"\x04trip\x18\x01 \x01(\v2\v.fleet.TripR\x04trip\";\n" +
+	"\x04trip\x18\x01 \x01(\v2\v.fleet.TripR\x04trip\"\xad\x01\n" +
+	"\x13PreviewRouteRequest\x12%\n" +
+	"\x0estart_latitude\x18\x01 \x01(\x01R\rstartLatitude\x12'\n" +
+	"\x0fstart_longitude\x18\x02 \x01(\x01R\x0estartLongitude\x12!\n" +
+	"\fend_latitude\x18\x03 \x01(\x01R\vendLatitude\x12#\n" +
+	"\rend_longitude\x18\x04 \x01(\x01R\fendLongitude\"A\n" +
+	"\x14PreviewRouteResponse\x12)\n" +
+	"\x05route\x18\x01 \x01(\v2\x13.fleet.RoutePreviewR\x05route\";\n" +
 	"\x10ListTripsRequest\x12'\n" +
 	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId\"6\n" +
 	"\x11ListTripsResponse\x12!\n" +
@@ -1680,7 +1955,7 @@ const file_fleet_proto_rawDesc = "" +
 	"\x13CompleteTripRequest\x12\x17\n" +
 	"\atrip_id\x18\x01 \x01(\tR\x06tripId\"0\n" +
 	"\x14CompleteTripResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xcf\a\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\x98\b\n" +
 	"\fFleetService\x12J\n" +
 	"\rCreateVehicle\x12\x1b.fleet.CreateVehicleRequest\x1a\x1c.fleet.CreateVehicleResponse\x12A\n" +
 	"\n" +
@@ -1693,7 +1968,8 @@ const file_fleet_proto_rawDesc = "" +
 	"\fUpdateDriver\x12\x1a.fleet.UpdateDriverRequest\x1a\x1b.fleet.UpdateDriverResponse\x12Y\n" +
 	"\x12UpdateDriverStatus\x12 .fleet.UpdateDriverStatusRequest\x1a!.fleet.UpdateDriverStatusResponse\x12A\n" +
 	"\n" +
-	"CreateTrip\x12\x18.fleet.CreateTripRequest\x1a\x19.fleet.CreateTripResponse\x12>\n" +
+	"CreateTrip\x12\x18.fleet.CreateTripRequest\x1a\x19.fleet.CreateTripResponse\x12G\n" +
+	"\fPreviewRoute\x12\x1a.fleet.PreviewRouteRequest\x1a\x1b.fleet.PreviewRouteResponse\x12>\n" +
 	"\tListTrips\x12\x17.fleet.ListTripsRequest\x1a\x18.fleet.ListTripsResponse\x12>\n" +
 	"\tStartTrip\x12\x17.fleet.StartTripRequest\x1a\x18.fleet.StartTripResponse\x12G\n" +
 	"\fCompleteTrip\x12\x1a.fleet.CompleteTripRequest\x1a\x1b.fleet.CompleteTripResponseB\x1aZ\x18shared/proto/fleet;fleetb\x06proto3"
@@ -1710,77 +1986,85 @@ func file_fleet_proto_rawDescGZIP() []byte {
 	return file_fleet_proto_rawDescData
 }
 
-var file_fleet_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_fleet_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_fleet_proto_goTypes = []any{
 	(*Vehicle)(nil),                     // 0: fleet.Vehicle
 	(*Driver)(nil),                      // 1: fleet.Driver
 	(*Trip)(nil),                        // 2: fleet.Trip
-	(*CreateVehicleRequest)(nil),        // 3: fleet.CreateVehicleRequest
-	(*CreateVehicleResponse)(nil),       // 4: fleet.CreateVehicleResponse
-	(*GetVehicleRequest)(nil),           // 5: fleet.GetVehicleRequest
-	(*GetVehicleResponse)(nil),          // 6: fleet.GetVehicleResponse
-	(*ListVehiclesRequest)(nil),         // 7: fleet.ListVehiclesRequest
-	(*ListVehiclesResponse)(nil),        // 8: fleet.ListVehiclesResponse
-	(*UpdateVehicleRequest)(nil),        // 9: fleet.UpdateVehicleRequest
-	(*UpdateVehicleResponse)(nil),       // 10: fleet.UpdateVehicleResponse
-	(*UpdateVehicleStatusRequest)(nil),  // 11: fleet.UpdateVehicleStatusRequest
-	(*UpdateVehicleStatusResponse)(nil), // 12: fleet.UpdateVehicleStatusResponse
-	(*CreateDriverRequest)(nil),         // 13: fleet.CreateDriverRequest
-	(*CreateDriverResponse)(nil),        // 14: fleet.CreateDriverResponse
-	(*ListDriversRequest)(nil),          // 15: fleet.ListDriversRequest
-	(*ListDriversResponse)(nil),         // 16: fleet.ListDriversResponse
-	(*UpdateDriverRequest)(nil),         // 17: fleet.UpdateDriverRequest
-	(*UpdateDriverResponse)(nil),        // 18: fleet.UpdateDriverResponse
-	(*UpdateDriverStatusRequest)(nil),   // 19: fleet.UpdateDriverStatusRequest
-	(*UpdateDriverStatusResponse)(nil),  // 20: fleet.UpdateDriverStatusResponse
-	(*CreateTripRequest)(nil),           // 21: fleet.CreateTripRequest
-	(*CreateTripResponse)(nil),          // 22: fleet.CreateTripResponse
-	(*ListTripsRequest)(nil),            // 23: fleet.ListTripsRequest
-	(*ListTripsResponse)(nil),           // 24: fleet.ListTripsResponse
-	(*StartTripRequest)(nil),            // 25: fleet.StartTripRequest
-	(*StartTripResponse)(nil),           // 26: fleet.StartTripResponse
-	(*CompleteTripRequest)(nil),         // 27: fleet.CompleteTripRequest
-	(*CompleteTripResponse)(nil),        // 28: fleet.CompleteTripResponse
+	(*Coordinate)(nil),                  // 3: fleet.Coordinate
+	(*RoutePreview)(nil),                // 4: fleet.RoutePreview
+	(*CreateVehicleRequest)(nil),        // 5: fleet.CreateVehicleRequest
+	(*CreateVehicleResponse)(nil),       // 6: fleet.CreateVehicleResponse
+	(*GetVehicleRequest)(nil),           // 7: fleet.GetVehicleRequest
+	(*GetVehicleResponse)(nil),          // 8: fleet.GetVehicleResponse
+	(*ListVehiclesRequest)(nil),         // 9: fleet.ListVehiclesRequest
+	(*ListVehiclesResponse)(nil),        // 10: fleet.ListVehiclesResponse
+	(*UpdateVehicleRequest)(nil),        // 11: fleet.UpdateVehicleRequest
+	(*UpdateVehicleResponse)(nil),       // 12: fleet.UpdateVehicleResponse
+	(*UpdateVehicleStatusRequest)(nil),  // 13: fleet.UpdateVehicleStatusRequest
+	(*UpdateVehicleStatusResponse)(nil), // 14: fleet.UpdateVehicleStatusResponse
+	(*CreateDriverRequest)(nil),         // 15: fleet.CreateDriverRequest
+	(*CreateDriverResponse)(nil),        // 16: fleet.CreateDriverResponse
+	(*ListDriversRequest)(nil),          // 17: fleet.ListDriversRequest
+	(*ListDriversResponse)(nil),         // 18: fleet.ListDriversResponse
+	(*UpdateDriverRequest)(nil),         // 19: fleet.UpdateDriverRequest
+	(*UpdateDriverResponse)(nil),        // 20: fleet.UpdateDriverResponse
+	(*UpdateDriverStatusRequest)(nil),   // 21: fleet.UpdateDriverStatusRequest
+	(*UpdateDriverStatusResponse)(nil),  // 22: fleet.UpdateDriverStatusResponse
+	(*CreateTripRequest)(nil),           // 23: fleet.CreateTripRequest
+	(*CreateTripResponse)(nil),          // 24: fleet.CreateTripResponse
+	(*PreviewRouteRequest)(nil),         // 25: fleet.PreviewRouteRequest
+	(*PreviewRouteResponse)(nil),        // 26: fleet.PreviewRouteResponse
+	(*ListTripsRequest)(nil),            // 27: fleet.ListTripsRequest
+	(*ListTripsResponse)(nil),           // 28: fleet.ListTripsResponse
+	(*StartTripRequest)(nil),            // 29: fleet.StartTripRequest
+	(*StartTripResponse)(nil),           // 30: fleet.StartTripResponse
+	(*CompleteTripRequest)(nil),         // 31: fleet.CompleteTripRequest
+	(*CompleteTripResponse)(nil),        // 32: fleet.CompleteTripResponse
 }
 var file_fleet_proto_depIdxs = []int32{
-	0,  // 0: fleet.CreateVehicleResponse.vehicle:type_name -> fleet.Vehicle
-	0,  // 1: fleet.GetVehicleResponse.vehicle:type_name -> fleet.Vehicle
-	0,  // 2: fleet.ListVehiclesResponse.vehicles:type_name -> fleet.Vehicle
-	1,  // 3: fleet.CreateDriverResponse.driver:type_name -> fleet.Driver
-	1,  // 4: fleet.ListDriversResponse.drivers:type_name -> fleet.Driver
-	2,  // 5: fleet.CreateTripResponse.trip:type_name -> fleet.Trip
-	2,  // 6: fleet.ListTripsResponse.trips:type_name -> fleet.Trip
-	3,  // 7: fleet.FleetService.CreateVehicle:input_type -> fleet.CreateVehicleRequest
-	5,  // 8: fleet.FleetService.GetVehicle:input_type -> fleet.GetVehicleRequest
-	7,  // 9: fleet.FleetService.ListVehicles:input_type -> fleet.ListVehiclesRequest
-	9,  // 10: fleet.FleetService.UpdateVehicle:input_type -> fleet.UpdateVehicleRequest
-	11, // 11: fleet.FleetService.UpdateVehicleStatus:input_type -> fleet.UpdateVehicleStatusRequest
-	13, // 12: fleet.FleetService.CreateDriver:input_type -> fleet.CreateDriverRequest
-	15, // 13: fleet.FleetService.ListDrivers:input_type -> fleet.ListDriversRequest
-	17, // 14: fleet.FleetService.UpdateDriver:input_type -> fleet.UpdateDriverRequest
-	19, // 15: fleet.FleetService.UpdateDriverStatus:input_type -> fleet.UpdateDriverStatusRequest
-	21, // 16: fleet.FleetService.CreateTrip:input_type -> fleet.CreateTripRequest
-	23, // 17: fleet.FleetService.ListTrips:input_type -> fleet.ListTripsRequest
-	25, // 18: fleet.FleetService.StartTrip:input_type -> fleet.StartTripRequest
-	27, // 19: fleet.FleetService.CompleteTrip:input_type -> fleet.CompleteTripRequest
-	4,  // 20: fleet.FleetService.CreateVehicle:output_type -> fleet.CreateVehicleResponse
-	6,  // 21: fleet.FleetService.GetVehicle:output_type -> fleet.GetVehicleResponse
-	8,  // 22: fleet.FleetService.ListVehicles:output_type -> fleet.ListVehiclesResponse
-	10, // 23: fleet.FleetService.UpdateVehicle:output_type -> fleet.UpdateVehicleResponse
-	12, // 24: fleet.FleetService.UpdateVehicleStatus:output_type -> fleet.UpdateVehicleStatusResponse
-	14, // 25: fleet.FleetService.CreateDriver:output_type -> fleet.CreateDriverResponse
-	16, // 26: fleet.FleetService.ListDrivers:output_type -> fleet.ListDriversResponse
-	18, // 27: fleet.FleetService.UpdateDriver:output_type -> fleet.UpdateDriverResponse
-	20, // 28: fleet.FleetService.UpdateDriverStatus:output_type -> fleet.UpdateDriverStatusResponse
-	22, // 29: fleet.FleetService.CreateTrip:output_type -> fleet.CreateTripResponse
-	24, // 30: fleet.FleetService.ListTrips:output_type -> fleet.ListTripsResponse
-	26, // 31: fleet.FleetService.StartTrip:output_type -> fleet.StartTripResponse
-	28, // 32: fleet.FleetService.CompleteTrip:output_type -> fleet.CompleteTripResponse
-	20, // [20:33] is the sub-list for method output_type
-	7,  // [7:20] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	3,  // 0: fleet.RoutePreview.geometry:type_name -> fleet.Coordinate
+	0,  // 1: fleet.CreateVehicleResponse.vehicle:type_name -> fleet.Vehicle
+	0,  // 2: fleet.GetVehicleResponse.vehicle:type_name -> fleet.Vehicle
+	0,  // 3: fleet.ListVehiclesResponse.vehicles:type_name -> fleet.Vehicle
+	1,  // 4: fleet.CreateDriverResponse.driver:type_name -> fleet.Driver
+	1,  // 5: fleet.ListDriversResponse.drivers:type_name -> fleet.Driver
+	2,  // 6: fleet.CreateTripResponse.trip:type_name -> fleet.Trip
+	4,  // 7: fleet.PreviewRouteResponse.route:type_name -> fleet.RoutePreview
+	2,  // 8: fleet.ListTripsResponse.trips:type_name -> fleet.Trip
+	5,  // 9: fleet.FleetService.CreateVehicle:input_type -> fleet.CreateVehicleRequest
+	7,  // 10: fleet.FleetService.GetVehicle:input_type -> fleet.GetVehicleRequest
+	9,  // 11: fleet.FleetService.ListVehicles:input_type -> fleet.ListVehiclesRequest
+	11, // 12: fleet.FleetService.UpdateVehicle:input_type -> fleet.UpdateVehicleRequest
+	13, // 13: fleet.FleetService.UpdateVehicleStatus:input_type -> fleet.UpdateVehicleStatusRequest
+	15, // 14: fleet.FleetService.CreateDriver:input_type -> fleet.CreateDriverRequest
+	17, // 15: fleet.FleetService.ListDrivers:input_type -> fleet.ListDriversRequest
+	19, // 16: fleet.FleetService.UpdateDriver:input_type -> fleet.UpdateDriverRequest
+	21, // 17: fleet.FleetService.UpdateDriverStatus:input_type -> fleet.UpdateDriverStatusRequest
+	23, // 18: fleet.FleetService.CreateTrip:input_type -> fleet.CreateTripRequest
+	25, // 19: fleet.FleetService.PreviewRoute:input_type -> fleet.PreviewRouteRequest
+	27, // 20: fleet.FleetService.ListTrips:input_type -> fleet.ListTripsRequest
+	29, // 21: fleet.FleetService.StartTrip:input_type -> fleet.StartTripRequest
+	31, // 22: fleet.FleetService.CompleteTrip:input_type -> fleet.CompleteTripRequest
+	6,  // 23: fleet.FleetService.CreateVehicle:output_type -> fleet.CreateVehicleResponse
+	8,  // 24: fleet.FleetService.GetVehicle:output_type -> fleet.GetVehicleResponse
+	10, // 25: fleet.FleetService.ListVehicles:output_type -> fleet.ListVehiclesResponse
+	12, // 26: fleet.FleetService.UpdateVehicle:output_type -> fleet.UpdateVehicleResponse
+	14, // 27: fleet.FleetService.UpdateVehicleStatus:output_type -> fleet.UpdateVehicleStatusResponse
+	16, // 28: fleet.FleetService.CreateDriver:output_type -> fleet.CreateDriverResponse
+	18, // 29: fleet.FleetService.ListDrivers:output_type -> fleet.ListDriversResponse
+	20, // 30: fleet.FleetService.UpdateDriver:output_type -> fleet.UpdateDriverResponse
+	22, // 31: fleet.FleetService.UpdateDriverStatus:output_type -> fleet.UpdateDriverStatusResponse
+	24, // 32: fleet.FleetService.CreateTrip:output_type -> fleet.CreateTripResponse
+	26, // 33: fleet.FleetService.PreviewRoute:output_type -> fleet.PreviewRouteResponse
+	28, // 34: fleet.FleetService.ListTrips:output_type -> fleet.ListTripsResponse
+	30, // 35: fleet.FleetService.StartTrip:output_type -> fleet.StartTripResponse
+	32, // 36: fleet.FleetService.CompleteTrip:output_type -> fleet.CompleteTripResponse
+	23, // [23:37] is the sub-list for method output_type
+	9,  // [9:23] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_fleet_proto_init() }
@@ -1794,7 +2078,7 @@ func file_fleet_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_fleet_proto_rawDesc), len(file_fleet_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   29,
+			NumMessages:   33,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

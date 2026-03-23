@@ -379,9 +379,11 @@ func (s *FleetStore) CreateTrip(ctx context.Context, t *Trip) error {
 		organization_id,
 		vehicle_id,
 		driver_id,
-		status
+		status,
+		start_location,
+		end_location
 	)
-	VALUES ($1,$2,$3,$4,$5)
+	VALUES ($1,$2,$3,$4,$5, POINT($6, $7), POINT($8, $9))
 	RETURNING created_at
 	`
 
@@ -393,6 +395,10 @@ func (s *FleetStore) CreateTrip(ctx context.Context, t *Trip) error {
 		t.VehicleID,
 		t.DriverID,
 		t.Status,
+		t.StartLongitude,
+		t.StartLatitude,
+		t.EndLongitude,
+		t.EndLatitude,
 	).Scan(&t.CreatedAt)
 
 	if err != nil {

@@ -29,6 +29,7 @@ const (
 	FleetService_UpdateDriver_FullMethodName        = "/fleet.FleetService/UpdateDriver"
 	FleetService_UpdateDriverStatus_FullMethodName  = "/fleet.FleetService/UpdateDriverStatus"
 	FleetService_CreateTrip_FullMethodName          = "/fleet.FleetService/CreateTrip"
+	FleetService_PreviewRoute_FullMethodName        = "/fleet.FleetService/PreviewRoute"
 	FleetService_ListTrips_FullMethodName           = "/fleet.FleetService/ListTrips"
 	FleetService_StartTrip_FullMethodName           = "/fleet.FleetService/StartTrip"
 	FleetService_CompleteTrip_FullMethodName        = "/fleet.FleetService/CompleteTrip"
@@ -48,6 +49,7 @@ type FleetServiceClient interface {
 	UpdateDriver(ctx context.Context, in *UpdateDriverRequest, opts ...grpc.CallOption) (*UpdateDriverResponse, error)
 	UpdateDriverStatus(ctx context.Context, in *UpdateDriverStatusRequest, opts ...grpc.CallOption) (*UpdateDriverStatusResponse, error)
 	CreateTrip(ctx context.Context, in *CreateTripRequest, opts ...grpc.CallOption) (*CreateTripResponse, error)
+	PreviewRoute(ctx context.Context, in *PreviewRouteRequest, opts ...grpc.CallOption) (*PreviewRouteResponse, error)
 	ListTrips(ctx context.Context, in *ListTripsRequest, opts ...grpc.CallOption) (*ListTripsResponse, error)
 	StartTrip(ctx context.Context, in *StartTripRequest, opts ...grpc.CallOption) (*StartTripResponse, error)
 	CompleteTrip(ctx context.Context, in *CompleteTripRequest, opts ...grpc.CallOption) (*CompleteTripResponse, error)
@@ -161,6 +163,16 @@ func (c *fleetServiceClient) CreateTrip(ctx context.Context, in *CreateTripReque
 	return out, nil
 }
 
+func (c *fleetServiceClient) PreviewRoute(ctx context.Context, in *PreviewRouteRequest, opts ...grpc.CallOption) (*PreviewRouteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PreviewRouteResponse)
+	err := c.cc.Invoke(ctx, FleetService_PreviewRoute_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *fleetServiceClient) ListTrips(ctx context.Context, in *ListTripsRequest, opts ...grpc.CallOption) (*ListTripsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListTripsResponse)
@@ -205,6 +217,7 @@ type FleetServiceServer interface {
 	UpdateDriver(context.Context, *UpdateDriverRequest) (*UpdateDriverResponse, error)
 	UpdateDriverStatus(context.Context, *UpdateDriverStatusRequest) (*UpdateDriverStatusResponse, error)
 	CreateTrip(context.Context, *CreateTripRequest) (*CreateTripResponse, error)
+	PreviewRoute(context.Context, *PreviewRouteRequest) (*PreviewRouteResponse, error)
 	ListTrips(context.Context, *ListTripsRequest) (*ListTripsResponse, error)
 	StartTrip(context.Context, *StartTripRequest) (*StartTripResponse, error)
 	CompleteTrip(context.Context, *CompleteTripRequest) (*CompleteTripResponse, error)
@@ -247,6 +260,9 @@ func (UnimplementedFleetServiceServer) UpdateDriverStatus(context.Context, *Upda
 }
 func (UnimplementedFleetServiceServer) CreateTrip(context.Context, *CreateTripRequest) (*CreateTripResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateTrip not implemented")
+}
+func (UnimplementedFleetServiceServer) PreviewRoute(context.Context, *PreviewRouteRequest) (*PreviewRouteResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PreviewRoute not implemented")
 }
 func (UnimplementedFleetServiceServer) ListTrips(context.Context, *ListTripsRequest) (*ListTripsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListTrips not implemented")
@@ -458,6 +474,24 @@ func _FleetService_CreateTrip_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FleetService_PreviewRoute_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PreviewRouteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FleetServiceServer).PreviewRoute(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FleetService_PreviewRoute_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FleetServiceServer).PreviewRoute(ctx, req.(*PreviewRouteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FleetService_ListTrips_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListTripsRequest)
 	if err := dec(in); err != nil {
@@ -558,6 +592,10 @@ var FleetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateTrip",
 			Handler:    _FleetService_CreateTrip_Handler,
+		},
+		{
+			MethodName: "PreviewRoute",
+			Handler:    _FleetService_PreviewRoute_Handler,
 		},
 		{
 			MethodName: "ListTrips",

@@ -259,9 +259,31 @@ type UpdateDriverRequest struct {
 }
 
 type CreateTripRequest struct {
-	OrganizationID string `json:"organization_id" validate:"required,uuid"`
-	VehicleID      string `json:"vehicle_id" validate:"required,uuid"`
-	DriverID       string `json:"driver_id" validate:"required,uuid"`
+	OrganizationID string   `json:"organization_id" validate:"required,uuid"`
+	VehicleID      string   `json:"vehicle_id" validate:"required,uuid"`
+	DriverID       string   `json:"driver_id" validate:"required,uuid"`
+	StartLatitude  *float64 `json:"start_latitude" validate:"required,gte=-90,lte=90"`
+	StartLongitude *float64 `json:"start_longitude" validate:"required,gte=-180,lte=180"`
+	EndLatitude    *float64 `json:"end_latitude" validate:"required,gte=-90,lte=90"`
+	EndLongitude   *float64 `json:"end_longitude" validate:"required,gte=-180,lte=180"`
+}
+
+type PreviewRouteRequest struct {
+	StartLatitude  *float64 `json:"start_latitude" validate:"required,gte=-90,lte=90"`
+	StartLongitude *float64 `json:"start_longitude" validate:"required,gte=-180,lte=180"`
+	EndLatitude    *float64 `json:"end_latitude" validate:"required,gte=-90,lte=90"`
+	EndLongitude   *float64 `json:"end_longitude" validate:"required,gte=-180,lte=180"`
+}
+
+type CoordinateResponse struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}
+
+type RoutePreviewResponse struct {
+	DistanceMeters  float64              `json:"distance_meters"`
+	DurationSeconds float64              `json:"duration_seconds"`
+	Geometry        []CoordinateResponse `json:"geometry"`
 }
 
 type TripResponse struct {
@@ -299,6 +321,42 @@ type ListAllVehiclesResponse struct {
 
 type ListAllTripsRequest struct {
 	UserID string `json:"user_id" validate:"required"`
+}
+
+type GetTripTrackingRequest struct {
+	TripID string `json:"trip_id" validate:"required,uuid"`
+}
+
+type GetTripLocationHistoryRequest struct {
+	TripID string `json:"trip_id" validate:"required,uuid"`
+	Limit  int32  `json:"limit" validate:"gte=0,lte=1000"`
+}
+
+type TripCurrentLocationResponse struct {
+	TripID     string  `json:"trip_id"`
+	DriverID   string  `json:"driver_id"`
+	VehicleID  string  `json:"vehicle_id"`
+	Latitude   float64 `json:"latitude"`
+	Longitude  float64 `json:"longitude"`
+	RecordedAt int64   `json:"recorded_at"`
+	Connection string  `json:"connection"`
+}
+
+type TripLocationHistoryPoint struct {
+	Latitude   float64 `json:"latitude"`
+	Longitude  float64 `json:"longitude"`
+	RecordedAt int64   `json:"recorded_at"`
+}
+
+type TripLocationHistoryResponse struct {
+	TripID string                     `json:"trip_id"`
+	Points []TripLocationHistoryPoint `json:"points"`
+}
+
+type TripGeometryResponse struct {
+	TripID          string               `json:"trip_id"`
+	PlannedGeometry []CoordinateResponse `json:"planned_geometry"`
+	ActualGeometry  []CoordinateResponse `json:"actual_geometry"`
 }
 
 // TotalMembersResponse represents total members count

@@ -177,6 +177,7 @@ func (app *application) mount() http.Handler {
 				r.Route("/trips", func(r chi.Router) {
 
 					r.Post("/", app.createTripHandler)
+					r.Post("/preview-route", app.previewRouteHandler)
 					r.Get("/", app.listTripsHandler)
 					r.Get("/all", app.listAllTripsHandler)
 
@@ -184,6 +185,21 @@ func (app *application) mount() http.Handler {
 					r.Post("/{tripId}/complete", app.completeTripHandler)
 				})
 			})
+		})
+
+		r.Group(func(r chi.Router) {
+			r.Use(app.AuthTokenMiddleware)
+
+			r.Route("/tracking", func(r chi.Router) {
+				r.Get("/trips/{tripId}/current", app.getTripCurrentLocationHandler)
+				r.Get("/trips/{tripId}/history", app.getTripLocationHistoryHandler)
+				r.Get("/trips/{tripId}/geometry", app.getTripGeometryHandler)
+			})
+		})
+
+		r.Route("/ws", func(r chi.Router) {
+			r.Get("/driver-tracking", app.driverTrackingWebSocketHandler)
+			r.Get("/dispatch-tracking", app.dispatchTrackingWebSocketHandler)
 		})
 
 		// Analytics Service routers
