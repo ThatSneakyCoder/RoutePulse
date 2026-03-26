@@ -1,5 +1,7 @@
 package rabbitmq
 
+import "time"
+
 // --------------------
 // Identity Events
 // --------------------
@@ -20,6 +22,14 @@ const (
 	OrganizationDeactivatedEvent   = "organization.organization.deactivated"
 	OrganizationMemberRemovedEvent = "organization.member.removed"
 	OrganizationRoleUpdatedEvent   = "organization.member.role_updated"
+)
+
+// --------------------
+// Tracking Events
+// --------------------
+
+const (
+	TrackingDriverLocationUpdatedEvent = "tracking.driver.location_updated"
 )
 
 // --------------------
@@ -52,4 +62,18 @@ type OrganizationMemberAddedEventPayload struct {
 	OrganizationID string `json:"organization_id"`
 	UserID         string `json:"user_id"`
 	Role           string `json:"role"`
+}
+
+// --------------------
+// Tracking Payloads
+// --------------------
+
+type TrackingDriverLocationUpdatedEventPayload struct {
+	TripID     string    `json:"trip_id"`
+	DriverID   string    `json:"driver_id"`
+	VehicleID  string    `json:"vehicle_id"`
+	Latitude   float64   `json:"latitude"`
+	Longitude  float64   `json:"longitude"`
+	RecordedAt time.Time `json:"recorded_at"`
+	Sequence   int       `json:"sequence"`
 }

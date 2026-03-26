@@ -6,6 +6,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
@@ -225,4 +226,105 @@ func (s *TrackingStore) GetTripGeometry(
 		PlannedGeometry: []Coordinate{},
 		ActualGeometry:  actualGeometry,
 	}, nil
+}
+
+func (s *TrackingStore) StoreLocationUpdate(
+	ctx context.Context,
+	update TrackingLocationUpdate,
+) error {
+
+	const insertHistoryQuery = `
+		INSERT INTO trip_tracking_history (
+			tracking_point_id,
+			trip_id,
+			driver_id,
+			vehicle_id,
+			latitude,
+			longitude,
+			recorded_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`
+
+	const upsertCurrentQuery = `
+		INSERT INTO trip_tracking_current (
+			trip_id,
+			driver_id,
+			vehicle_id,
+			latitude,
+			longitude,
+			connection,
+			recorded_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
+		ON CONFLICT (trip_id) DO UPDATE SET
+			driver_id = EXCLUDED.driver_id,
+			vehicle_id = EXCLUDED.vehicle_id,
+			latitude = EXCLUDED.latitude,
+			longitude = EXCLUDED.longitude,
+			connection = EXCLUDED.connection,
+			recorded_at = EXCLUDED.recorded_at,
+			updated_at = NOW()
+	`
+
+	s.log.Debugw(
+		"storing tracking location update",
+		"trip_id", update.TripID,
+		"driver_id", update.DriverID,
+		"vehicle_id", update.VehicleID,
+		"sequence", update.Sequence,
+	)
+
+	ctx, cancel := context.WithTimeout(ctx, trackingQueryTimeout)
+	defer cancel()
+
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		s.log.Errorw("failed to begin tracking transaction", "trip_id", update.TripID, "err", err)
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.ExecContext(
+		ctx,
+		insertHistoryQuery,
+		uuid.NewString(),
+		update.TripID,
+		update.DriverID,
+		update.VehicleID,
+		update.Latitude,
+		update.Longitude,
+		update.RecordedAt,
+	); err != nil {
+		s.log.Errorw("failed to insert tracking history point", "trip_id", update.TripID, "err", err)
+		return err
+	}
+
+	if _, err := tx.ExecContext(
+		ctx,
+		upsertCurrentQuery,
+		update.TripID,
+		update.DriverID,
+		update.VehicleID,
+		update.Latitude,
+		update.Longitude,
+		"streaming",
+		update.RecordedAt,
+	); err != nil {
+		s.log.Errorw("failed to upsert current tracking location", "trip_id", update.TripID, "err", err)
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		s.log.Errorw("failed to commit tracking transaction", "trip_id", update.TripID, "err", err)
+		return err
+	}
+
+	s.log.Debugw(
+		"tracking location update stored successfully",
+		"trip_id", update.TripID,
+		"driver_id", update.DriverID,
+		"vehicle_id", update.VehicleID,
+		"sequence", update.Sequence,
+	)
+
+	return nil
 }
