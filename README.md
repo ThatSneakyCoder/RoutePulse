@@ -20,7 +20,7 @@ RoutePulse currently includes:
 
 ## Architecture Overview
 
-![High level architecture](ProjectDocumentation/RoutePulse-Architecture.drawio.svg)
+![High level architecture](ProjectDocumentation/RoutePulse-Architecture_2.drawio.svg)
 
 ### Core services
 
@@ -238,7 +238,6 @@ Useful frontend environment variables:
 ```bash
 make generate-proto
 ```
-
 
 ## Event-Driven Pieces
 
