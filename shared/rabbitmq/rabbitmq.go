@@ -81,6 +81,16 @@ func (r *RabbitMQ) setupExchangesAndQueues() error {
 		return err
 	}
 
+	if err := r.declareAndBindQueue(
+		TrackingLocationQueue,
+		[]string{
+			TrackingDriverLocationUpdatedEvent,
+		},
+		AnalyticsExchange,
+	); err != nil {
+		return err
+	}
+
 	return nil
 }
 

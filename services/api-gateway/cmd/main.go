@@ -3,9 +3,11 @@ package main
 import (
 	"time"
 
+	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/logger"
+	"github.com/ThatSneakyCoder/RoutePulse/shared/rabbitmq"
 )
 
 //	@title			Fleet Management System API
@@ -94,6 +96,17 @@ func main() {
 	)
 	defer trackingClient.Close()
 
+	rabbitmqURL := env.GetString("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
+	rmq, err := rabbitmq.NewRabbitMQ(rabbitmqURL)
+	if err != nil {
+		log.Fatalw("failed to connect to rabbitmq", "err", err)
+	}
+	defer rmq.Close()
+
+	log.Infow("connected to rabbitmq")
+
+	eventPublisher := events.NewAPIGatewayEventPublisher(rmq)
+
 	// Metrics
 	metrics := newMetrics()
 
@@ -106,6 +119,7 @@ func main() {
 		organizationClient: organizationClient,
 		fleetClient:        fleetClient,
 		trackingClient:     trackingClient,
+		eventPublisher:     eventPublisher,
 	}
 
 	app.limiters = rateLimiters{

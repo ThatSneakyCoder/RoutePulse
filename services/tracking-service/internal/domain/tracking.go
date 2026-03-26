@@ -33,3 +33,13 @@ type TripGeometry struct {
 	PlannedGeometry []Coordinate
 	ActualGeometry  []Coordinate
 }
+
+type TrackingLocationUpdate struct {
+	TripID     string
+	DriverID   string
+	VehicleID  string
+	Latitude   float64
+	Longitude  float64
+	RecordedAt time.Time
+	Sequence   int
+}

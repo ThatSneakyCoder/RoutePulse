@@ -1,8 +1,23 @@
-import { ArrowLeft, CalendarDays, MapPin, Route, Truck, UserRound, Wifi } from "lucide-react";
 import L from "leaflet";
-import { useMemo } from "react";
-import { Form, Link, useLoaderData, useRouteLoaderData } from "react-router-dom";
-import { MapContainer, Marker, Polyline, TileLayer } from "react-leaflet";
+import {
+  ArrowLeft,
+  CalendarDays,
+  MapPin,
+  Route,
+  Truck,
+  UserRound,
+  Wifi,
+} from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { MapContainer, Marker, Polyline, TileLayer, useMap } from "react-leaflet";
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useParams,
+  useRouteLoaderData,
+} from "react-router-dom";
+import { useTrackingSocket } from "../../../hooks/useTrackingSocket";
 
 const currentMarker = L.divIcon({
   className: "trip-location-marker",
@@ -21,10 +36,16 @@ const currentMarker = L.divIcon({
 });
 
 export const LiveTripTracking = () => {
-  const { trips, organizations, drivers, vehicles } = useRouteLoaderData("trip");
+  const { tripId } = useParams();
+  const { trips, organizations, drivers, vehicles } =
+    useRouteLoaderData("trip");
   const { currentLocation, locationHistory, geometry } = useLoaderData();
 
-  const trip = trips.find((entry) => entry.trip_id === geometry.trip_id || entry.trip_id === currentLocation?.trip_id);
+  const trip = trips.find(
+    (entry) =>
+      entry.trip_id === geometry.trip_id ||
+      entry.trip_id === currentLocation?.trip_id,
+  );
 
   const organizationNames = Object.fromEntries(
     organizations.map((organization) => [
@@ -43,23 +64,43 @@ export const LiveTripTracking = () => {
   );
 
   const plannedPath = useMemo(
-    () => geometry.planned_geometry.map((point) => [point.latitude, point.longitude]),
+    () =>
+      geometry.planned_geometry.map((point) => [
+        point.latitude,
+        point.longitude,
+      ]),
     [geometry.planned_geometry],
   );
+  const routePoints = useMemo(
+    () => geometry.planned_geometry.map((point) => ({
+      latitude: point.latitude,
+      longitude: point.longitude,
+    })),
+    [geometry.planned_geometry],
+  );
+  const { connectionState, liveLocation, livePath, socketError } = useTrackingSocket({
+    channel: "dispatch",
+    tripId,
+    driverId: trip?.driver_id,
+    vehicleId: trip?.vehicle_id,
+    routePoints,
+  });
   const actualPath = useMemo(
-    () => (
-      geometry.actual_geometry.length > 0
+    () =>
+      (livePath.length > 0
+        ? livePath
+        : geometry.actual_geometry.length > 0
         ? geometry.actual_geometry
         : locationHistory.points
-    ).map((point) => [point.latitude, point.longitude]),
-    [geometry.actual_geometry, locationHistory.points],
+      ).map((point) => [point.latitude, point.longitude]),
+    [geometry.actual_geometry, livePath, locationHistory.points],
   );
-
-  const markerPosition = currentLocation
-    ? [currentLocation.latitude, currentLocation.longitude]
-    : actualPath.at(-1) ?? plannedPath.at(-1) ?? [37.7749, -122.4194];
-
-  const mapCenter = markerPosition;
+  const markerPosition = liveLocation
+    ? [liveLocation.latitude, liveLocation.longitude]
+    : currentLocation
+      ? [currentLocation.latitude, currentLocation.longitude]
+      : (actualPath.at(-1) ?? plannedPath.at(0) ?? [37.7749, -122.4194]);
+  const initialMapCenter = plannedPath.at(0) ?? markerPosition;
 
   return (
     <section className="p-8 space-y-6">
@@ -116,12 +157,15 @@ export const LiveTripTracking = () => {
 
           <div className="mt-5 h-[34rem] overflow-hidden rounded-2xl border border-slate-800">
             <MapContainer
-              center={mapCenter}
+              center={initialMapCenter}
               zoom={13}
               attributionControl={false}
               className="h-full w-full"
             >
               <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+              {markerPosition ? (
+                <FollowDriverMarker position={markerPosition} />
+              ) : null}
               {plannedPath.length > 1 ? (
                 <Polyline
                   positions={plannedPath}
@@ -150,7 +194,9 @@ export const LiveTripTracking = () => {
                 icon={Route}
                 label="Organization"
                 value={
-                  organizationNames[trip?.organization_id] ?? trip?.organization_id ?? "-"
+                  organizationNames[trip?.organization_id] ??
+                  trip?.organization_id ??
+                  "-"
                 }
               />
               <DetailRow
@@ -161,7 +207,9 @@ export const LiveTripTracking = () => {
               <DetailRow
                 icon={Truck}
                 label="Vehicle"
-                value={vehicleNames[trip?.vehicle_id] ?? trip?.vehicle_id ?? "-"}
+                value={
+                  vehicleNames[trip?.vehicle_id] ?? trip?.vehicle_id ?? "-"
+                }
               />
               <DetailRow
                 icon={CalendarDays}
@@ -176,19 +224,23 @@ export const LiveTripTracking = () => {
           </div>
 
           <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
-            <h2 className="text-lg font-semibold text-white">Tracking Status</h2>
+            <h2 className="text-lg font-semibold text-white">
+              Tracking Status
+            </h2>
 
             <div className="mt-5 space-y-4 text-sm text-slate-300">
               <DetailRow
                 icon={Wifi}
                 label="Connection"
-                value={currentLocation?.connection || "waiting"}
+                value={currentLocation?.connection || connectionState}
               />
               <DetailRow
                 icon={MapPin}
                 label="Current Position"
                 value={
-                  currentLocation
+                  liveLocation
+                    ? `${liveLocation.latitude.toFixed(5)}, ${liveLocation.longitude.toFixed(5)}`
+                    : currentLocation
                     ? `${currentLocation.latitude.toFixed(5)}, ${currentLocation.longitude.toFixed(5)}`
                     : "No live point yet"
                 }
@@ -209,6 +261,16 @@ export const LiveTripTracking = () => {
       </div>
     </section>
   );
+};
+
+const FollowDriverMarker = ({ position }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    map.panTo(position, { animate: true, duration: 0.5 });
+  }, [map, position]);
+
+  return null;
 };
 
 const DetailRow = ({ icon: Icon, label, value }) => {

@@ -4,21 +4,18 @@ import (
 	"context"
 
 	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/domain"
-	"github.com/ThatSneakyCoder/RoutePulse/services/tracking-service/internal/infrastructure/events"
 	"go.uber.org/zap"
 )
 
 type TrackingService struct {
-	log          *zap.SugaredLogger
-	repo         domain.TrackingRepository
-	rmqPublisher *events.TrackingEventPublisher
+	log  *zap.SugaredLogger
+	repo domain.TrackingRepository
 }
 
-func NewTrackingService(repo domain.TrackingRepository, log *zap.SugaredLogger, rmq *events.TrackingEventPublisher) *TrackingService {
+func NewTrackingService(repo domain.TrackingRepository, log *zap.SugaredLogger) *TrackingService {
 	return &TrackingService{
-		repo:         repo,
-		log:          log,
-		rmqPublisher: rmq,
+		repo: repo,
+		log:  log,
 	}
 }
 
@@ -144,4 +141,52 @@ func (s *TrackingService) GetTripGeometry(
 	)
 
 	return geometry, nil
+}
+
+func (s *TrackingService) StoreLocationUpdate(
+	ctx context.Context,
+	update domain.TrackingLocationUpdate,
+) error {
+
+	s.log.Infow(
+		"store tracking location update request received",
+		"trip_id", update.TripID,
+		"driver_id", update.DriverID,
+		"vehicle_id", update.VehicleID,
+		"sequence", update.Sequence,
+	)
+
+	if s.repo == nil {
+		s.log.Warnw(
+			"tracking repository not configured; skipping tracking location write",
+			"trip_id", update.TripID,
+			"driver_id", update.DriverID,
+			"vehicle_id", update.VehicleID,
+			"sequence", update.Sequence,
+		)
+
+		return nil
+	}
+
+	if err := s.repo.StoreLocationUpdate(ctx, update); err != nil {
+		s.log.Errorw(
+			"failed to store tracking location update",
+			"trip_id", update.TripID,
+			"driver_id", update.DriverID,
+			"vehicle_id", update.VehicleID,
+			"sequence", update.Sequence,
+			"error", err,
+		)
+		return err
+	}
+
+	s.log.Infow(
+		"tracking location update stored successfully",
+		"trip_id", update.TripID,
+		"driver_id", update.DriverID,
+		"vehicle_id", update.VehicleID,
+		"sequence", update.Sequence,
+	)
+
+	return nil
 }

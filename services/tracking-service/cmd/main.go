@@ -83,12 +83,14 @@ func main() {
 	}
 	defer rabbitmq.Close()
 
-	// Setup RabbitMQ publisher
-	publisher := events.NewTrackingEventPublisher(rabbitmq)
-
 	trackingRepo := domain.NewTrackingStore(dbConn, log)
 
-	trackingSvc := service.NewTrackingService(trackingRepo, log, publisher)
+	trackingSvc := service.NewTrackingService(trackingRepo, log)
+	trackingConsumer := events.NewTrackingConsumer(rabbitmq, trackingSvc, log)
+
+	if err := trackingConsumer.Listen(); err != nil {
+		log.Fatalw("failed to start tracking consumer", "err", err)
+	}
 
 	grpcServer := grpcserver.NewServer()
 	grpc.NewGRPCHandler(grpcServer, trackingSvc, log)

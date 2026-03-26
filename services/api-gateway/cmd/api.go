@@ -18,6 +18,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 
+	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/events"
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/grpc"
 	"github.com/ThatSneakyCoder/RoutePulse/services/api-gateway/internal/infrastructure/ratelimiter"
 	"github.com/ThatSneakyCoder/RoutePulse/shared/env"
@@ -32,6 +33,7 @@ type application struct {
 	organizationClient *grpc.OrganizationServiceClient
 	fleetClient        *grpc.FleetServiceClient
 	trackingClient     *grpc.TrackingServiceClient
+	eventPublisher     *events.APIGatewayEventPublisher
 	limiters           rateLimiters
 }
 
